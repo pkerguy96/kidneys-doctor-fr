@@ -17,4 +17,5 @@ export interface OnlyPatientData {
   referral?: string[];
 }
 const patientAPIClient = new APIClient<OnlyPatientData>("/Patient");
+export const patientTinyDataAPIClient = new APIClient<any>("/patientTinyData");
 export default patientAPIClient;

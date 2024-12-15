@@ -109,6 +109,8 @@ const AddPatient = () => {
   const addPatientMutation = useAddPatientMutation(() => {});
   const updatePatientMutation = updatePatient(() => {});
   const onSubmit: SubmitHandler<OnlyPatientData> = async (data) => {
+    console.log(data);
+
     try {
       try {
         if (isAddMode) {

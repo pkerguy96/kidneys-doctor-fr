@@ -9,6 +9,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Autocomplete,
+  Chip,
 } from "@mui/material";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -31,6 +33,7 @@ import LoadingSpinner from "../LoadingSpinner";
 interface xrayProps {
   xray_type: string;
   price: number;
+  diagnostic: string[];
 }
 const XraySettings = () => {
   const { showSnackbar } = useSnackbarStore();
@@ -74,7 +77,7 @@ const XraySettings = () => {
       showSnackbar("La suppression d'Opération a échoué", "error");
     }
   };
-
+  const Maladies = ["zaba", "l7wa"];
   if (isLoading) return <LoadingSpinner />;
   return (
     <Box
@@ -89,6 +92,39 @@ const XraySettings = () => {
         Entrez les détails de la radiographie.
       </p>
       <Box className=" flex flex-col md:flex-row gap-4 flex-wrap ">
+        {/*      <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center ">
+          <label htmlFor="nom" className="w-full md:w-[160px]">
+            Radiographie:
+          </label>
+          <FormControl className="w-full md:flex-1">
+            <Controller
+              name="diagnostic"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  className="bg-white"
+                  id="tags-filled"
+                  options={Maladies.map((option) => option)}
+                  defaultValue={""}
+                  value={field.value || ""}
+                  onChange={(event, newValue) => field.onChange(newValue)}
+                  freeSolo
+                  renderTags={(value: readonly string[], getTagProps) => (
+                    <Chip variant="outlined" label={value} />
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="maladies"
+                      sx={autocompleteStyles}
+                    />
+                  )}
+                />
+              )}
+            />
+          </FormControl>
+        </Box> */}
         <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center ">
           <label htmlFor="nom" className="w-full md:w-[160px]">
             Radiographie:
@@ -170,5 +206,19 @@ const XraySettings = () => {
     </Box>
   );
 };
-
+const autocompleteStyles = {
+  "& .MuiOutlinedInput-root": {
+    backgroundColor: "white",
+    borderColor: "rgba(0, 0, 0, 0.23)",
+    "& fieldset": {
+      borderColor: "rgba(0, 0, 0, 0.23)", // Ensures the border is visible when not focused
+    },
+    "&:hover fieldset": {
+      borderColor: "dark", // Darker border on hover
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "primary.main", // Border color on focus
+    },
+  },
+};
 export default XraySettings;

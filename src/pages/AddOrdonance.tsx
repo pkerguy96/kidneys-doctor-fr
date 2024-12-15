@@ -353,7 +353,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Search Patients"
+                          label="Rechercher un patient"
                           error={!!error}
                           helperText={error ? error.message : null}
                         />

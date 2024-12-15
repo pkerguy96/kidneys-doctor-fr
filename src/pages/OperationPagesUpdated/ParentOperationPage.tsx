@@ -41,14 +41,14 @@ const ParentOperationPage = () => {
         />
       )}
 
-      {activeStep === 3 && (
+      {activeStep === 4 && (
         <AddOrdonance
           onNext={() => {
-            handleStepChange(4);
+            handleStepChange(5);
           }}
         />
       )}
-      {activeStep === 4 && <BloodTest onNext={() => handleStepChange(5)} />}
+      {activeStep === 3 && <BloodTest onNext={() => handleStepChange(4)} />}
 
       {activeStep === 5 && (
         <AppointmentStepPage onNext={() => handleStepChange(6)} />

@@ -21,9 +21,11 @@ import {
   CanceledMonthlyAppointmentsKpiClient,
 } from "../services/KpisService";
 import ReferralPatient from "../components/Kpis/ReferralPatient";
+import useUserRoles from "../zustand/UseRoles";
 
 const DashboardKpiPage = () => {
   const navigate = useNavigate();
+  const { can } = useUserRoles();
 
   const { data, isLoading } = getGlobal(
     {} as NewAppointments,
@@ -88,10 +90,13 @@ const DashboardKpiPage = () => {
         </Box>
       </Box>
       <div className="grid grid-rows-1 grid-cols-1 lg:grid-cols-12 gap-6">
-        <Box className="!w-full shadow-md bg-[#eff0f1] lg:col-span-12 text-gray-950 flex flex-col p-6 gap-3">
-          <h1 className="text-xl font-semibold">Graphique des revenus</h1>
-          <RevenueKpi />
-        </Box>
+        {can(["doctor"]) && (
+          <Box className="!w-full shadow-md bg-[#eff0f1] lg:col-span-12 text-gray-950 flex flex-col p-6 gap-3">
+            <h1 className="text-xl font-semibold">Graphique des revenus</h1>
+            <RevenueKpi />
+          </Box>
+        )}
+
         <Box className="!w-full shadow-md bg-[#eff0f1] lg:col-span-4 text-gray-950 flex flex-col p-6 gap-3">
           <h1 className="text-xl font-semibold">Groupe d’âge des patients</h1>
           <PatientAgeGroupKpi />

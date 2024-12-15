@@ -302,5 +302,4 @@ export function SecondaryListItems({}: Props) {
       </Link>
     </React.Fragment>
   );
-  //TODO: add general roles here
 }

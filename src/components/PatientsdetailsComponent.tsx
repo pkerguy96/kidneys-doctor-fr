@@ -14,6 +14,7 @@ import {
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router";
 import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
+import useUserRoles from "../zustand/UseRoles";
 
 const PatientsdetailsComponent = ({
   info,
@@ -22,6 +23,7 @@ const PatientsdetailsComponent = ({
   info: any;
   isLoading: boolean;
 }) => {
+  const { can } = useUserRoles();
   const navigate = useNavigate();
   if (isLoading) return <LoadingSpinner />;
   console.log(info);
@@ -83,16 +85,20 @@ const PatientsdetailsComponent = ({
                   </p>
                 )}
               </Box>
-              <Box className="flex justify-center items-center mt-4 ">
-                <Tooltip title="Opérer" arrow>
-                  <Button
-                    className="text-4xl"
-                    onClick={() => navigate(`/Patients/Xray?id=${info?.id}`)}
-                  >
-                    <HealthAndSafetyOutlinedIcon fontSize="large" />
-                  </Button>
-                </Tooltip>
-              </Box>
+              {can(["doctor"]) && (
+                <Box className="flex justify-center items-center mt-4 ">
+                  <Tooltip title="Opérer" arrow>
+                    <Button
+                      className="text-4xl"
+                      onClick={() =>
+                        navigate(`/Patients/operations/?id=${info?.id}`)
+                      }
+                    >
+                      <HealthAndSafetyOutlinedIcon fontSize="large" />
+                    </Button>
+                  </Tooltip>
+                </Box>
+              )}
             </Box>
           </Box>
           <Box className="w-full flex lg:flex-[1.5] flex-col bg-[#ffff] p-4 rounded-lg gap-4">

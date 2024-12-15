@@ -50,6 +50,7 @@ export const CACHE_KEY_StockExit = ["StockExit"];
 export const CACHE_KEY_StockEntry = ["StockEntry"];
 
 export const CACHE_KEY_StockEntryUpdate = ["StockEntryUpdate"];
+export const CACHE_KEY_PatienttinyData = ["PatienttinyData"];
 
 export const PermissionListpatient = [
   { name: "access_patient", display: "Accès complet" },

@@ -12,22 +12,48 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Controller } from "react-hook-form";
-import { BoneDoctorBloodTests } from "../../constants";
+import {
+  BoneDoctorBloodTests,
+  CACHE_KEY_PatienttinyData,
+} from "../../constants";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import addGlobal from "../../hooks/addGlobal";
+import { XrayProps, xrayApiClient } from "../../services/XrayService";
+import { useSnackbarStore } from "../../zustand/useSnackbarStore";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import getGlobalById from "../../hooks/getGlobalById";
+import { patientTinyDataAPIClient } from "../../services/PatientService";
+
 const printables = {
   Scanner: [
-    "Scanner abdominale",
-    "Scanner abdomino-pelve",
-    "Scanner uro-scanner",
-    "Scanner pelvienne",
+    "TDM abdominale",
+    "TDM abdomino-pelve",
+    "TDM uro-scanner",
+    "TDM pelvienne",
+    "TDM Cérébrale",
+    "TDM Thoracique",
+    "TDM TAP",
   ],
   IRM: [
     "IRM abdominale",
     "IRM abdomino-pelve",
-    "IRM uro-scanner",
+    "IRM uro",
     "IRM pelvienne",
+    "IRM Cérébrale",
+    "IRM Thoracique",
+    "IRM TAP",
   ],
   échographie: ["Échographie abdominale"],
   radio: ["AUCP"],
@@ -68,17 +94,49 @@ function Print(target: any, callback: Function = () => {}) {
   };
 }
 const ExamenDemander = ({ onNext }) => {
-  const [printable, setPrintable] = useState<string[]>([]);
-  const printableChange = (event: SelectChangeEvent<string[]>) => {
-    setPrintable(event.target.value as string[]);
+  const [examen, setExamen] = useState("");
+  const [fields, setFields] = useState([]);
+  const queryParams = new URLSearchParams(location.search);
+  const patient_id = queryParams.get("id");
+  const { data } = getGlobalById(
+    {},
+    CACHE_KEY_PatienttinyData,
+    patientTinyDataAPIClient,
+    undefined,
+    parseInt(patient_id)
+  );
+
+  const examenChange = (event: SelectChangeEvent) => {
+    setExamen(event.target.value);
   };
 
+  const handleAddRow = () => {
+    if (!examen) return;
+    setFields((old) => [...old, { name: examen, type: "" }]);
+    setExamen("");
+  };
+
+  const handleRemoveRow = (index) => {
+    setFields((old) => old.filter((current, _index) => _index !== index));
+  };
+
+  const changeExamenType = (value, index) => {
+    const newRows = [...fields].map((e, _index) => {
+      if (index === _index) {
+        e.type = value;
+      }
+      return e;
+    });
+    setFields(newRows);
+  };
   const submit = async (e) => {
     e.preventDefault();
+    if (!fields.length) return;
 
-    if (printable.length) Print("#page", onNext());
+    Print("#page", () => {
+      onNext();
+    });
   };
-
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
@@ -87,53 +145,114 @@ const ExamenDemander = ({ onNext }) => {
         noValidate
         autoComplete="off"
         onSubmit={submit}
-        className="flex gap-6 flex-col"
+        className="flex flex-col gap-4"
       >
-        <Box className="flex justify-between">
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Examen demandé
+        <Box className="flex justify-center mb-4">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Examens demandée
           </Typography>
         </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <FormControl className="flex-1">
-            <InputLabel id="demo-simple-printable-helper-label">
-              Examens
-            </InputLabel>
-            <Select
-              className="w-full"
-              labelId="demo-simple-printable-helper-label"
-              id="demo-simple-printable-helper"
-              value={printable}
-              multiple={true}
-              label="Printable"
-              onChange={printableChange}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              )}
+        <Box className="flex flex-col items-center gap-6 flex-wrap">
+          <Box className="w-full flex flex-wrap items-center gap-4">
+            <FormControl className="flex-1">
+              <InputLabel id="demo-simple-select-helper-label">
+                Examen
+              </InputLabel>
+              <Select
+                className="w-full"
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={examen}
+                label="Examen"
+                onChange={examenChange}
+              >
+                {Object.keys(printables).reduce((acc, header) => {
+                  acc.push(
+                    <ListSubheader key={`header_${header}`}>
+                      {header}
+                    </ListSubheader>
+                  );
+                  acc.push(
+                    ...printables[header].map((print, index) => (
+                      <MenuItem key={`print_${header}_${index}`} value={print}>
+                        {print}
+                      </MenuItem>
+                    ))
+                  );
+                  return acc;
+                }, [])}
+              </Select>
+            </FormControl>
+            <Button
+              sx={{ borderRadius: 16 }}
+              style={{
+                minWidth: 100,
+              }}
+              variant="outlined"
+              onClick={handleAddRow}
             >
-              {Object.keys(printables).reduce((acc, header) => {
-                // Push ListSubheader first
-                acc.push(
-                  <ListSubheader key={`header_${header}`}>
-                    {header}
-                  </ListSubheader>
-                );
-                // Push MenuItems for the current header
-                acc.push(
-                  ...printables[header].map((print, index) => (
-                    <MenuItem key={`print_${header}_${index}`} value={print}>
-                      {print}
-                    </MenuItem>
-                  ))
-                );
-                return acc;
-              }, [])}
-            </Select>
-          </FormControl>
+              <AddIcon />
+            </Button>
+          </Box>
+          <Box className="w-full flex flex-col gap-2">
+            <TableContainer
+              component={Paper}
+              elevation={0}
+              className="border border-gray-300"
+            >
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead className="bg-gray-200">
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell width={300}>Type</TableCell>
+                    <TableCell align="center" width="120px">
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {fields.map((carry, index) => (
+                    <TableRow key={index} className="border-t border-gray-300">
+                      <TableCell>{carry.name}</TableCell>
+                      <TableCell width={300}>
+                        <FormControl className="w-full" size="medium">
+                          <Select
+                            labelId={`rows.${index}.type.label`}
+                            id={`row.${index}.type`}
+                            value={carry.type}
+                            onChange={(e) =>
+                              changeExamenType(e.target.value, index)
+                            }
+                          >
+                            {["Sans Injection (C-)", "Avec Injection (C+)"].map(
+                              (radio, _index) => (
+                                <MenuItem key={`radio_${_index}`} value={radio}>
+                                  {radio}
+                                </MenuItem>
+                              )
+                            )}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell align="center" width="120px">
+                        <IconButton
+                          /* variant="contained" */
+                          color="error"
+                          onClick={() => handleRemoveRow(index)}
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
         </Box>
         <Box className="flex justify-between flex-row mt-8 content-center">
           <Button
@@ -164,17 +283,16 @@ const ExamenDemander = ({ onNext }) => {
               Fait a beni mellal Le {FormattedDate[0]}/{FormattedDate[1]}/
               {FormattedDate[2]}
             </p>
-            {/* <p className="font-semibold">
-              Nom & Prenom: {row?.nom}
-              {row?.prenom}
-            </p> */}
+            <p className="font-semibold">
+              Nom & Prenom: {data?.nom} {data?.prenom}
+            </p>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex flex-col gap-2">
-              {printable.map((details: any, index: number) => (
+              {fields.map((examen: any, index: number) => (
                 <div key={index}>
                   <h3 className="font-bold">
-                    {index + 1}- {details}
+                    {index + 1}- {examen.name} {examen.type}
                   </h3>
                 </div>
               ))}

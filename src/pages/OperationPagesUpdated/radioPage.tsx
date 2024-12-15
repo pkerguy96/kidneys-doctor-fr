@@ -152,7 +152,7 @@ const RadioPage = ({ onNext }) => {
     setFields(newRows);
   };
 
-  const changeRadiologyPrice = (value, index) => {
+  /*  const changeRadiologyPrice = (value, index) => {
     const newRows = [...fields].map((e, _index) => {
       if (index === _index) {
         e.price = value;
@@ -160,7 +160,7 @@ const RadioPage = ({ onNext }) => {
       return e;
     });
     setFields(newRows);
-  };
+  }; */
 
   const changeRadiologyNote = (value, index) => {
     const newRows = [...fields].map((e, _index) => {
@@ -223,60 +223,21 @@ const RadioPage = ({ onNext }) => {
             component="h2"
             className="text-center !text-2xl font-bold"
           >
-            Radiographie demandée
+            Diagnostic demandé
           </Typography>
         </Box>
         <Box className="flex flex-col items-center gap-6 flex-wrap">
           <Box className="w-full flex flex-wrap items-center gap-4">
-            {/*  <FormControl className="flex-1">
-              <InputLabel id="demo-simple-printable-helper-label">
-                Printable
-              </InputLabel>
-              <Select
-                className="w-full"
-                labelId="demo-simple-printable-helper-label"
-                id="demo-simple-printable-helper"
-                value={printable}
-                multiple={true}
-                label="Printable"
-                onChange={printableChange}
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-              >
-                {Object.keys(printables).reduce((acc, header) => {
-                  // Push ListSubheader first
-                  acc.push(
-                    <ListSubheader key={`header_${header}`}>
-                      {header}
-                    </ListSubheader>
-                  );
-                  // Push MenuItems for the current header
-                  acc.push(
-                    ...printables[header].map((print, index) => (
-                      <MenuItem key={`print_${header}_${index}`} value={print}>
-                        {print}
-                      </MenuItem>
-                    ))
-                  );
-                  return acc;
-                }, [])}
-              </Select>
-            </FormControl> */}
             <FormControl className="flex-1">
               <InputLabel id="demo-simple-select-helper-label">
-                Radiologie
+                Paraclinique
               </InputLabel>
               <Select
                 className="w-full"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 value={radiology}
-                label="Radiologie"
+                label="Paraclinique"
                 onChange={radiologyChange}
               >
                 {Object.keys(data).map((radio, index) => (
@@ -307,7 +268,8 @@ const RadioPage = ({ onNext }) => {
                 <TableHead className="bg-gray-200">
                   <TableRow>
                     <TableCell className="min-w-[400px]">Operation</TableCell>
-                    <TableCell width="300px">Prix</TableCell>
+                    {/*                     <TableCell width="300px">Prix</TableCell>
+                     */}{" "}
                     <TableCell width="800px">Note</TableCell>
                     <TableCell align="center" width="120px">
                       Action
@@ -346,7 +308,7 @@ const RadioPage = ({ onNext }) => {
                           </Select>
                         </FormControl>
                       </TableCell>
-                      <TableCell width="300px">
+                      {/* <TableCell width="300px">
                         <FormControl className="w-full md:flex-1" size="medium">
                           <TextField
                             id={`price_${index}`}
@@ -357,7 +319,7 @@ const RadioPage = ({ onNext }) => {
                             }
                           />
                         </FormControl>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell width="300px">
                         <FormControl className="w-full md:flex-1" size="medium">
                           <TextField
@@ -383,7 +345,7 @@ const RadioPage = ({ onNext }) => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box className="flex justify-between items-center">
+            {/*  <Box className="flex justify-between items-center">
               <h2 className="font-semibold text-base text-start">
                 Montant Total
               </h2>
@@ -391,7 +353,7 @@ const RadioPage = ({ onNext }) => {
                 {fields.reduce((carry, current) => carry + current.price, 0)}{" "}
                 MAD
               </span>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
         <Box className="flex justify-between flex-row mt-8 content-center">
@@ -413,7 +375,7 @@ const RadioPage = ({ onNext }) => {
           </Button>
         </Box>
       </Box>
-      <div
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -423,10 +385,10 @@ const RadioPage = ({ onNext }) => {
               Fait a beni mellal Le {FormattedDate[0]}/{FormattedDate[1]}/
               {FormattedDate[2]}
             </p>
-            {/* <p className="font-semibold">
+            <p className="font-semibold">
               Nom & Prenom: {row?.nom}
               {row?.prenom}
-            </p> */}
+            </p>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex flex-col gap-2">
@@ -440,7 +402,7 @@ const RadioPage = ({ onNext }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </Paper>
   );
 };

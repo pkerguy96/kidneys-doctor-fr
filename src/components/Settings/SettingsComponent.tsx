@@ -17,8 +17,8 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LocalPoliceOutlinedIcon from "@mui/icons-material/LocalPoliceOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import HealingOutlinedIcon from "@mui/icons-material/HealingOutlined";
-import { useSnackbarStore } from "../zustand/useSnackbarStore";
-import useUserRoles from "../zustand/UseRoles";
+import useUserRoles from "../../zustand/UseRoles";
+
 /*  */
 const SettingsComponent = () => {
   const location = useLocation();
@@ -92,7 +92,7 @@ const SettingsComponent = () => {
               isHovered ? "md:text-2xl" : "md:text-md"
             } md:text-start`}
           >
-            Settings
+            Paramètres
           </p>
           <Box className="flex md:hidden">
             <FormControl fullWidth>

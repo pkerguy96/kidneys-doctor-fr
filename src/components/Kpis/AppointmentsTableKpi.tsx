@@ -191,8 +191,8 @@ const AppointmentsTableKpi = () => {
               navigate(`/Patients/Details/${rowData[1]}`);
             }
             // If another clickable element triggers the row click
-            else {
-              navigate(`/Patients/Xray?id=${rowData[1]}`); // Assuming the second column has the patient ID
+            else if (can(["doctor"])) {
+              navigate(`/Patients/operations/?id=${rowData[1]}`);
             }
           },
         }}

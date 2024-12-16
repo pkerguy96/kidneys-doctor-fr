@@ -61,17 +61,19 @@ const BloodtestTable = () => {
           return (
             <>
               {can(["delete_blood", "doctor"]) && (
-                <button
-                  className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                  title="Supprimer"
-                >
-                  <DeleteOutlineIcon
-                    color="error"
-                    className="pointer-events-none"
-                    fill="currentColor"
-                    aria-hidden="false"
-                  />
-                </button>
+                <Tooltip title="Supprimer l'ordonance">
+                  <IconButton
+                    className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
+                    title="Supprimer"
+                  >
+                    <DeleteOutlineIcon
+                      color="error"
+                      className="pointer-events-none"
+                      fill="currentColor"
+                      aria-hidden="false"
+                    />
+                  </IconButton>
+                </Tooltip>
               )}
             </>
           );

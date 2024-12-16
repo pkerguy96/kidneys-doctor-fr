@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Typography,
 } from "@mui/material";
 import addGlobal from "../../hooks/addGlobal";
 import {
@@ -54,14 +55,20 @@ const KpiSettings = () => {
 
   return (
     <Box
-      className="flex flex-col w-full h-full p-4 gap-4"
+      className="flex flex-col w-full gap-6"
       component="form"
       onSubmit={handleSubmit}
     >
-      <p className="font-light text-gray-600 text-md md:text-xl text-center">
-        Sélectionnez la durée des métriques
-      </p>
-      <FormControl variant="standard" className="w-full h-full">
+      <Box className="flex justify-center">
+        <Typography
+          id="modal-modal-title"
+          component="h2"
+          className="text-center !text-2xl font-medium"
+        >
+          Sélectionnez la durée des métriques
+        </Typography>
+      </Box>
+      <FormControl className="w-full">
         <InputLabel id="demo-simple-select-standard-label">Période</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
@@ -77,9 +84,8 @@ const KpiSettings = () => {
           <MenuItem value={"day"}>Jour</MenuItem>
         </Select>
       </FormControl>
-      <Box className="flex mt-4">
+      <Box className="flex">
         <Button
-          size="small"
           type="submit"
           variant="contained"
           className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"

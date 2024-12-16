@@ -88,27 +88,31 @@ const SupplierTable = () => {
           const SupplierId = tableMeta.rowData[0];
 
           return (
-            <Box style={{ width: "90px" }}>
+            <Box className="w-max">
               {/* Edit Button - Requires modify_supplier or doctor */}
               {can(["modify_supplier", "doctor"]) && (
-                <button
-                  className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer"
-                  onClick={() =>
-                    navigate(`/Supplier/ajouter?supplierId=${SupplierId}`)
-                  }
-                >
-                  <EditOutlinedIcon />
-                </button>
+                <Tooltip title="Modifier le patient">
+                  <IconButton
+                    className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer"
+                    onClick={() =>
+                      navigate(`/Supplier/ajouter?supplierId=${SupplierId}`)
+                    }
+                  >
+                    <EditOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               )}
 
-              {/* Delete Button - Requires delete_supplier or doctor */}
+              {/* Delete IconButton - Requires delete_supplier or doctor */}
               {can(["delete_supplier", "doctor"]) && (
-                <button
-                  className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                  onClick={() => handleDeleteSupplier(SupplierId)}
-                >
-                  <DeleteOutlineIcon color="error" />
-                </button>
+                <Tooltip title="Supprimer le patient">
+                  <IconButton
+                    className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
+                    onClick={() => handleDeleteSupplier(SupplierId)}
+                  >
+                    <DeleteOutlineIcon color="error" />
+                  </IconButton>
+                </Tooltip>
               )}
             </Box>
           );

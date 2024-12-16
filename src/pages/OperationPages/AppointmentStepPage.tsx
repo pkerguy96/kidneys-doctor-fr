@@ -95,14 +95,17 @@ const AppointmentStepPage = ({ onNext }: any) => {
 
   return (
     <div>
-      <Paper className="!p-6 w-full flex flex-col gap-4">
+      <Paper className="!p-6 w-full flex flex-col gap-6">
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter un rendez-vous ?
+          </Typography>
+        </Box>
         <Box className="flex gap-4 flex-col">
-          <Box className="flex justify-between">
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Ajouter un rendez-vous ?
-            </Typography>
-          </Box>
-
           <TextField
             fullWidth
             id="name"
@@ -128,24 +131,24 @@ const AppointmentStepPage = ({ onNext }: any) => {
             variant="outlined"
             fullWidth
           />
-          <Box className="flex justify-between flex-row mt-8 content-center">
-            <Button
-              className="w-full md:w-max !px-10 !py-3 rounded-lg "
-              variant="outlined"
-              onClick={() => {
-                onNext();
-              }}
-            >
-              <p className="text-sm ">Passer</p>
-            </Button>
-            <Button
-              onClick={onsubmit}
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Confirmer
-            </Button>
-          </Box>
+        </Box>
+        <Box className="flex justify-between flex-row content-center">
+          <Button
+            className="w-full md:w-max !px-10 !py-3 rounded-lg "
+            variant="outlined"
+            onClick={() => {
+              onNext();
+            }}
+          >
+            <p className="text-sm ">Passer</p>
+          </Button>
+          <Button
+            onClick={onsubmit}
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Confirmer
+          </Button>
         </Box>
       </Paper>
     </div>

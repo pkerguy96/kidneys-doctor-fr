@@ -70,6 +70,8 @@ const ReferralPatient = () => {
     return <LoadingSpinner />;
   }
 
+  if (!data?.datasets.length) return <></>;
+
   return (
     <Doughnut data={data} options={{ layout: { padding: { bottom: 2 } } }} />
   );

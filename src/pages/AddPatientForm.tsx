@@ -10,6 +10,7 @@ import {
   Paper,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -180,20 +181,20 @@ const AddPatient = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter un patient</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            {isAddMode ? "Ajouter un patient" : "Modifier le patient"}
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Nom:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -215,7 +216,7 @@ const AddPatient = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Prenom:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -237,7 +238,7 @@ const AddPatient = () => {
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
             <Box className="w-full md:flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="date" className="w-full md:w-[160px]">
+              <label htmlFor="date" className="w-full md:w-[200px]">
                 Date de naissance:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -268,7 +269,7 @@ const AddPatient = () => {
               </FormControl>
             </Box>
             <Box className="w-full md:w-[300px] flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="agecalc" className="w-full md:w-[160px]">
+              <label htmlFor="agecalc" className="w-full md:w-[100px]">
                 age calcule:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -287,9 +288,8 @@ const AddPatient = () => {
               </FormControl>
             </Box>
           </Box>
-
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="cin" className="w-full md:w-[160px]">
+            <label htmlFor="cin" className="w-full md:w-[200px]">
               Cin:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -308,9 +308,8 @@ const AddPatient = () => {
               />
             </FormControl>
           </Box>
-
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="sex" className="w-full md:w-[160px]">
+            <label htmlFor="sex" className="w-full md:w-[200px]">
               Sex:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -335,7 +334,7 @@ const AddPatient = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="address" className="w-full md:w-[160px]">
+            <label htmlFor="address" className="w-full md:w-[200px]">
               Adresse:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -356,7 +355,7 @@ const AddPatient = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="phoneNumber" className="w-full md:w-[160px]">
+            <label htmlFor="phoneNumber" className="w-full md:w-[200px]">
               Telephone:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -377,7 +376,7 @@ const AddPatient = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="mutuelle" className="w-full md:w-[160px]">
+            <label htmlFor="mutuelle" className="w-full md:w-[200px]">
               Mutuelle:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -413,9 +412,8 @@ const AddPatient = () => {
               />
             </FormControl>
           </Box>
-
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="note" className="w-full md:w-[160px]">
+            <label htmlFor="note" className="w-full md:w-[200px]">
               allergies:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -460,7 +458,7 @@ const AddPatient = () => {
           </Box>
           <Box>
             <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="note" className="w-full md:w-[160px]">
+              <label htmlFor="note" className="w-full md:w-[200px]">
                 Maladies:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -506,7 +504,7 @@ const AddPatient = () => {
           </Box>
           <Box>
             <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="note" className="w-full md:w-[160px]">
+              <label htmlFor="note" className="w-full md:w-[200px]">
                 Source de provenance:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -550,9 +548,8 @@ const AddPatient = () => {
               </FormControl>
             </Box>
           </Box>
-
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="note" className="w-full md:w-[160px]">
+            <label htmlFor="note" className="w-full md:w-[200px]">
               Note:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -573,15 +570,15 @@ const AddPatient = () => {
               />
             </FormControl>
           </Box>
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        </Box>
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

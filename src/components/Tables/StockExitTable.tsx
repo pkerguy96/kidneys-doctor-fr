@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import DataTable from "../DataTable";
 import { useQueryClient } from "@tanstack/react-query";
 import { CACHE_KEY_ProductConsumed } from "../../constants";
@@ -74,14 +74,14 @@ const StockExitTable = () => {
           const operationID = tableMeta.rowData[0]; // id
 
           return (
-            <Box style={{ width: "90px" }}>
+            <Box className="w-max">
               <Tooltip title="Supprimer l'opération" arrow disableInteractive>
-                <button
+                <IconButton
                   className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
                   onClick={() => handleStockDelete(operationID)}
                 >
                   <DeleteOutlineIcon color="error" />
-                </button>
+                </IconButton>
               </Tooltip>
             </Box>
           );

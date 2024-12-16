@@ -8,6 +8,7 @@ import {
   Paper,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -143,21 +144,21 @@ const AddSupplier = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter un fournisseur</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter un fournisseur
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
 
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Nom de l'entreprise
             </label>
             <FormControl className="w-full md:flex-1">
@@ -177,7 +178,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Personne de contact
             </label>
             <FormControl className="w-full md:flex-1">
@@ -197,7 +198,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Adresse
             </label>
             <FormControl className="w-full md:flex-1">
@@ -217,7 +218,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Téléphone
             </label>
             <FormControl className="w-full md:flex-1">
@@ -238,7 +239,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               E-mail
             </label>
             <FormControl className="w-full md:flex-1">
@@ -259,7 +260,7 @@ const AddSupplier = () => {
           </Box>
 
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Type de fourniture
             </label>
             <FormControl className="w-full md:flex-1">
@@ -279,7 +280,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Ice
             </label>
             <FormControl className="w-full md:flex-1">
@@ -299,7 +300,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="status" className="w-full md:w-[160px]">
+            <label htmlFor="status" className="w-full md:w-[200px]">
               Statut
             </label>
             <FormControl className="w-full md:flex-1">
@@ -323,7 +324,7 @@ const AddSupplier = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Note
             </label>
             <FormControl className="w-full md:flex-1">
@@ -344,15 +345,15 @@ const AddSupplier = () => {
               />
             </FormControl>
           </Box>
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        </Box>
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

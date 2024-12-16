@@ -10,6 +10,7 @@ import {
   Button,
   Autocomplete,
   Chip,
+  Typography,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -154,23 +155,22 @@ const AddStockToProduct = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter du stock</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter du stock
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
-
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="Fournisseur" className="w-full md:w-[160px]">
+            <label htmlFor="Fournisseur" className="w-full md:w-[200px]">
               Fournisseur
-            </label> 
+            </label>
             <FormControl className="w-full md:flex-1">
               <InputLabel id="demo-select-small-label">Fournisseur</InputLabel>
               <Controller
@@ -202,7 +202,7 @@ const AddStockToProduct = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="expiry_date" className="w-full md:w-[160px]">
+            <label htmlFor="expiry_date" className="w-full md:w-[200px]">
               Date de péremption
             </label>
             <FormControl className="w-full md:flex-1">
@@ -223,7 +223,7 @@ const AddStockToProduct = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="quantity" className="w-full md:w-[160px]">
+            <label htmlFor="quantity" className="w-full md:w-[200px]">
               Quantité entrant
             </label>
             <FormControl className="w-full md:flex-1">
@@ -244,7 +244,7 @@ const AddStockToProduct = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="price" className="w-full md:w-[160px]">
+            <label htmlFor="price" className="w-full md:w-[200px]">
               Prix unitaire d'achat
             </label>
             <FormControl className="w-full md:flex-1">
@@ -265,7 +265,7 @@ const AddStockToProduct = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="price" className="w-full md:w-[160px]">
+            <label htmlFor="price" className="w-full md:w-[200px]">
               Prix unitaire de vente
             </label>
             <FormControl className="w-full md:flex-1">
@@ -286,7 +286,7 @@ const AddStockToProduct = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="price" className="w-full md:w-[160px]">
+            <label htmlFor="price" className="w-full md:w-[200px]">
               Numéro de facture
             </label>
             <FormControl className="w-full md:flex-1">
@@ -306,16 +306,16 @@ const AddStockToProduct = () => {
               />
             </FormControl>
           </Box>
+        </Box>
 
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

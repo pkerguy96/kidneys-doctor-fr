@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   FormControl,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -11,6 +12,8 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
+  IconButton,
 } from "@mui/material";
 
 import { Controller, useForm } from "react-hook-form";
@@ -83,19 +86,26 @@ const OperationsListSettings = () => {
 
   return (
     <Box
-      className="flex flex-col w-full h-full p-4 gap-4"
+      className="flex flex-col w-full gap-6"
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <p className="font-light text-gray-600 text-md md:text-xl text-center">
-        Ajouter une opération
-      </p>
-      <p className=" text-start font-thin  text-sm md:text-lg">
-        Entrez les détails de l'opération.
-      </p>
+      <Box className="flex justify-center">
+        <Typography
+          id="modal-modal-title"
+          component="h2"
+          className="text-center !text-2xl font-medium"
+        >
+          Ajouter une opération
+        </Typography>
+      </Box>
+
       <Box className=" flex flex-col md:flex-row gap-4 flex-wrap ">
+        {/* <p className=" text-start font-thin  text-sm md:text-lg">
+          Entrez les détails de l'opération.
+        </p> */}
         <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center ">
-          <label htmlFor="nom" className="w-full md:w-[160px]">
+          <label htmlFor="nom" className="w-full md:w-[200px]">
             Opération:
           </label>
           <FormControl className="w-full md:flex-1">
@@ -110,7 +120,7 @@ const OperationsListSettings = () => {
           </FormControl>
         </Box>
         <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="nom" className="w-full md:w-[160px]">
+          <label htmlFor="nom" className="w-full md:w-[200px]">
             Prix:
           </label>
           <FormControl className="w-full md:flex-1">
@@ -126,7 +136,7 @@ const OperationsListSettings = () => {
           </FormControl>
         </Box>
         <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="nom" className="w-full md:w-[160px]">
+          <label htmlFor="nom" className="w-full md:w-[200px]">
             Code:
           </label>
           <FormControl className="w-full md:flex-1">
@@ -140,54 +150,70 @@ const OperationsListSettings = () => {
             />
           </FormControl>
         </Box>
-        <Box className="flex ml-auto mt-4">
-          <Button
-            type="submit"
-            variant="contained"
-            className="w-full md:w-max !px-8 !py-2 rounded-lg "
-          >
-            Ajouter
-          </Button>
-        </Box>
       </Box>
-      <TableContainer className="w-full max-h-[400px] flex-wrap overflow-auto border border-gray-300">
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow className="bg-gray-300 !rounded-2xl	sticky top-0 z-10">
-              <TableCell>
-                <strong>Nom de l'opération</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Code</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Prix</strong>
-              </TableCell>
-              <TableCell className="w-20" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.map((operation: OperationPreference, index: number) => (
-              <TableRow key={index}>
-                <TableCell>{operation.operation_type}</TableCell>
-                <TableCell>{operation.code}</TableCell>
-                <TableCell>{operation.price}</TableCell>
-                <TableCell className="w-20">
-                  <Button
-                    onClick={() => onDelete(operation.id!)}
-                    className="w-max mx-auto"
-                    variant="outlined"
-                    color="error"
-                    disabled={operation.id === undefined}
-                  >
-                    <DeleteOutlineIcon />
-                  </Button>
+      <Box className="flex">
+        <Button
+          type="submit"
+          variant="contained"
+          className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+        >
+          Ajouter
+        </Button>
+      </Box>
+      <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          className="border border-gray-300"
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead className="bg-gray-200">
+              <TableRow>
+                <TableCell>Nom</TableCell>
+                <TableCell width={200}>code</TableCell>
+                <TableCell width={200}>Prix</TableCell>
+                <TableCell width={60} align="center">
+                  Action
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {data?.length ? (
+                data.map((row, index) => (
+                  <TableRow key={index} className="border-t border-gray-300">
+                    <TableCell component="th" scope="row">
+                      {row.operation_type}
+                    </TableCell>
+                    <TableCell component="th">{row.code}</TableCell>
+                    <TableCell component="th">{row.price}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => onDelete(row.id)}>
+                        <DeleteOutlineIcon
+                          color="error"
+                          className="pointer-events-none"
+                          fill="currentColor"
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="border-t border-gray-300">
+                  <TableCell
+                    colSpan={4}
+                    align="center"
+                    className="!text-gray-600 p-4"
+                  >
+                    <p className="text-lg">
+                      Désolé, aucune operation pour le moment.
+                    </p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 };

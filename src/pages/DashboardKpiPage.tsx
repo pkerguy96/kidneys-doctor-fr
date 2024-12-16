@@ -41,74 +41,76 @@ const DashboardKpiPage = () => {
   );
   if (isLoading || isLoading1) return <LoadingSpinner />;
   Object;
-  const labels = data ? Object.keys(data) : [];
-  const dataset = {
-    labels,
-    datasets: [
-      {
-        label: "Rendez-vous",
-        data: data ? Object.values(data1) : [],
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
-  const dataset1 = {
-    labels,
-    datasets: [
-      {
-        label: "Rendez-vous annulés",
-        data: data ? Object.values(data1) : [],
-        borderColor: "#db2777",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
+  // const labels = data ? Object.keys(data) : [];
+  // const dataset = {
+  //   labels,
+  //   datasets: [
+  //     {
+  //       label: "Rendez-vous",
+  //       data: data ? Object.values(data1) : [],
+  //       borderColor: "rgb(255, 99, 132)",
+  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
+  //     },
+  //   ],
+  // };
+  // const dataset1 = {
+  //   labels,
+  //   datasets: [
+  //     {
+  //       label: "Rendez-vous annulés",
+  //       data: data ? Object.values(data1) : [],
+  //       borderColor: "#db2777",
+  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
+  //     },
+  //   ],
+  // };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-rows-1 grid-cols-1 lg:grid-cols-12 gap-6">
-        <Box className="!w-full shadow-md lg:col-span-4 bg-gradient-to-br from-blue-400 via-blue-300 to-blue-200 text-gray-950 ">
+    <Box className="flex flex-col gap-6">
+      <Box className="grid grid-rows-1 grid-cols-1 lg:grid-cols-12 gap-6">
+        <Box className="!w-full shadow-md lg:col-span-4 bg-white text-gray-950">
           <CashierKpi />
         </Box>
         <Box
-          className="!w-full shadow-md text-white bg-[#6b37e7] lg:col-span-4 cursor-pointer "
+          className="!w-full shadow-md lg:col-span-4 bg-white text-gray-950 cursor-pointer"
           onClick={() => navigate("/Appointmens/table")}
         >
-          <TotalAppointmentsKpi />
-          <LinechartKPI dataset={dataset} />
+          <TotalAppointmentsKpi dataset={data} />
         </Box>
-        <Box className="!w-full shadow-md bg-[#eff0f1] text-gray-950 lg:col-span-4 ">
-          <CanceledAppointmentsKpi />
-          <LinechartKPI dataset={dataset1} />
-        </Box>
-      </div>
-      <Box className="Flex w-full ">
-        <Box className="w-full shadow-md bg-[#eff0f1] text-gray-950 flex flex-col">
-          <h1 className="text-xl font-semibold p-6">Salle d'attente</h1>
-          <AppointmentsTableKpi />
+        <Box className="!w-full shadow-md lg:col-span-4 bg-white text-gray-950">
+          <CanceledAppointmentsKpi dataset={data1} />
         </Box>
       </Box>
-      <div className="grid grid-rows-1 grid-cols-1 lg:grid-cols-12 gap-6">
-        {can(["doctor"]) && (
-          <Box className="!w-full shadow-md bg-[#eff0f1] lg:col-span-12 text-gray-950 flex flex-col p-6 gap-3">
-            <h1 className="text-xl font-semibold">Graphique des revenus</h1>
-            <RevenueKpi />
+      <Box className="grid grid-rows-1 grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <Box className="flex flex-col gap-6 lg:col-span-8">
+          <Box className="w-full bg-white shadow-md text-gray-950 flex flex-col overflow-hidden">
+            <h1 className="text-xl font-semibold p-6">Salle d'attente</h1>
+            <AppointmentsTableKpi />
           </Box>
-        )}
-
-        <Box className="!w-full shadow-md bg-[#eff0f1] lg:col-span-4 text-gray-950 flex flex-col p-6 gap-3">
-          <h1 className="text-xl font-semibold">Groupe d’âge des patients</h1>
-          <PatientAgeGroupKpi />
+          {can(["doctor"]) && (
+            <Box className="!w-full bg-white shadow-md text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+              <h1 className="text-xl font-semibold">Graphique des revenus</h1>
+              <RevenueKpi />
+            </Box>
+          )}
         </Box>
-        <Box className="w-full shadow-md bg-[#eff0f1] lg:col-span-4 text-gray-950 flex flex-col p-6 gap-3">
-          <TotalpatientsKpi />
-          <ReferralPatient />
+        <Box className="flex flex-col gap-6 lg:col-span-4">
+          <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+            <h1 className="text-xl font-semibold">Hna ajouti hadik alhrgawi</h1>
+          </Box>
+          <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+            <h1 className="text-xl font-semibold">Groupe d’âge des patients</h1>
+            <PatientAgeGroupKpi />
+          </Box>
+          <Box className="w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+            <TotalpatientsKpi />
+            <ReferralPatient />
+          </Box>
         </Box>
-      </div>
+      </Box>
 
       <Box className="flex w-full "></Box>
-    </div>
+    </Box>
   );
 };
 

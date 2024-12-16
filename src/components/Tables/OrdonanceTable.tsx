@@ -67,32 +67,36 @@ const OrdonanceTable = () => {
           const patientDeletedAt = tableMeta.rowData[4];
 
           return (
-            <>
+            <Box className="w-max">
               {can(["update_ordonance", "doctor"]) && !patientDeletedAt && (
-                <button
-                  className="btn-ordonance-edit text-gray-950 hover:text-blue-700 cursor-pointer"
-                  title="Modifier"
-                >
-                  <EditOutlinedIcon
-                    className="pointer-events-none"
-                    fill="currentColor"
-                  />
-                </button>
+                <Tooltip title="Modifier l'ordonance">
+                  <IconButton
+                    className="btn-ordonance-edit text-gray-950 hover:text-blue-700 cursor-pointer"
+                    title="Modifier"
+                  >
+                    <EditOutlinedIcon
+                      className="pointer-events-none"
+                      fill="currentColor"
+                    />
+                  </IconButton>
+                </Tooltip>
               )}
               {can(["delete_ordonance", "doctor"]) && (
-                <button
-                  className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                  title="Supprimer"
-                >
-                  <DeleteOutlineIcon
-                    color="error"
-                    className="pointer-events-none"
-                    fill="currentColor"
-                    aria-hidden="false"
-                  />
-                </button>
+                <Tooltip title="Supprimer l'ordonance">
+                  <IconButton
+                    className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
+                    title="Supprimer"
+                  >
+                    <DeleteOutlineIcon
+                      color="error"
+                      className="pointer-events-none"
+                      fill="currentColor"
+                      aria-hidden="false"
+                    />
+                  </IconButton>
+                </Tooltip>
               )}
-            </>
+            </Box>
           );
         },
       },

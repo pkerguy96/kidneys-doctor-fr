@@ -165,7 +165,6 @@ const PatientOperation = ({ onNext }) => {
               /* to={`/Patients/Details/${id}`} */
               variant="contained"
               color="primary"
-              size="small"
             >
               Historique des opérations
             </Button>

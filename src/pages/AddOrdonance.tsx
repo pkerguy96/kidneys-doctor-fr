@@ -8,6 +8,7 @@ import {
   Button,
   Typography,
   FormControl,
+  IconButton,
 } from "@mui/material";
 import { items } from "../services/Medicines.json";
 import AddIcon from "@mui/icons-material/Add";
@@ -178,6 +179,8 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
               id: item.id,
               medicine_name: item.medicine_name,
               note: item.note,
+              price: "",
+              type: "",
             };
           });
           setDrugs(extractedDetails);
@@ -301,6 +304,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
   if (isLoading3) {
     return <LoadingSpinner />;
   }
+
   return (
     <Paper className="p-4">
       <Box
@@ -308,17 +312,17 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter une ordonance </span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            {isAddMode ? "Ajouter une ordonance" : "Modifier l'ordonance"}
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
             <label htmlFor="nom" className="w-full md:w-[160px]">
@@ -417,9 +421,8 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
               </datalist>
             </Box>
             <Button
-              sx={{ borderRadius: 16 }}
+              className="!px-4 !py-2 !min-w-max !rounded-full"
               variant="outlined"
-              endIcon={<AddIcon />}
               onClick={() => {
                 const valid =
                   name.trim() !== "" &&
@@ -435,7 +438,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
                         ? {
                             medicine_name: found.name,
                             type: found.type,
-                            price: found.price,
+                            price: found.price || "",
                             note: "",
                           }
                         : {
@@ -451,7 +454,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
                 setName("");
               }}
             >
-              Ajouter
+              <AddIcon />
             </Button>
           </Box>
           {iserror && (
@@ -472,69 +475,89 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead className="bg-gray-200">
                   <TableRow>
-                    <TableCell>Nom du médicament</TableCell>
+                    <TableCell width={300}>Nom du médicament</TableCell>
                     <TableCell>Type</TableCell>
                     <TableCell>Prix</TableCell>
                     <TableCell>Note</TableCell>
-                    <TableCell>Action</TableCell>
+                    <TableCell width={60} align="center">
+                      Action
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {drugs.map((row, index) => (
-                    <TableRow key={index} className="border-t border-gray-300">
-                      <TableCell component="th" scope="row">
-                        {row.medicine_name}
-                      </TableCell>
-                      <TableCell component="th">{row.type}</TableCell>
-                      <TableCell component="th">
-                        {row.price} {row.price === "" ? "" : "MAD"}
-                      </TableCell>
-                      <TableCell style={{ minWidth: 200 }}>
-                        <TextField
-                          fullWidth
-                          value={row.note || ""}
-                          onChange={(e) =>
-                            handleNoteChange(row.id, e.target.value)
-                          }
-                          label="Note"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button onClick={() => removeOrdonance(row.id)}>
-                          <DeleteOutlineIcon
-                            color="error"
-                            className="pointer-events-none"
-                            fill="currentColor"
+                  {drugs.length ? (
+                    drugs.map((row, index) => (
+                      <TableRow
+                        key={index}
+                        className="border-t border-gray-300"
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.medicine_name}
+                        </TableCell>
+                        <TableCell component="th">
+                          {row.type ? row.type : "n/a"}
+                        </TableCell>
+                        <TableCell component="th">
+                          {row.price} {row.price === "" ? "n/a" : "MAD"}
+                        </TableCell>
+                        <TableCell style={{ minWidth: 200 }}>
+                          <TextField
+                            fullWidth
+                            value={row.note || ""}
+                            onChange={(e) =>
+                              handleNoteChange(row.id, e.target.value)
+                            }
                           />
-                        </Button>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => removeOrdonance(row.id)}>
+                            <DeleteOutlineIcon
+                              color="error"
+                              className="pointer-events-none"
+                              fill="currentColor"
+                            />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow className="border-t border-gray-300">
+                      <TableCell
+                        colSpan={5}
+                        align="center"
+                        className="!text-gray-600 p-4"
+                      >
+                        <p className="text-lg">
+                          Désolé, aucune medicament pour le moment.
+                        </p>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
           </Box>
-          <Box className="flex justify-between flex-row mt-5 content-center">
-            {!direct && !ordonanceID && (
-              <Button
-                className="w-full md:w-max !px-10 !py-3 rounded-lg "
-                variant="outlined"
-                type="button"
-                onClick={() => {
-                  onNext();
-                }}
-              >
-                <p className="text-sm ">Passer</p>
-              </Button>
-            )}
+        </Box>
+        <Box className="flex justify-between flex-row content-center">
+          {!direct && !ordonanceID && (
             <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+              className="w-full md:w-max !px-10 !py-3 rounded-lg "
+              variant="outlined"
+              type="button"
+              onClick={() => {
+                onNext();
+              }}
             >
-              {useUpdateOrdonance.isLoading ? "mise à jour..." : "Enregistrer"}
+              <p className="text-sm ">Passer</p>
             </Button>
-          </Box>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            {useUpdateOrdonance.isLoading ? "mise à jour..." : "Enregistrer"}
+          </Button>
         </Box>
       </Box>
       <div

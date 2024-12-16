@@ -48,7 +48,7 @@ const PatientDetails = React.memo(() => {
     <>
       <Box className="parent w-full flex flex-col gap-4">
         <PatientsdetailsComponent info={data} isLoading={isLoading} />
-        <Box className="w-full bg-white gap-4 flex flex-col rounded-lg p-4">
+        <Box className="w-full bg-white shadow-md gap-4 flex flex-col rounded-lg p-4">
           <Box className="w-full rounded-md overflow-hidden flex">
             <Box
               component={"button"}

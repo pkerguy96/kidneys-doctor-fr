@@ -18,6 +18,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -152,17 +153,17 @@ const BloodTestAdd = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter un bilan sanguin</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter un bilan sanguin
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
 
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
@@ -338,19 +339,26 @@ const BloodTestAdd = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {analyse.map((carry, index) => (
-                    <TableRow key={index} className="border-t border-gray-300">
-                      <TableCell className="min-w-[400px]">
-                        <FormControl className="w-full" size="medium">
-                          {carry.analyse}
-                        </FormControl>
-                      </TableCell>
-                      <TableCell width="160px">
-                        <FormControl className="w-full md:flex-1" size="medium">
-                          {carry.prix} {carry.prix ? "MAD" : ""}
-                        </FormControl>
-                      </TableCell>
-                      {/* <TableCell align="center" width="120px">
+                  {analyse.length ? (
+                    analyse.map((carry, index) => (
+                      <TableRow
+                        key={index}
+                        className="border-t border-gray-300"
+                      >
+                        <TableCell className="min-w-[400px]">
+                          <FormControl className="w-full" size="medium">
+                            {carry.analyse}
+                          </FormControl>
+                        </TableCell>
+                        <TableCell width="160px">
+                          <FormControl
+                            className="w-full md:flex-1"
+                            size="medium"
+                          >
+                            {carry.prix} {carry.prix ? "MAD" : ""}
+                          </FormControl>
+                        </TableCell>
+                        {/* <TableCell align="center" width="120px">
                         <IconButton
                           variant="contained"
                           color="error"
@@ -359,14 +367,27 @@ const BloodTestAdd = () => {
                           <DeleteOutlineOutlinedIcon />
                         </IconButton>
                       </TableCell> */}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow className="border-t border-gray-300">
+                      <TableCell
+                        colSpan={2}
+                        align="center"
+                        className="!text-gray-600 p-4"
+                      >
+                        <p className="text-lg">
+                          Désolé, aucun analyse pour le moment.
+                        </p>
+                      </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
           </Box>
         </Box>
-        <Box className="flex mt-4">
+        <Box className="flex">
           <Button
             type="submit"
             variant="contained"

@@ -84,15 +84,15 @@ const AdminProfile = () => {
     }
   };
   return (
-    <Paper className="p-4" elevation={12}>
+    <Paper className="p-4">
       <Box
         component="form"
         noValidate
         autoComplete="off"
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Box className="w-full flex flex-col gap-2 items-center justify-center	">
+        <Box className="w-full flex flex-col gap-4 items-center justify-center	">
           <Avatar
             alt="Remy Sharp"
             src={
@@ -100,7 +100,7 @@ const AdminProfile = () => {
             }
             sx={{ width: 120, height: 120 }}
           />
-          <Button variant="contained" component="label">
+          <Button variant="contained" component="label" className="!px-4 !py-3">
             Importer l'image
             <Controller
               control={control}
@@ -127,56 +127,55 @@ const AdminProfile = () => {
             />
           </Button>
         </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="name" className="w-full md:w-[160px]">
-            Nom:
-          </label>
-          <FormControl className="w-full md:flex-1">
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: customErrorMessages.name.required }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  id="name"
-                  label="name"
-                  size="small"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                />
-              )}
-            />
-          </FormControl>
+        <Box className="flex flex-col gap-4">
+          <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+            <label htmlFor="name" className="w-full md:w-[200px]">
+              Nom:
+            </label>
+            <FormControl className="w-full md:flex-1">
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: customErrorMessages.name.required }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    id="name"
+                    label="name"
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
+          <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+            <label htmlFor="name" className="w-full md:w-[200px]">
+              Email:
+            </label>
+            <FormControl className="w-full md:flex-1">
+              <Controller
+                name="email"
+                control={control}
+                rules={{ required: customErrorMessages.email.required }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    id="email"
+                    label="email"
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
         </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="name" className="w-full md:w-[160px]">
-            Email:
-          </label>
-          <FormControl className="w-full md:flex-1">
-            <Controller
-              name="email"
-              control={control}
-              rules={{ required: customErrorMessages.email.required }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  id="email"
-                  label="email"
-                  size="small"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                />
-              )}
-            />
-          </FormControl>
-        </Box>
-        <Box sx={{ marginTop: 5 }}>
+        <Box className="flex">
           <Button
             type="submit"
             variant="contained"
-            sx={{ borderRadius: 16 }}
-            fullWidth={true}
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
           >
             Enregistrer
           </Button>

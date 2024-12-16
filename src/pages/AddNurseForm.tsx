@@ -10,6 +10,7 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -153,20 +154,20 @@ const AddNurseForm = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Ajouter une infirmière</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter une infirmière
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Nom:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -187,7 +188,7 @@ const AddNurseForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Prenom:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -209,7 +210,7 @@ const AddNurseForm = () => {
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
             <Box className="w-full md:flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="nom" className="w-full md:w-[160px]">
+              <label htmlFor="nom" className="w-full md:w-[200px]">
                 Date de naissance:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -240,7 +241,7 @@ const AddNurseForm = () => {
               </FormControl>
             </Box>
             <Box className="w-full md:w-[300px] flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="nom" className="w-full md:w-[160px]">
+              <label htmlFor="nom" className="w-full md:w-[100px]">
                 age calcule:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -255,7 +256,7 @@ const AddNurseForm = () => {
             </Box>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Cin:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -276,10 +277,10 @@ const AddNurseForm = () => {
           </Box>
 
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Sex:
             </label>
-            <FormControl className="w-full md:flex-1" size="small">
+            <FormControl className="w-full md:flex-1">
               <InputLabel id="demo-select-small-label">Sex</InputLabel>
               <Controller
                 name="sex"
@@ -301,7 +302,7 @@ const AddNurseForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Adresse:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -322,7 +323,7 @@ const AddNurseForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="phone_number" className="w-full md:w-[160px]">
+            <label htmlFor="phone_number" className="w-full md:w-[200px]">
               Telephone:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -343,7 +344,7 @@ const AddNurseForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full md:flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="recruitment_date" className="w-full md:w-[160px]">
+            <label htmlFor="recruitment_date" className="w-full md:w-[200px]">
               Date d'embauche:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -365,9 +366,9 @@ const AddNurseForm = () => {
               />
             </FormControl>
           </Box>
-          <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+          <Box className="w-full flex flex-col gap-4 md:flex-row md:flex-wrap items-center">
             <Box className="w-full md:flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-              <label htmlFor="termination_date" className="w-full md:w-[160px]">
+              <label htmlFor="termination_date" className="w-full md:w-[200px]">
                 Date de résiliation:
               </label>
               <FormControl className="w-full md:flex-1">
@@ -387,7 +388,7 @@ const AddNurseForm = () => {
                 />
               </FormControl>
             </Box>
-            <Box className="w-full md:w-[300px] flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+            <Box className="w-full md:w-max">
               <FormControlLabel
                 control={
                   <Controller
@@ -401,7 +402,7 @@ const AddNurseForm = () => {
             </Box>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="Email" className="w-full md:w-[160px]">
+            <label htmlFor="Email" className="w-full md:w-[200px]">
               Email:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -422,7 +423,7 @@ const AddNurseForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="password" className="w-full md:w-[160px]">
+            <label htmlFor="password" className="w-full md:w-[200px]">
               Mot de pass:
             </label>
             <FormControl className="w-full md:flex-1">
@@ -443,16 +444,15 @@ const AddNurseForm = () => {
               />
             </FormControl>
           </Box>
-
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !mx-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        </Box>
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

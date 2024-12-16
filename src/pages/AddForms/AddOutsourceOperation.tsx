@@ -8,6 +8,7 @@ import {
   Button,
   Autocomplete,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -117,22 +118,22 @@ const AddOutsourceOperation = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center text-lg text-gray-400 uppercase">
-          <span>Ajouter une opération</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Ajouter une opération
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
 
         <Box className="w-full flex flex-col gap-4">
           {/* Patient Search */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="patient" className="w-full md:w-[160px]">
+            <label htmlFor="patient" className="w-full md:w-[200px]">
               Patient
             </label>
             <FormControl className="w-full md:flex-1">
@@ -177,7 +178,7 @@ const AddOutsourceOperation = () => {
 
           {/* Hospital Search */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="hospital" className="w-full md:w-[160px]">
+            <label htmlFor="hospital" className="w-full md:w-[200px]">
               Clinique
             </label>
             <FormControl className="w-full md:flex-1">
@@ -222,7 +223,7 @@ const AddOutsourceOperation = () => {
 
           {/* Operation Type */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="operation_type" className="w-full md:w-[160px]">
+            <label htmlFor="operation_type" className="w-full md:w-[200px]">
               Type d'opération
             </label>
             <FormControl className="w-full md:flex-1">
@@ -245,7 +246,7 @@ const AddOutsourceOperation = () => {
 
           {/* Description */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="description" className="w-full md:w-[160px]">
+            <label htmlFor="description" className="w-full md:w-[200px]">
               Description
             </label>
             <FormControl className="w-full md:flex-1">
@@ -268,7 +269,7 @@ const AddOutsourceOperation = () => {
 
           {/* Date */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="date" className="w-full md:w-[160px]">
+            <label htmlFor="date" className="w-full md:w-[200px]">
               Date
             </label>
             <FormControl className="w-full md:flex-1">
@@ -291,7 +292,7 @@ const AddOutsourceOperation = () => {
 
           {/* total_price */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="total_price" className="w-full md:w-[160px]">
+            <label htmlFor="total_price" className="w-full md:w-[200px]">
               Prix ​​total
             </label>
             <FormControl className="w-full md:flex-1">
@@ -313,7 +314,7 @@ const AddOutsourceOperation = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="total_price" className="w-full md:w-[160px]">
+            <label htmlFor="total_price" className="w-full md:w-[200px]">
               Les honoraires
             </label>
             <FormControl className="w-full md:flex-1">
@@ -335,7 +336,7 @@ const AddOutsourceOperation = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="amount_paid" className="w-full md:w-[160px]">
+            <label htmlFor="amount_paid" className="w-full md:w-[200px]">
               Montant payé
             </label>
             <FormControl className="w-full md:flex-1">
@@ -356,17 +357,16 @@ const AddOutsourceOperation = () => {
               />
             </FormControl>
           </Box>
-
-          {/* Submit Button */}
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        </Box>
+        {/* Submit Button */}
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

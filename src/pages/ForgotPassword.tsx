@@ -73,7 +73,6 @@ const ForgotPassword = () => {
             id="email"
             name="email"
             label="Votre adresse e-mail"
-            size="small"
             variant="outlined"
             className="w-80"
           />

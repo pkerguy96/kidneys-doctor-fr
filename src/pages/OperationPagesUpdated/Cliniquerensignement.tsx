@@ -49,34 +49,40 @@ const Cliniquerensignement = ({ onNext }) => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex gap-6 flex-col"
       >
-        <Box className="flex justify-between">
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
             Renseignement clinique
           </Typography>
         </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="note" className="w-full text-center">
-            Note
-          </label>
-          <FormControl className="w-full md:flex-1">
-            <Controller
-              name="note"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  id="outlined-required"
-                  multiline
-                  rows={3}
-                  label="Note"
-                  error={!!errors.note}
-                  helperText={errors.note?.message}
-                />
-              )}
-            />
-          </FormControl>
+        <Box className="flex flex-col gap-4">
+          <Box className="w-full flex flex-col gap-2">
+            <label htmlFor="note" className="w-full">
+              Note
+            </label>
+            <FormControl className="w-full md:flex-1">
+              <Controller
+                name="note"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    id="outlined-required"
+                    multiline
+                    rows={3}
+                    label="Note"
+                    error={!!errors.note}
+                    helperText={errors.note?.message}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
         </Box>
-        <Box className="flex justify-between flex-row mt-8 content-center">
+        <Box className="flex justify-between flex-row content-center">
           <Button
             className="w-full md:w-max !px-10 !py-3 rounded-lg "
             variant="outlined"

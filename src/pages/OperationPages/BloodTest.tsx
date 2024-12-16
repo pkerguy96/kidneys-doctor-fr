@@ -105,56 +105,62 @@ const BloodTest = ({ onNext }) => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex gap-6 flex-col"
       >
-        <Box className="flex justify-between">
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
             Sélection d'Analyses de Sang
           </Typography>
         </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="note" className="w-full md:w-[160px]">
-            Analyses
-          </label>
-          <FormControl className="w-full md:flex-1">
-            <Controller
-              name="blood_test"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  className="bg-white"
-                  multiple
-                  id="tags-filled"
-                  options={BoneDoctorBloodTests.map((option) => option.title)}
-                  defaultValue={[]}
-                  value={field.value || []}
-                  onChange={(event, newValue) => field.onChange(newValue)}
-                  freeSolo
-                  renderTags={(value: readonly string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          variant="outlined"
-                          label={option}
-                          key={key}
-                          {...tagProps}
-                        />
-                      );
-                    })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      placeholder="Analyses "
-                      sx={autocompleteStyles}
-                    />
-                  )}
-                />
-              )}
-            />
-          </FormControl>
+        <Box className="flex gap-4 flex-col">
+          <Box className="w-full flex flex-col gap-2">
+            <label htmlFor="note" className="w-full md:w-[160px]">
+              Analyses
+            </label>
+            <FormControl className="w-full md:flex-1">
+              <Controller
+                name="blood_test"
+                control={control}
+                render={({ field }) => (
+                  <Autocomplete
+                    className="bg-white"
+                    multiple
+                    id="tags-filled"
+                    options={BoneDoctorBloodTests.map((option) => option.title)}
+                    defaultValue={[]}
+                    value={field.value || []}
+                    onChange={(event, newValue) => field.onChange(newValue)}
+                    freeSolo
+                    renderTags={(value: readonly string[], getTagProps) =>
+                      value.map((option: string, index: number) => {
+                        const { key, ...tagProps } = getTagProps({ index });
+                        return (
+                          <Chip
+                            variant="outlined"
+                            label={option}
+                            key={key}
+                            {...tagProps}
+                          />
+                        );
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Analyses "
+                        sx={autocompleteStyles}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
         </Box>
-        <Box className="flex justify-between flex-row mt-8 content-center">
+        <Box className="flex justify-between flex-row content-center">
           <Button
             className="w-full md:w-max !px-10 !py-3 rounded-lg "
             variant="outlined"

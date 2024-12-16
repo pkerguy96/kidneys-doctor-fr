@@ -78,24 +78,32 @@ const PatientsTable = () => {
           const patientId = tableMeta.rowData[0]; // Assuming the first column is the ID
 
           return (
-            <Box style={{ width: "120px" }}>
-              <button className="btn-patient-waiting text-gray-950 hover:text-blue-700 cursor-pointer">
-                <AccessAlarmOutlinedIcon color="primary" />
-              </button>
+            <Box className="w-max">
+              <Tooltip title="Ajouter lepatient a la salle d'atente">
+                <IconButton className="btn-patient-waiting text-gray-950 hover:text-blue-700 cursor-pointer">
+                  <AccessAlarmOutlinedIcon color="primary" />
+                </IconButton>
+              </Tooltip>
               {can(["doctor"]) && (
-                <button className="btn-patient-info text-gray-950 hover:text-blue-700 cursor-pointer">
-                  <HealthAndSafetyOutlinedIcon />
-                </button>
+                <Tooltip title="Nouveau operation">
+                  <IconButton className="btn-patient-info text-gray-950 hover:text-blue-700 cursor-pointer">
+                    <HealthAndSafetyOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               )}
               {can(["update_patient", "doctor"]) && (
-                <button className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer">
-                  <EditOutlinedIcon />
-                </button>
+                <Tooltip title="Modifier le patient">
+                  <IconButton className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer">
+                    <EditOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               )}
               {can(["delete_patient", "doctor"]) && (
-                <button className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer">
-                  <DeleteOutlineIcon color="error" />
-                </button>
+                <Tooltip title="Supprimer le patient">
+                  <IconButton className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer">
+                    <DeleteOutlineIcon color="error" />
+                  </IconButton>
+                </Tooltip>
               )}
             </Box>
           );

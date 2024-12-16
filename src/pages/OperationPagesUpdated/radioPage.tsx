@@ -20,6 +20,8 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 import Chip from "@mui/material/Chip";
@@ -213,11 +215,10 @@ const RadioPage = ({ onNext }) => {
         component="form"
         noValidate
         autoComplete="off"
-        /* onSubmit={handleSubmit(onSubmit)} */
         onSubmit={submit}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-6"
       >
-        <Box className="flex justify-center mb-4">
+        <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
             component="h2"
@@ -248,10 +249,7 @@ const RadioPage = ({ onNext }) => {
               </Select>
             </FormControl>
             <Button
-              sx={{ borderRadius: 16 }}
-              style={{
-                minWidth: 100,
-              }}
+              className="!px-4 !py-2 !min-w-max !rounded-full"
               variant="outlined"
               onClick={handleAddRow}
             >
@@ -267,48 +265,52 @@ const RadioPage = ({ onNext }) => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead className="bg-gray-200">
                   <TableRow>
-                    <TableCell className="min-w-[400px]">Operation</TableCell>
+                    <TableCell width={300}>Operation</TableCell>
                     {/*                     <TableCell width="300px">Prix</TableCell>
                      */}{" "}
-                    <TableCell width="800px">Note</TableCell>
-                    <TableCell align="center" width="120px">
+                    <TableCell>Note</TableCell>
+                    <TableCell width={60} align="center">
                       Action
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fields.map((carry, index) => (
-                    <TableRow key={index} className="border-t border-gray-300">
-                      <TableCell className="min-w-[400px]">
-                        <FormControl className="w-full" size="medium">
-                          <InputLabel id={`rows.${index}.name.label`}>
-                            {carry.type}
-                          </InputLabel>
-                          <Select
-                            labelId={`rows.${index}.name.label`}
-                            label={carry.type}
-                            id={`row.${index}.name`}
-                            value={carry.name}
-                            onChange={(e) =>
-                              changeRadiologyName(
-                                e.target.value,
-                                carry.type,
-                                index
-                              )
-                            }
-                          >
-                            {data[carry.type].map((radio, _index) => (
-                              <MenuItem
-                                key={`radio_${_index}`}
-                                value={radio.name}
-                              >
-                                {radio.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                      {/* <TableCell width="300px">
+                  {fields.length ? (
+                    fields.map((carry, index) => (
+                      <TableRow
+                        key={index}
+                        className="border-t border-gray-300"
+                      >
+                        <TableCell>
+                          <FormControl className="w-full" size="medium">
+                            <InputLabel id={`rows.${index}.name.label`}>
+                              {carry.type}
+                            </InputLabel>
+                            <Select
+                              labelId={`rows.${index}.name.label`}
+                              label={carry.type}
+                              id={`row.${index}.name`}
+                              value={carry.name}
+                              onChange={(e) =>
+                                changeRadiologyName(
+                                  e.target.value,
+                                  carry.type,
+                                  index
+                                )
+                              }
+                            >
+                              {data[carry.type].map((radio, _index) => (
+                                <MenuItem
+                                  key={`radio_${_index}`}
+                                  value={radio.name}
+                                >
+                                  {radio.name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                        {/* <TableCell width="300px">
                         <FormControl className="w-full md:flex-1" size="medium">
                           <TextField
                             id={`price_${index}`}
@@ -320,28 +322,44 @@ const RadioPage = ({ onNext }) => {
                           />
                         </FormControl>
                       </TableCell> */}
-                      <TableCell width="300px">
-                        <FormControl className="w-full md:flex-1" size="medium">
-                          <TextField
-                            id={`note_${index}`}
-                            value={carry.note}
-                            onChange={(e) =>
-                              changeRadiologyNote(e.target.value, index)
-                            }
-                          />
-                        </FormControl>
-                      </TableCell>
-                      <TableCell align="center" width="120px">
-                        <IconButton
-                          /* variant="contained" */
-                          color="error"
-                          onClick={() => handleRemoveRow(index)}
-                        >
-                          <DeleteOutlineOutlinedIcon />
-                        </IconButton>
+                        <TableCell>
+                          <FormControl
+                            className="w-full md:flex-1"
+                            size="medium"
+                          >
+                            <TextField
+                              id={`note_${index}`}
+                              value={carry.note}
+                              onChange={(e) =>
+                                changeRadiologyNote(e.target.value, index)
+                              }
+                            />
+                          </FormControl>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => handleRemoveRow(index)}>
+                            <DeleteOutlineIcon
+                              color="error"
+                              className="pointer-events-none"
+                              fill="currentColor"
+                            />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow className="border-t border-gray-300">
+                      <TableCell
+                        colSpan={3}
+                        align="center"
+                        className="!text-gray-600 p-4"
+                      >
+                        <p className="text-lg">
+                          Désolé, aucun diagnostic pour le moment.
+                        </p>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -356,7 +374,7 @@ const RadioPage = ({ onNext }) => {
             </Box> */}
           </Box>
         </Box>
-        <Box className="flex justify-between flex-row mt-8 content-center">
+        <Box className="flex justify-between flex-row content-center">
           <Button
             className="w-full md:w-max !px-10 !py-3 rounded-lg "
             variant="outlined"

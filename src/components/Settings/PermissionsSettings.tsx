@@ -7,6 +7,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from "@mui/material";
 
 import { Controller, useForm } from "react-hook-form";
@@ -154,70 +155,78 @@ const PermissionsSettings = () => {
 
   return (
     <Box
-      className="flex flex-col w-full h-full p-4 gap-4"
+      className="flex flex-col w-full gap-6"
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <p className="font-light text-gray-600 text-md md:text-xl text-center">
-        Gestion des Autorisations Infirmiers
-      </p>
-      <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-        <label htmlFor="nom" className="w-full md:w-[160px]">
-          Infirmière:
-        </label>
-        <FormControl className="w-full md:flex-1">
-          <InputLabel id="nurse-label">Infirmière</InputLabel>
-          <Controller
-            name="nurseid"
-            control={control}
-            rules={{ required: "Infirmière est requise" }}
-            defaultValue=""
-            render={({ field }) => (
-              <Select
-                {...field}
-                labelId="nurse-label"
-                id="nurse-select"
-                label="Infirmière"
-                error={!!errors.nurseid}
-              >
-                {data2.map((nurse: NurseRole) => (
-                  <MenuItem value={nurse.id} key={nurse.id}>
-                    {nurse.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-        </FormControl>
+      <Box className="flex justify-center">
+        <Typography
+          id="modal-modal-title"
+          component="h2"
+          className="text-center !text-2xl font-medium"
+        >
+          Gestion des Autorisations Infirmiers
+        </Typography>
       </Box>
-      <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-        <label htmlFor="nom" className="w-full md:w-[160px]">
-          Rôle:
-        </label>
-        <FormControl className="w-full md:flex-1">
-          <InputLabel id="role-label">Rôle</InputLabel>
-          <Controller
-            name="rolename"
-            control={control}
-            rules={{ required: "Rôle est requise" }}
-            defaultValue=""
-            render={({ field }) => (
-              <Select
-                {...field}
-                labelId="role-label"
-                id="role-select"
-                label="Rôle"
-                error={!!errors.rolename}
-              >
-                {data?.map((role: Role) => (
-                  <MenuItem value={role.name} key={role.id}>
-                    {role.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-        </FormControl>
+      <Box className="flex flex-col gap-4">
+        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+          <label htmlFor="nom" className="w-full md:w-[200px]">
+            Infirmière:
+          </label>
+          <FormControl className="w-full md:flex-1">
+            <InputLabel id="nurse-label">Infirmière</InputLabel>
+            <Controller
+              name="nurseid"
+              control={control}
+              rules={{ required: "Infirmière est requise" }}
+              defaultValue=""
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="nurse-label"
+                  id="nurse-select"
+                  label="Infirmière"
+                  error={!!errors.nurseid}
+                >
+                  {data2.map((nurse: NurseRole) => (
+                    <MenuItem value={nurse.id} key={nurse.id}>
+                      {nurse.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </FormControl>
+        </Box>
+        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
+          <label htmlFor="nom" className="w-full md:w-[200px]">
+            Rôle:
+          </label>
+          <FormControl className="w-full md:flex-1">
+            <InputLabel id="role-label">Rôle</InputLabel>
+            <Controller
+              name="rolename"
+              control={control}
+              rules={{ required: "Rôle est requise" }}
+              defaultValue=""
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="role-label"
+                  id="role-select"
+                  label="Rôle"
+                  error={!!errors.rolename}
+                >
+                  {data?.map((role: Role) => (
+                    <MenuItem value={role.name} key={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </FormControl>
+        </Box>
       </Box>
       <Box className="w-full flex flex-col gap-4 md:flex-row md:flex-wrap items-center md:items-start">
         <label className="w-full md:w-[160px] text-base">Permissions:</label>
@@ -582,9 +591,8 @@ const PermissionsSettings = () => {
           </Box>
         </Box>
       </Box>
-      <Box className="flex mt-4">
+      <Box className="flex">
         <Button
-          size="small"
           type="submit"
           variant="contained"
           className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"

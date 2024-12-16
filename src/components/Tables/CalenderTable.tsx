@@ -57,8 +57,8 @@ const CalenderTable = () => {
         filter: true,
         sort: true,
         customBodyRender: () => (
-          <>
-            <button
+          <Tooltip title="Supprimer l'ordonance">
+            <IconButton
               className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
               title="Supprimer"
             >
@@ -68,8 +68,8 @@ const CalenderTable = () => {
                 fill="currentColor"
                 aria-hidden="false"
               />
-            </button>
-          </>
+            </IconButton>
+          </Tooltip>
         ),
       },
     },

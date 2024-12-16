@@ -35,7 +35,7 @@ const PatientsdetailsComponent = ({
     <Box className="flex flex-col gap-4">
       <Box className="w-full flex gap-4 flex-col lg:flex-row lg:items-start">
         <Box className="flex gap-4 w-full lg:flex-[2] flex-col lg:flex-row">
-          <Box className="w-full flex lg:flex-[1] flex-col bg-[#ffff] p-4 rounded-lg gap-4">
+          <Box className="w-full flex lg:flex-[1] flex-col bg-white shadow-md p-4 rounded-lg gap-4">
             <Box className="w-full flex flex-col">
               <p className="text-2xl font-mono font-bold  text-center uppercase">
                 {info.nom} {info.prenom}
@@ -101,7 +101,7 @@ const PatientsdetailsComponent = ({
               )}
             </Box>
           </Box>
-          <Box className="w-full flex lg:flex-[1.5] flex-col bg-[#ffff] p-4 rounded-lg gap-4">
+          <Box className="w-full flex lg:flex-[1.5] flex-col bg-white shadow-md p-4 rounded-lg gap-4">
             <Box className="flex gap-4">
               <Box className="flex-1 flex flex-col gap-1">
                 <p className="text-md font-mono font-bold text-center text-[#b9bec5]">
@@ -157,7 +157,7 @@ const PatientsdetailsComponent = ({
             </Box>
           </Box>
         </Box>
-        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-[#fff] flex flex-col gap-4">
+        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-white shadow-md flex flex-col gap-4">
           <Box className="w-full flex justify-between">
             <p className="text-md font-mono font-bold">Notes</p>
           </Box>
@@ -178,7 +178,7 @@ const PatientsdetailsComponent = ({
       </Box>
       <Box className="flex flex-col lg:flex-row gap-4">
         {/* Allergies Section */}
-        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-[#fff] flex flex-col gap-4">
+        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-white shadow-md flex flex-col gap-4">
           <Box className="w-full flex  justify-center">
             <p className="text-md font-mono font-bold">Allergies</p>
           </Box>
@@ -201,8 +201,8 @@ const PatientsdetailsComponent = ({
         </Box>
 
         {/* Diseases Section */}
-        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-[#fff] flex flex-col gap-4">
-          <Box className="w-full flex  justify-center">
+        <Box className="w-full lg:flex-1 p-4 rounded-lg bg-white shadow-md flex flex-col gap-4">
+          <Box className="w-full flex justify-center">
             <p className="text-md font-mono font-bold ">Maladies</p>
           </Box>
           <Box className="w-full flex flex-wrap gap-2">
@@ -223,51 +223,55 @@ const PatientsdetailsComponent = ({
           </Box>
         </Box>
       </Box>
-      <div className=" gap-4 items-start">
-        <div className="   bg-[#f5f5f5] text-white text-center  rounded-lg ">
-          <h2 className="text-xl text-black font-mono font-bold">Ordonances</h2>
-          <Paper className="mt-4" elevation={3}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center">#</TableCell>
-
-                    <TableCell align="center">Date</TableCell>
+      <Box className="flex flex-col bg-white shadow-md rounded-lg p-4 gap-4">
+        <h2 className="text-xl text-black text-center font-mono font-bold">
+          Ordonances
+        </h2>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          className="border border-gray-300"
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead className="bg-gray-200">
+              <TableRow>
+                <TableCell align="center" width={200}>
+                  #
+                </TableCell>
+                <TableCell align="center">Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {info.ordonances.length > 0 ? (
+                info.ordonances.map((ordonance, index) => (
+                  <TableRow
+                    key={index}
+                    hover
+                    onClick={() => handleRowClick(ordonance.id)}
+                    style={{ cursor: "pointer" }}
+                    className="border-t border-gray-300"
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{ordonance.date}</TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {info.ordonances.length > 0 ? (
-                    info.ordonances.map((ordonance, index) => (
-                      <TableRow
-                        key={index}
-                        hover
-                        onClick={() => handleRowClick(ordonance.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <TableCell align="center">{index + 1}</TableCell>
-                        <TableCell align="center">{ordonance.date}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={2}
-                        align="center"
-                        className="text-gray-600 p-4"
-                      >
-                        <p className="text-lg ">
-                          Désolé, aucune ordonnance pour le moment.
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </div>
-      </div>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={2}
+                    align="center"
+                    className="!text-gray-600 p-4"
+                  >
+                    <p className="text-lg">
+                      Désolé, aucune ordonnance pour le moment.
+                    </p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 };

@@ -168,7 +168,7 @@ export default function Dashboard(Props: React.PropsWithChildren) {
         sx={{
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
-              ? theme.palette.grey[100]
+              ? "#f6f7fb"
               : theme.palette.grey[900],
           flexGrow: 1,
           height: "100vh",

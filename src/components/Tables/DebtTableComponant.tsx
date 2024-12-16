@@ -67,6 +67,7 @@ const DebtTableComponant = ({ data }: DebtApiResponse) => {
   ];
 
   const options = {
+    elevation: 0,
     searchOpen: true,
     filterType: "dropdown",
     searchPlaceholder: "Rechercher une opération",
@@ -79,7 +80,7 @@ const DebtTableComponant = ({ data }: DebtApiResponse) => {
     selectableRowsHideCheckboxes: true,
   };
   return (
-    <Box className="relative">
+    <Box className="relative border border-gray-300">
       <MUIDataTable
         title={"Liste des paiements impayés"}
         data={data}

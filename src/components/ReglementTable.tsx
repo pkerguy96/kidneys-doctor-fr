@@ -1,6 +1,6 @@
 //@ts-ignore
 import MUIDataTable from "mui-datatables-mara";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, IconButton, Tooltip } from "@mui/material";
 import LoadingSpinner from "./LoadingSpinner";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PaymentModal from "./PaymentModal";
@@ -115,49 +115,51 @@ const ReglementTable = () => {
           if (can(["delete_debt", "doctor"])) {
             // Check permissions before rendering the delete button
             return (
-              <button
-                className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                title="Supprimer"
-                onClick={() => {
-                  const id = tableMeta.rowData[0]; // "id" is the first column
-                  confirmDialog(
-                    "Voulez-vous vraiment supprimer le paiement ?",
-                    async () => {
-                      try {
-                        const deletionSuccessful = await deleteItem(
-                          id,
-                          operationApiClient
-                        );
-                        if (deletionSuccessful) {
-                          queryClient.invalidateQueries({
-                            queryKey: ["operation"],
-                          });
-                          showSnackbar(
-                            "La suppression du paiement a réussi",
-                            "success"
+              <Tooltip title="Supprimer paiement">
+                <IconButton
+                  className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
+                  title="Supprimer"
+                  onClick={() => {
+                    const id = tableMeta.rowData[0]; // "id" is the first column
+                    confirmDialog(
+                      "Voulez-vous vraiment supprimer le paiement ?",
+                      async () => {
+                        try {
+                          const deletionSuccessful = await deleteItem(
+                            id,
+                            operationApiClient
                           );
-                        } else {
+                          if (deletionSuccessful) {
+                            queryClient.invalidateQueries({
+                              queryKey: ["operation"],
+                            });
+                            showSnackbar(
+                              "La suppression du paiement a réussi",
+                              "success"
+                            );
+                          } else {
+                            showSnackbar(
+                              "La suppression du paiement a échoué",
+                              "error"
+                            );
+                          }
+                        } catch (error) {
                           showSnackbar(
-                            "La suppression du paiement a échoué",
+                            `Une erreur s'est produite lors de la suppression du paiement: ${error}`,
                             "error"
                           );
                         }
-                      } catch (error) {
-                        showSnackbar(
-                          `Une erreur s'est produite lors de la suppression du paiement: ${error}`,
-                          "error"
-                        );
                       }
-                    }
-                  );
-                }}
-              >
-                <DeleteOutlineIcon
-                  color="error"
-                  className="pointer-events-none"
-                  fill="currentColor"
-                />
-              </button>
+                    );
+                  }}
+                >
+                  <DeleteOutlineIcon
+                    color="error"
+                    className="pointer-events-none"
+                    fill="currentColor"
+                  />
+                </IconButton>
+              </Tooltip>
             );
           } else {
             return null; // Do not render the button if the user lacks permissions

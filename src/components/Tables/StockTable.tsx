@@ -61,35 +61,35 @@ const stockTable = () => {
           const StockID = tableMeta.rowData[0]; // id
 
           return (
-            <Box style={{ width: "90px" }}>
+            <Box className="w-max">
               {can(["add_stock", "doctor"]) ? (
                 <Tooltip title="Ajouter du stock" arrow>
-                  <button
+                  <IconButton
                     className="btn-stock-add text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() => navigate(`/Stock/product?id=${StockID}`)}
                   >
                     <Inventory2OutlinedIcon />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               ) : null}
               {can(["modify_product", "doctor"]) ? (
                 <Tooltip title="Modifier le stock" arrow>
-                  <button
+                  <IconButton
                     className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() => navigate(`/Stock/ajouter?id=${StockID}`)}
                   >
                     <EditOutlinedIcon />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               ) : null}
               {can(["delete_product", "doctor"]) ? (
                 <Tooltip title="Supprimer le produit" arrow>
-                  <button
+                  <IconButton
                     className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() => handleStockDelete(StockID)}
                   >
                     <DeleteOutlineIcon color="error" />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               ) : null}
             </Box>

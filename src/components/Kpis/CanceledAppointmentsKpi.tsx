@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { CACHE_KEY_CanceledApppointments } from "../../constants";
 import getGlobal from "../../hooks/getGlobal";
 import {
@@ -5,8 +6,10 @@ import {
   CanceledappointmentsCount,
 } from "../../services/KpisService";
 import LoadingSpinner from "../LoadingSpinner";
+import LinechartKPI from "./LinechartKPI";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 
-const CanceledAppointmentsKpi = ({ className }: { className?: string }) => {
+const CanceledAppointmentsKpi = ({ dataset }: { dataset?: any }) => {
   const { data, isLoading } = getGlobal(
     {} as CanceledappointmentsCount,
     CACHE_KEY_CanceledApppointments,
@@ -15,11 +18,38 @@ const CanceledAppointmentsKpi = ({ className }: { className?: string }) => {
   );
   if (isLoading) return <LoadingSpinner />;
 
+  const labels = dataset ? Object.keys(dataset) : [];
+  const dataset1 = {
+    labels,
+    datasets: [
+      {
+        label: "Rendez-vous annulés",
+        data: dataset ? Object.values(dataset) : [],
+        borderColor: "rgb(239 68 68)",
+        background: "rgb(239 68 68)",
+      },
+    ],
+  };
+
   return (
-    <div className={`p-6  flex flex-col flex-1 gap-1 ${className}`}>
-      <h1 className="text-base font-medium">Rendez-vous annulés</h1>
-      <p className="text-4xl font-semibold text-pink-600">{data}</p>
-    </div>
+    <Box className="flex flex-col !w-full h-full py-2 gap-6">
+      <Box className="!w-full flex flex-row justify-between items-center pt-4 px-6">
+        <Box className="flex flex-col gap-1 mr-auto my-auto">
+          <p className="text-xl font-semibold mr-auto">Rendez-vous annulés</p>
+          <p className="text-3xl font-semibold">{data}</p>
+        </Box>
+        <Box className="aspect-square shadow-md w-14 flex items-center justify-center rounded-full bg-red-500">
+          <EventBusyIcon
+            sx={{
+              fontSize: "2rem",
+              color: "white",
+            }}
+          />
+        </Box>
+      </Box>
+
+      <LinechartKPI dataset={dataset1} />
+    </Box>
   );
 };
 

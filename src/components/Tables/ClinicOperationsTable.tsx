@@ -134,12 +134,12 @@ const ClinicOperationsTable = () => {
             return (
               <Box style={{ width: "90px" }}>
                 <Tooltip title="Supprimer le produit" arrow>
-                  <button
+                  <IconButton
                     className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() => handleStockDelete(StockID)}
                   >
                     <DeleteOutlineIcon color="error" />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               </Box>
             );

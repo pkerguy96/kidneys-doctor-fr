@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Paper,
   TextField,
+  Typography,
 } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DebtTableComponant from "../components/Tables/DebtTableComponant";
@@ -88,22 +89,22 @@ const DebtPage = () => {
     <Paper className="p-4">
       <Box
         component="form"
-        className="w-full flex flex-col gap-4"
+        className="w-full flex flex-col gap-6"
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Box className="flex justify-center text-lg text-gray-400 uppercase">
-          <span>Page des créances</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Page des créances
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
 
         <Box className="w-full flex flex-col md:flex-row gap-4 items-end flex-wrap">
-          <Box className="flex items-start gap-1 flex-1 flex-col">
+          <Box className="flex w-full md:w-0 items-start gap-1 flex-1 flex-col">
             <label htmlFor="date">Date de début:</label>
             <FormControl className="w-full md:flex-1">
               <Controller
@@ -116,7 +117,7 @@ const DebtPage = () => {
               />
             </FormControl>
           </Box>
-          <Box className="flex  items-start gap-1 flex-1 flex-col">
+          <Box className="flex w-full md:w-0  items-start gap-1 flex-1 flex-col">
             <label htmlFor="date2">Date de fin :</label>
             <FormControl className="w-full md:flex-1">
               <Controller
@@ -150,7 +151,7 @@ const DebtPage = () => {
               />
             </FormControl>
           </Box>
-          <Box className="flex flex-row items-center flex-1 ">
+          <Box className="flex w-full md:w-0 flex-row items-center flex-1 ">
             <FormControl className="w-full md:flex-1">
               <Controller
                 name="hospitals"
@@ -230,11 +231,10 @@ const DebtPage = () => {
 
           <Box className="flex md:ml-auto">
             <Button
-              size="small"
               type="submit"
               variant="outlined"
               startIcon={<SearchOutlinedIcon />}
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ml-auto"
+              className="w-full md:w-max !px-10 !py-4 rounded-lg !ml-auto"
             >
               Recherche
             </Button>

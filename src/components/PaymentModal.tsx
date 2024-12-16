@@ -5,6 +5,12 @@ import {
   TextField,
   Paper,
   IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import LoadingSpinner from "./LoadingSpinner";
@@ -26,6 +32,7 @@ import updateItem from "../hooks/updateItem";
 import operationApiClient, { Operation } from "../services/OperationService";
 import deleteItem from "../hooks/deleteItem";
 import { useSnackbarStore } from "../zustand/useSnackbarStore";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 interface ModalComponentProps {
   open: boolean;
@@ -177,76 +184,187 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
       aria-describedby="modal-modal-description"
       className="flex justify-center items-center p-4"
     >
-      <Paper elevation={5}>
-        <Box
-          sx={{ maxWidth: 500, bgcolor: "background.paper" }}
-          className="rounded-lg sm:w-full  md:w-[500px]"
-        >
+      <Paper elevation={5} sx={{ width: 600 }}>
+        <Box sx={{ bgcolor: "background.paper" }} className="rounded-lg w-full">
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
-            className="!rounded-lg border bg-card text-card-foreground shadow-sm max-w-lg mx-auto"
+            className="!rounded-lg border bg-card text-card-foreground shadow-sm mx-auto"
           >
             <Box className="flex flex-col gap-6 p-6">
               <h3 className="text-2xl font-semibold leading-none tracking-tight">
                 Détails du paiement des patients
               </h3>
-              <Box className="flex flex-col gap-4">
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex items-center justify-between">
-                    <span className="font-semibold text-base text-start">
-                      Opération
-                    </span>
-                    <span className="font-semibold text-base text-end">
-                      Prix
-                    </span>
-                  </Box>
-                  <Box className="flex flex-col gap-1">
-                    {data?.operation_details?.map((detail: any, i: number) => (
-                      <Box
-                        className="flex items-center justify-between"
-                        key={i}
+              <Box className="flex flex-col gap-2">
+                <Table aria-label="simple table" className="!border-t-0">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="!px-2 !py-1 !font-semibold !text-base !border-0">
+                        Opération
+                      </TableCell>
+                      <TableCell
+                        className="!px-2 !py-1 !font-semibold !text-base !border-0"
+                        align="right"
                       >
-                        <span className="text-gray-500 text-base text-start">
-                          {detail.operation_type || "No Operation Name"}
-                        </span>
-                        <span className="text-gray-500 text-sm text-end">
-                          {detail.price} MAD
-                        </span>
-                      </Box>
-                    ))}
-                    {data?.xrays?.map((xray: any, i: number) => (
-                      <Box
-                        className="flex items-center justify-between"
-                        key={`xray-${i}`}
-                      >
-                        <span className="text-gray-500 text-base text-start">
-                          {xray.xray_type.join(", ") || "No X-Ray Type"}
-                        </span>
-                        <span className="text-gray-500 text-sm text-end">
-                          {xray.price} MAD
-                        </span>
-                      </Box>
-                    ))}
-                    {data?.externalOperation?.map(
-                      (external: any, i: number) => (
-                        <Box
-                          className="flex items-center justify-between"
-                          key={`outsource-${i}`}
+                        Prix
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data?.operation_details?.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="!px-2 !py-1 !border-0">
+                          {row.operation_type || "No Operation Name"}
+                        </TableCell>
+                        <TableCell
+                          className="!px-2 !py-1 !border-0"
+                          align="right"
                         >
-                          <span className="text-gray-500 text-base text-start">
-                            {external.operation_type || "No X-Ray Type"}
-                          </span>
-                          <span className="text-gray-500 text-sm text-end">
-                            {external.fee} MAD
-                          </span>
-                        </Box>
-                      )
-                    )}
-                  </Box>
+                          {row.price} MAD
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {data?.xrays?.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="!px-2 !py-1 !border-0">
+                          {row.xray_type.join(", ") || "No X-Ray Type"}
+                        </TableCell>
+                        <TableCell
+                          className="!px-2 !py-1 !border-0"
+                          align="right"
+                        >
+                          {row.price} MAD
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {data?.externalOperation?.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="!px-2 !py-1 !border-0">
+                          {row.operation_type || "No X-Ray Type"}
+                        </TableCell>
+                        <TableCell
+                          className="!px-2 !py-1 !border-0"
+                          align="right"
+                        >
+                          {row.price} MAD
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {/* <Box className="flex items-center justify-between">
+                  <span className="font-semibold text-base text-start">
+                    Opération
+                  </span>
+                  <span className="font-semibold text-base text-end">Prix</span>
                 </Box>
-                <Box className="flex flex-col gap-2">
-                  <Box className="flex justify-between items-center">
+                <Box className="flex flex-col gap-1">
+                  {data?.operation_details?.map((detail: any, i: number) => (
+                    <Box className="flex items-center justify-between" key={i}>
+                      <span className="text-gray-500 text-base text-start">
+                        {detail.operation_type || "No Operation Name"}
+                      </span>
+                      <span className="text-gray-500 text-sm text-end">
+                        {detail.price} MAD
+                      </span>
+                    </Box>
+                  ))}
+                  {data?.xrays?.map((xray: any, i: number) => (
+                    <Box
+                      className="flex items-center justify-between"
+                      key={`xray-${i}`}
+                    >
+                      <span className="text-gray-500 text-base text-start">
+                        {xray.xray_type.join(", ") || "No X-Ray Type"}
+                      </span>
+                      <span className="text-gray-500 text-sm text-end">
+                        {xray.price} MAD
+                      </span>
+                    </Box>
+                  ))}
+                  {data?.externalOperation?.map((external: any, i: number) => (
+                    <Box
+                      className="flex items-center justify-between"
+                      key={`outsource-${i}`}
+                    >
+                      <span className="text-gray-500 text-base text-start">
+                        {external.operation_type || "No X-Ray Type"}
+                      </span>
+                      <span className="text-gray-500 text-sm text-end">
+                        {external.fee} MAD
+                      </span>
+                    </Box>
+                  ))}
+                </Box> */}
+              </Box>
+              <Box className="flex flex-col gap-2">
+                <Table aria-label="simple table" className="!border-t-0">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="!px-2 !py-1 !font-semibold !text-base !border-0">
+                        Paiements
+                      </TableCell>
+                      <TableCell className="!px-2 !py-1 !font-semibold !text-base !border-0">
+                        Prix
+                      </TableCell>
+                      <TableCell className="!px-2 !py-1 !font-semibold !text-base !border-0">
+                        Date
+                      </TableCell>
+                      <TableCell
+                        className="!px-2 !py-1 !font-semibold !text-base !border-0"
+                        width={60}
+                        align="center"
+                      >
+                        Action
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fetchedoperations?.length ? (
+                      fetchedoperations.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="!px-2 !py-1 !border-0">
+                            Paiment {index + 1}
+                          </TableCell>
+                          <TableCell className="!px-2 !py-1 !border-0">
+                            {row.amount_paid === null
+                              ? "0.00"
+                              : row.amount_paid}{" "}
+                            MAD
+                          </TableCell>
+                          <TableCell className="!px-2 !py-1 !border-0">
+                            {row.date}
+                          </TableCell>
+                          <TableCell
+                            className="!px-2 !py-1 !border-0"
+                            align="center"
+                          >
+                            <IconButton onClick={() => deletePayment(row.id)}>
+                              <DeleteOutlineIcon
+                                color="error"
+                                className="pointer-events-none"
+                                fill="currentColor"
+                              />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow className="border-t border-gray-300">
+                        <TableCell
+                          colSpan={4}
+                          align="center"
+                          className="!text-gray-600 p-4"
+                        >
+                          <p className="text-lg">
+                            Désolé, aucun paiment pour le moment.
+                          </p>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+                {/* <Box className="flex justify-between items-center">
                     <h2 className="font-semibold text-base text-start w-1/3">
                       Paiements
                     </h2>
@@ -289,50 +407,49 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
                         </Box>
                       );
                     })}
-                  </Box>
+                  </Box> */}
+              </Box>
+              {outstandingAmount ? (
+                <Box className="flex items-center flex-wrap gap-4">
+                  <Controller
+                    //@ts-ignore
+                    defaultValue=""
+                    name="amount_paid"
+                    control={control}
+                    rules={{
+                      required: "Le montant est requis",
+                      validate: (value) =>
+                        value > 0 || "Le montant doit être un nombre positif",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        className="flex-1"
+                        id="amount_paid"
+                        label="Montant"
+                        variant="outlined"
+                        type="number"
+                        size="small"
+                        placeholder="Enter Montant"
+                        error={!!error}
+                        helperText={error ? error.message : ""}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <Button variant="outlined" type="submit">
+                    {addMutation.isLoading ? "..." : "Ajouter"}
+                  </Button>
                 </Box>
-                {outstandingAmount ? (
-                  <Box className="flex items-center flex-wrap gap-2">
-                    <Controller
-                      //@ts-ignore
-                      defaultValue=""
-                      name="amount_paid"
-                      control={control}
-                      rules={{
-                        required: "Le montant est requis",
-                        validate: (value) =>
-                          value > 0 || "Le montant doit être un nombre positif",
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          className="flex-1"
-                          id="amount_paid"
-                          label="Montant"
-                          variant="outlined"
-                          size="small"
-                          type="number"
-                          placeholder="Enter Montant"
-                          error={!!error}
-                          helperText={error ? error.message : ""}
-                          {...field}
-                        />
-                      )}
-                    />
-                    <Button variant="outlined" className="" type="submit">
-                      {addMutation.isLoading ? "..." : "Ajouter"}
-                    </Button>
-                  </Box>
-                ) : (
-                  ""
-                )}
-                <Box className="flex justify-between items-center">
-                  <h2 className="font-semibold text-base text-start">
-                    Montant restant
-                  </h2>
-                  <span className="font-semibold text-sm text-end">{`${outstandingAmount.toFixed(
-                    2
-                  )} MAD `}</span>
-                </Box>
+              ) : (
+                ""
+              )}
+              <Box className="flex justify-between items-center">
+                <h2 className="font-semibold text-base text-start">
+                  Montant restant
+                </h2>
+                <span className="font-semibold text-sm text-end">{`${outstandingAmount.toFixed(
+                  2
+                )} MAD `}</span>
               </Box>
             </Box>
           </Box>

@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import DataTable from "../DataTable";
 import { CACHE_KEY_StockEntry } from "../../constants";
 import { SupplierProductApiClient } from "../../services/SupplierService";
@@ -96,27 +96,27 @@ const StockEntryTable = () => {
           const StockID = tableMeta.rowData[0]; // id
 
           return (
-            <Box style={{ width: "90px" }}>
+            <Box className="w-max">
               {can(["modify_historique_enter", "doctor"]) ? (
                 <Tooltip title="Modifier l'opération" arrow>
-                  <button
+                  <IconButton
                     className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() =>
                       navigate(`/Stock/product?stockoperation=${StockID}`)
                     }
                   >
                     <EditOutlinedIcon />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               ) : null}
               {can(["delete_historique_enter", "doctor"]) ? (
                 <Tooltip title="Supprimer l'opération" arrow disableInteractive>
-                  <button
+                  <IconButton
                     className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer"
                     onClick={() => handleStockDelete(StockID)}
                   >
                     <DeleteOutlineIcon color="error" />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               ) : null}
             </Box>

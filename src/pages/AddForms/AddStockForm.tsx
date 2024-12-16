@@ -8,6 +8,7 @@ import {
   Paper,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import addGlobal from "../../hooks/addGlobal";
@@ -129,20 +130,20 @@ const AddStockForm = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-6"
       >
-        <Box className="flex justify-center  text-lg  text-gray-400 uppercase">
-          <span>Créer un produit</span>
+        <Box className="flex justify-center">
+          <Typography
+            id="modal-modal-title"
+            component="h2"
+            className="text-center !text-2xl font-bold"
+          >
+            Créer un produit
+          </Typography>
         </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          className="gap-2 mb-4"
-          variant="middle"
-        />
         <Box className="w-full flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Code à barres
             </label>
             <FormControl className="w-full md:flex-1">
@@ -162,7 +163,7 @@ const AddStockForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Désignation du produit
             </label>
             <FormControl className="w-full md:flex-1">
@@ -183,7 +184,7 @@ const AddStockForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-            <label htmlFor="product_family" className="w-full md:w-[160px]">
+            <label htmlFor="product_family" className="w-full md:w-[200px]">
               famille de produit
             </label>
             <FormControl className="w-full md:flex-1">
@@ -216,7 +217,7 @@ const AddStockForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Nature du produit
             </label>
             <FormControl className="w-full md:flex-1">
@@ -236,7 +237,7 @@ const AddStockForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Min stock
             </label>
             <FormControl className="w-full md:flex-1">
@@ -257,7 +258,7 @@ const AddStockForm = () => {
             </FormControl>
           </Box>
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            <label htmlFor="nom" className="w-full md:w-[160px]">
+            <label htmlFor="nom" className="w-full md:w-[200px]">
               Quantité en stock
             </label>
             <FormControl className="w-full md:flex-1">
@@ -277,15 +278,15 @@ const AddStockForm = () => {
               />
             </FormControl>
           </Box>
-          <Box className="flex mt-4">
-            <Button
-              type="submit"
-              variant="contained"
-              className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
-            >
-              Enregistrer
-            </Button>
-          </Box>
+        </Box>
+        <Box className="flex">
+          <Button
+            type="submit"
+            variant="contained"
+            className="w-full md:w-max !px-10 !py-3 rounded-lg !ms-auto"
+          >
+            Enregistrer
+          </Button>
         </Box>
       </Box>
     </Paper>

@@ -27,6 +27,8 @@ import {
   CACHE_KEY_PatienttinyData,
 } from "../../constants";
 import { useQueryClient } from "@tanstack/react-query";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
 import { useNavigate } from "react-router";
 import addGlobal from "../../hooks/addGlobal";
 import { XrayProps, xrayApiClient } from "../../services/XrayService";
@@ -145,9 +147,9 @@ const ExamenDemander = ({ onNext }) => {
         noValidate
         autoComplete="off"
         onSubmit={submit}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-6"
       >
-        <Box className="flex justify-center mb-4">
+        <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
             component="h2"
@@ -156,7 +158,7 @@ const ExamenDemander = ({ onNext }) => {
             Examens demandée
           </Typography>
         </Box>
-        <Box className="flex flex-col items-center gap-6 flex-wrap">
+        <Box className="flex flex-col items-center gap-4 flex-wrap">
           <Box className="w-full flex flex-wrap items-center gap-4">
             <FormControl className="flex-1">
               <InputLabel id="demo-simple-select-helper-label">
@@ -188,10 +190,7 @@ const ExamenDemander = ({ onNext }) => {
               </Select>
             </FormControl>
             <Button
-              sx={{ borderRadius: 16 }}
-              style={{
-                minWidth: 100,
-              }}
+              className="!px-4 !py-2 !min-w-max !rounded-full"
               variant="outlined"
               onClick={handleAddRow}
             >
@@ -209,52 +208,70 @@ const ExamenDemander = ({ onNext }) => {
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell width={300}>Type</TableCell>
-                    <TableCell align="center" width="120px">
+                    <TableCell width={60} align="center">
                       Action
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fields.map((carry, index) => (
-                    <TableRow key={index} className="border-t border-gray-300">
-                      <TableCell>{carry.name}</TableCell>
-                      <TableCell width={300}>
-                        <FormControl className="w-full" size="medium">
-                          <Select
-                            labelId={`rows.${index}.type.label`}
-                            id={`row.${index}.type`}
-                            value={carry.type}
-                            onChange={(e) =>
-                              changeExamenType(e.target.value, index)
-                            }
-                          >
-                            {["Sans Injection (C-)", "Avec Injection (C+)"].map(
-                              (radio, _index) => (
+                  {fields.length ? (
+                    fields.map((carry, index) => (
+                      <TableRow
+                        key={index}
+                        className="border-t border-gray-300"
+                      >
+                        <TableCell>{carry.name}</TableCell>
+                        <TableCell>
+                          <FormControl className="w-full" size="medium">
+                            <Select
+                              labelId={`rows.${index}.type.label`}
+                              id={`row.${index}.type`}
+                              value={carry.type}
+                              onChange={(e) =>
+                                changeExamenType(e.target.value, index)
+                              }
+                            >
+                              {[
+                                "Sans Injection (C-)",
+                                "Avec Injection (C+)",
+                              ].map((radio, _index) => (
                                 <MenuItem key={`radio_${_index}`} value={radio}>
                                   {radio}
                                 </MenuItem>
-                              )
-                            )}
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                      <TableCell align="center" width="120px">
-                        <IconButton
-                          /* variant="contained" */
-                          color="error"
-                          onClick={() => handleRemoveRow(index)}
-                        >
-                          <DeleteOutlineOutlinedIcon />
-                        </IconButton>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => handleRemoveRow(index)}>
+                            <DeleteOutlineIcon
+                              color="error"
+                              className="pointer-events-none"
+                              fill="currentColor"
+                            />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow className="border-t border-gray-300">
+                      <TableCell
+                        colSpan={3}
+                        align="center"
+                        className="!text-gray-600 p-4"
+                      >
+                        <p className="text-lg">
+                          Désolé, aucun examen pour le moment.
+                        </p>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
           </Box>
         </Box>
-        <Box className="flex justify-between flex-row mt-8 content-center">
+        <Box className="flex justify-between flex-row content-center">
           <Button
             className="w-full md:w-max !px-10 !py-3 rounded-lg "
             variant="outlined"

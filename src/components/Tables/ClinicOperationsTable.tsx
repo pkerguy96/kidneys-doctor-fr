@@ -1,4 +1,4 @@
-import { Box, Chip, IconButton, Tooltip } from "@mui/material";
+import { Box, Chip, IconButton, Switch, Tooltip } from "@mui/material";
 import DataTable from "../DataTable";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
@@ -17,6 +17,7 @@ import useUserRoles from "../../zustand/UseRoles";
 const ClinicOperationsTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const { can } = useUserRoles();
+  const [isPaidFilter, setIsPaidFilter] = useState<boolean | null>(null);
 
   const [modalOperationId, setModalOperationId] = useState<number | null>(null);
   const queryClient = useQueryClient();
@@ -58,6 +59,11 @@ const ClinicOperationsTable = () => {
     {
       name: "patient_name",
       label: "Nom du patient",
+      options: { filter: true, sort: true },
+    },
+    {
+      name: "Mutuelle",
+      label: "Mutuelle",
       options: { filter: true, sort: true },
     },
     {
@@ -160,7 +166,8 @@ const ClinicOperationsTable = () => {
       page, // Current page
       rowsPerPage, // Number of rows per  age
       searchQuery,
-      undefined
+      undefined,
+      isPaidFilter !== null ? { isPaid: isPaidFilter ? 1 : 0 } : undefined
     );
 
   return (
@@ -179,14 +186,28 @@ const ClinicOperationsTable = () => {
             dataHook={dataHook}
             options={{
               searchPlaceholder: "Rechercher une opération",
-              customToolbar: () =>
-                can(["insert_external_debt", "doctor"]) ? ( // Check permissions for "insert"
-                  <Tooltip title="Nouvelle opération">
-                    <IconButton onClick={() => navigate("/External/ajouter")}>
-                      <AddIcon />
+              customToolbar: () => (
+                <>
+                  <Tooltip title="Filtrer par non payé">
+                    <IconButton>
+                      <Switch
+                        aria-label="Filter unpaid"
+                        checked={isPaidFilter === false}
+                        onChange={() =>
+                          setIsPaidFilter(isPaidFilter === false ? null : false)
+                        }
+                      />
                     </IconButton>
                   </Tooltip>
-                ) : null, // Render nothing if the user doesn't have "insert" permission
+                  {can(["insert_external_debt", "doctor"]) && (
+                    <Tooltip title="Nouvelle opération">
+                      <IconButton onClick={() => navigate("/External/ajouter")}>
+                        <AddIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
+              ),
               selectableRowsHideCheckboxes: true,
               onRowClick: (s: any, _m: any, e: any) => {
                 if (
@@ -201,7 +222,7 @@ const ClinicOperationsTable = () => {
           />
 
           {/* Modal with Permission Check */}
-          {openModal && can(["insert_external_debt", "doctor"]) ? ( // Check permissions for "insert"
+          {openModal && can(["insert_external_debt", "doctor"]) ? (
             <PaymentModal
               open={openModal}
               onClose={handleCloseModal}

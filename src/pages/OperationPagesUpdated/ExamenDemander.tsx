@@ -23,7 +23,7 @@ import {
 import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import {
-  BoneDoctorBloodTests,
+  CACHE_KEY_ExamenWithCategory,
   CACHE_KEY_PatienttinyData,
 } from "../../constants";
 import { useQueryClient } from "@tanstack/react-query";
@@ -37,29 +37,10 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import getGlobalById from "../../hooks/getGlobalById";
 import { patientTinyDataAPIClient } from "../../services/PatientService";
+import getGlobal from "../../hooks/getGlobal";
+import { ExamenPreferencewithCategoriesApiClient } from "../../services/ExamenService";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
-const printables = {
-  Scanner: [
-    "TDM abdominale",
-    "TDM abdomino-pelve",
-    "TDM uro-scanner",
-    "TDM pelvienne",
-    "TDM Cérébrale",
-    "TDM Thoracique",
-    "TDM TAP",
-  ],
-  IRM: [
-    "IRM abdominale",
-    "IRM abdomino-pelve",
-    "IRM uro",
-    "IRM pelvienne",
-    "IRM Cérébrale",
-    "IRM Thoracique",
-    "IRM TAP",
-  ],
-  échographie: ["Échographie abdominale"],
-  radio: ["AUCP"],
-};
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
   return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
@@ -100,6 +81,8 @@ const ExamenDemander = ({ onNext }) => {
   const [fields, setFields] = useState([]);
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
+  const navigate = useNavigate();
+
   const { data } = getGlobalById(
     {},
     CACHE_KEY_PatienttinyData,
@@ -107,9 +90,14 @@ const ExamenDemander = ({ onNext }) => {
     undefined,
     parseInt(patient_id)
   );
-
-  const examenChange = (event: SelectChangeEvent) => {
-    setExamen(event.target.value);
+  const { data: printables, isLoading } = getGlobal(
+    {},
+    CACHE_KEY_ExamenWithCategory,
+    ExamenPreferencewithCategoriesApiClient,
+    undefined
+  );
+  const examenChange = (value) => {
+    setExamen(value);
   };
 
   const handleAddRow = () => {
@@ -140,6 +128,7 @@ const ExamenDemander = ({ onNext }) => {
     });
   };
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
+  if (isLoading) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -161,10 +150,10 @@ const ExamenDemander = ({ onNext }) => {
         <Box className="flex flex-col items-center gap-4 flex-wrap">
           <Box className="w-full flex flex-wrap items-center gap-4">
             <FormControl className="flex-1">
-              <InputLabel id="demo-simple-select-helper-label">
+              {/*  <InputLabel id="demo-simple-select-helper-label">
                 Examen
-              </InputLabel>
-              <Select
+              </InputLabel> */}
+              {/*        <Select
                 className="w-full"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
@@ -172,22 +161,79 @@ const ExamenDemander = ({ onNext }) => {
                 label="Examen"
                 onChange={examenChange}
               >
-                {Object.keys(printables).reduce((acc, header) => {
-                  acc.push(
-                    <ListSubheader key={`header_${header}`}>
-                      {header}
-                    </ListSubheader>
-                  );
-                  acc.push(
-                    ...printables[header].map((print, index) => (
-                      <MenuItem key={`print_${header}_${index}`} value={print}>
-                        {print}
-                      </MenuItem>
-                    ))
-                  );
-                  return acc;
-                }, [])}
-              </Select>
+                {Object.keys(printables).length > 0
+                  ? Object.keys(printables).reduce((acc, header) => {
+                      acc.push(
+                        <ListSubheader key={`header_${header}`}>
+                          {header}
+                        </ListSubheader>
+                      );
+                      acc.push(
+                        ...printables[header].map((print, index) => (
+                          <MenuItem
+                            key={`print_${header}_${index}`}
+                            value={print}
+                          >
+                            {print}
+                          </MenuItem>
+                        ))
+                      );
+                      return acc;
+                    }, [])
+                  : [
+                      <MenuItem key="no-data" disabled>
+                        Aucune donnée disponible
+                      </MenuItem>,
+                      <MenuItem
+                        key="add-data"
+                        onClick={() => navigate("/Settings/Examen")}
+                        style={{ color: "blue" }}
+                      >
+                        Ajouter des données
+                      </MenuItem>,
+                    ]}
+              </Select> */}
+              <Autocomplete
+                className="w-full"
+                id="demo-autocomplete-examen"
+                options={Object.entries(printables).flatMap(
+                  ([header, prints]: [string, string[]]) =>
+                    prints.map((print) => ({ group: header, label: print }))
+                )} // Flatten and structure options
+                groupBy={(option) => option.group} // Group by the header
+                getOptionLabel={(option) => option.label} // Display the label
+                value={examen ? { group: "", label: examen } : null} // Bind selected value
+                onChange={(event, newValue) => {
+                  if (newValue) {
+                    examenChange(newValue.label);
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Examen"
+                    variant="outlined"
+                    placeholder="Choisissez un examen"
+                  />
+                )}
+                noOptionsText={
+                  <div>
+                    <div style={{ padding: "8px 16px" }}>
+                      Aucune donnée disponible
+                    </div>
+                    <div
+                      style={{
+                        color: "blue",
+                        cursor: "pointer",
+                        padding: "8px 16px",
+                      }}
+                      onClick={() => navigate("/Settings/Examen")}
+                    >
+                      Ajouter des données
+                    </div>
+                  </div>
+                }
+              />
             </FormControl>
             <Button
               className="!px-4 !py-2 !min-w-max !rounded-full"

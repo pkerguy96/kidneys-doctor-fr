@@ -66,19 +66,24 @@ const BloodTestPrintableComponent = () => {
             <p className="font-semibold">
               Fait a beni mellal Le {data?.created_at}
             </p>
-            <p className="font-semibold">
-              Nom & Prenom: {data?.nom} {data?.prenom}
-            </p>
+            <p className="font-semibold">Nom & Prenom: {data?.patient_name}</p>
           </div>
           <div className="w-full flex flex-col gap-4 my-10">
             <div className="w-full flex flex-col gap-2">
-              {data?.blood_tests.map((test: string, index: number) => (
-                <div key={index}>
-                  <h3 className="font-bold">
-                    {index + 1} - {test}
-                  </h3>
-                </div>
-              ))}
+              {Array.isArray(data?.blood_tests) &&
+              data.blood_tests.length > 0 ? (
+                data.blood_tests.map((test: any, index: number) => (
+                  <div key={index}>
+                    <h3 className="font-bold">
+                      {index + 1} - {test.title}
+                    </h3>
+                  </div>
+                ))
+              ) : (
+                <p className="italic text-gray-500">
+                  No blood tests available.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -92,18 +97,16 @@ const BloodTestPrintableComponent = () => {
             <p className="font-semibold">
               Fait a beni mellal Le {data?.created_at}
             </p>
-            <p className="font-semibold">
-              Nom & Prenom: {data?.nom} {data?.prenom}
-            </p>
+            <p className="font-semibold">Nom & Prenom: {data?.patient_name}</p>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex flex-col gap-2">
               {Array.isArray(data?.blood_tests) &&
               data.blood_tests.length > 0 ? (
-                data.blood_tests.map((test: string, index: number) => (
+                data.blood_tests.map((test: any, index: number) => (
                   <div key={index}>
                     <h3 className="font-bold">
-                      {index + 1} - {test}
+                      {index + 1} - {test.title}
                     </h3>
                   </div>
                 ))

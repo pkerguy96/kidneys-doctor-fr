@@ -32,11 +32,12 @@ import useDebounce from "../hooks/useDebounce";
 import getGlobal from "../hooks/getGlobal";
 import { useSnackbarStore } from "../zustand/useSnackbarStore";
 import { AxiosError } from "axios";
+import PatientSearchAutocomplete from "./PatientSearchAutocomplete";
 
 function WaitingRoomMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const queryClient = useQueryClient();
-  const [searchQuery, setSearchQuery] = useState("");
+  /*   const [searchQuery, setSearchQuery] = useState(""); */
   const waiting = getGlobal(
     {} as WaitingroomCounter,
     CACHE_KEY_PatientsWaitingRoom,
@@ -46,22 +47,32 @@ function WaitingRoomMenu() {
     }
   );
 
-  const searchMutation = addGlobal(
+  /*   const searchMutation = addGlobal(
     {} as PatientNameWaitingRoom,
     FetchPatientsWaitingRoom
-  );
+  ); */
   const AddPatient = addGlobal({} as incrementbyone, incrementPatientApiClient);
-  const [isLoadingPatient, setLoading] = useState(false);
-  const [options, setOptions] = useState([]); // Store autocomplete options
+  /*   const [isLoadingPatient, setLoading] = useState(false);
+  const [options, setOptions] = useState([]); // Store autocomplete options */
   const [height, setHeight] = useState("auto");
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  /*   const debouncedSearchQuery = useDebounce(searchQuery, 500); */
   const { showSnackbar } = useSnackbarStore();
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery((prevQuery) => (prevQuery !== query ? query : prevQuery));
-  }, []);
 
-  useEffect(() => {
+  const adjustHeight = useCallback(
+    (options: { id: number; name: string }[]) => {
+      const newHeight =
+        options.length === 0 ? "auto" : 200 + 30 * options.length + "px";
+      setHeight(newHeight);
+    },
+    []
+  );
+
+  /*  const handleSearch = useCallback((query: string) => {
+    setSearchQuery((prevQuery) => (prevQuery !== query ? query : prevQuery));
+  }, []); */
+
+  /*   useEffect(() => {
     const fetchPatients = async () => {
       if (!debouncedSearchQuery) {
         setOptions([]);
@@ -90,11 +101,11 @@ function WaitingRoomMenu() {
     };
 
     fetchPatients();
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery]); */
 
-  const handlePatientSelect = useCallback((event: any, newValue: any) => {
+  /*   const handlePatientSelect = useCallback((event: any, newValue: any) => {
     setSelectedPatient(newValue);
-  }, []);
+  }, []); */
 
   const resetPatientCounter = useCallback(async () => {
     try {
@@ -185,12 +196,12 @@ function WaitingRoomMenu() {
                   {waiting.data}
                 </span>
                 {/* <IconButton onClick={handleClose} color="inherit" size="small">
-              <CloseOutlinedIcon />
-            </IconButton> */}
+                  <CloseOutlinedIcon />
+                </IconButton> */}
               </Box>
             </Box>
             <Box className="flex justify-center items-center w-full gap-8">
-              <Autocomplete
+              {/*  <Autocomplete
                 disablePortal
                 options={options}
                 getOptionLabel={(option) => option.name}
@@ -204,6 +215,11 @@ function WaitingRoomMenu() {
                 renderInput={(params) => (
                   <TextField {...params} label="Search Patients" />
                 )}
+              /> */}
+              <PatientSearchAutocomplete
+                setPatient={setSelectedPatient}
+                onOptionsChange={adjustHeight}
+                showExternalLabel={false}
               />
             </Box>
             <Box className="flex flex-wrap items-center justify-end gap-4">

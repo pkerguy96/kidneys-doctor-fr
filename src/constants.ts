@@ -29,6 +29,7 @@ export const CACHE_KEY_Xray = "Xray";
 export const CACHE_KEY_Bloodtest = ["BloodTest"];
 export const CACHE_KEY_Notification = ["Notifications"];
 export const CACHE_KEY_XrayPreferences = ["XrayPreferences"];
+export const CACHE_KEY_ExamenPreferences = ["ExamenPreferences"];
 export const CACHE_KEY_Suppliers = ["Suppliers"];
 export const CACHE_KEY_NurseXray = ["NurseXray"];
 export const CACHE_KEY_RecurringOperations = ["RecurringOperations"];
@@ -44,13 +45,19 @@ export const CACHE_KEY_CanceledMonthlyAppointments = [
 ];
 export const CACHE_KEY_TvWaitingRoom = ["TvWaitingRoom"];
 export const CACHE_KEY_PatientReferral = ["PatientReferral"];
+export const CACHE_KEY_BloodTestPreference = ["BloodTestPreference"];
 
 export const CACHE_KEY_Url = "urllist";
 export const CACHE_KEY_StockExit = ["StockExit"];
 export const CACHE_KEY_StockEntry = ["StockEntry"];
+export const CACHE_KEY_BloodtestList = ["BloodtestList"];
 
 export const CACHE_KEY_StockEntryUpdate = ["StockEntryUpdate"];
 export const CACHE_KEY_PatienttinyData = ["PatienttinyData"];
+export const CACHE_KEY_xrayCategory = ["xrayCategory"];
+export const CACHE_KEY_ExamenCategory = ["ExamenCategory"];
+export const CACHE_KEY_XraysWithCategory = ["XraysWithCategory"];
+export const CACHE_KEY_ExamenWithCategory = ["ExamenWithCategory"];
 
 export const PermissionListpatient = [
   { name: "access_patient", display: "Accès complet" },
@@ -218,18 +225,318 @@ export const BodySides = [
   { title: "Les deux", value: "Les_Deux" },
 ];
 export const BoneDoctorBloodTests = [
-  { title: "Calcium", value: "Calcium" },
-  { title: "Phosphore", value: "Phosphore" },
-  { title: "Vitamine D", value: "Vitamine_D" },
-  { title: "Protéine C-réactive (CRP)", value: "CRP" },
-  { title: "Vitesse de sédimentation (VS)", value: "VS" },
-  { title: "Facteur rhumatoïde", value: "Facteur_Rhumatoïde" },
-  { title: "Acide urique", value: "Acide_Urique" },
-  { title: "Phosphatase alcaline", value: "Phosphatase_Alcaline" },
-  { title: "Anticorps antinucléaires (ANA)", value: "ANA" },
-  { title: "Numération formule sanguine (NFS)", value: "NFS" },
-  { title: "Parathormone (PTH)", value: "Parathormone" },
-  { title: "Créatinine", value: "Créatinine" },
+  {
+    title: "HEPATITE A - AC  IgM",
+    code: "HAM",
+    DELAI: "",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE A - AC IGG",
+    code: "ACHAG",
+    DELAI: "10 J",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE B - AC ANTI HBC IgM",
+    code: "HBCIG",
+    DELAI: "5 J",
+    price: "270.00",
+  },
+  {
+    title: "HEPATITE B - AC ANTI HBC TOTAUX",
+    code: "ACHBC",
+    DELAI: "2 J",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE B - AC ANTI HBE",
+    code: "ACBE",
+    DELAI: "5 J",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE B - AC ANTI HBS",
+    code: "ACHBS",
+    DELAI: "2 J",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE B - AG HBE",
+    code: "AGBE",
+    DELAI: "5 J",
+    price: "225.00",
+  },
+  {
+    title: "HEPATITE B - AG HBS",
+    code: "AGHBS",
+    DELAI: "2 J",
+    price: "108.00",
+  },
+  {
+    title: "HEPATITE B - AG HBS  (QUANTIFICATION)",
+    code: "HBSTI",
+    DELAI: "7 J",
+    price: "350.00",
+  },
+  {
+    title: "HEPATITE B - GENOTYPAGE",
+    code: "GENB",
+    DELAI: "10 J",
+    price: "1125.00",
+  },
+  {
+    title: "HEPATITE B - PCR",
+    code: "PCRHB",
+    DELAI: "10 J",
+    price: "540.00",
+  },
+  {
+    title: "HEPATITE B - PCR (CHARGE VIRALE)",
+    code: "PCRQB",
+    DELAI: "10 J",
+    price: "910.00",
+  },
+  {
+    title: "HEPATITE B GENOTYPAGE DE RESISTANCE AUX ANTIVIRAUX",
+    code: "MVHB",
+    DELAI: "21 J",
+    price: "3000.00",
+  },
+  {
+    title: "HEPATITE B MUTATION PROMOTEUR/PRE-CORE/CORE",
+    code: "MPREC",
+    DELAI: "15 J",
+    price: "900.00",
+  },
+  {
+    title: "HEPATITE C - AC ANTI VHC Dépistage",
+    code: "HCV",
+    DELAI: "2 J",
+    price: "270.00",
+  },
+  {
+    title: "HEPATITE C - GENOTYPAGE PAR SEQUENCAGE",
+    code: "SEQHC",
+    DELAI: "15 J",
+    price: "1080.00",
+  },
+  {
+    title: "HEPATITE C - GENOTYPAGE VIRUS",
+    code: "GENC",
+    DELAI: "10 J",
+    price: "1080.00",
+  },
+  {
+    title: "HEPATITE C - PCR",
+    code: "PCRHC",
+    DELAI: "10 J",
+    price: "810.00",
+  },
+  {
+    title: "HEPATITE C - PCR (CHARGE VIRALE)",
+    code: "PCRQC",
+    DELAI: "10 J",
+    price: "1080.00",
+  },
+  {
+    title: "HEPATITE DELTA, AC TOTAUX",
+    code: "DELTA",
+    DELAI: "12 J",
+    price: "270.00",
+  },
+  {
+    title: "HEPATITE DELTA, ANTIGENE",
+    code: "HDAG",
+    DELAI: "12 J",
+    price: "400.00",
+  },
+  {
+    title: "HEPATITE DELTA, IGM SPECIFIQUE",
+    code: "HDIGM",
+    DELAI: "12 J",
+    price: "380.00",
+  },
+  {
+    title: "HEPATITE E IGG",
+    code: "HEPAE",
+    DELAI: "12 J",
+    price: "360.00",
+  },
+  {
+    title: "HEPATITE E IGM",
+    code: "ACHEM",
+    DELAI: "12 J",
+    price: "360.00",
+  },
+  {
+    title: "HERPES SIMPLEX VIRUS 1 IGG",
+    code: "HEGI",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "HERPES SIMPLEX VIRUS 1 IGM",
+    code: "HEMI",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "HERPES SIMPLEX VIRUS 1/2 (PCR QUALITATIVE)",
+    code: "HPCR",
+    DELAI: "2 J",
+    price: "900.00",
+  },
+  {
+    title: "HERPES SIMPLEX VIRUS 2 IGG",
+    code: "HEGII",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "HERPES SIMPLEX VIRUS 2 IGM",
+    code: "HEMII",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "HERPES VIRUS TYPE 6 (PCR QUALITATIVE)",
+    code: "PCRH6",
+    DELAI: "7 J",
+    price: "1100.00",
+  },
+  {
+    title: "HERPES VIRUS TYPE 6 IGG",
+    code: "HHV6G",
+    DELAI: "7 J",
+    price: "300.00",
+  },
+  {
+    title: "HERPES VIRUS TYPE 6 IGM",
+    code: "HHV6M",
+    DELAI: "7 J",
+    price: "800.00",
+  },
+  {
+    title: "HERPES VIRUS TYPE 8 (PCR QUALITATIVE)",
+    code: "PCRH8",
+    DELAI: "7 J",
+    price: "1100.00",
+  },
+  {
+    title: "HERPES VIRUS TYPE 8 IGG",
+    code: "HHV8G",
+    DELAI: "7 J",
+    price: "800.00",
+  },
+  {
+    title: "HIV AG P24",
+    code: "P24AG",
+    DELAI: "7 J",
+    price: "300.00",
+  },
+  {
+    title: "HIV DEPISTAGE",
+    code: "HIV",
+    DELAI: "6 J",
+    price: "180.00",
+  },
+  {
+    title: "HTLV I+II, CONFIRMATION",
+    code: "HTLVW",
+    DELAI: "7 J",
+    price: "600.00",
+  },
+  {
+    title: "HTLV I+II, DEPISTAGE",
+    code: "HTLV",
+    DELAI: "7 J",
+    price: "350.00",
+  },
+  {
+    title: "IL28B GENOTYPAGE",
+    code: "IL28B",
+    DELAI: "15 J",
+    price: "600.00",
+  },
+  {
+    title: "PARVOVIRUS B19 (PCR QUALITATIVE)",
+    code: "PCPVS",
+    DELAI: "7 J",
+    price: "1100.00",
+  },
+  {
+    title: "PARVOVIRUS B19 IGG + IGM",
+    code: "PARV",
+    DELAI: "7 J",
+    price: "500.00",
+  },
+  {
+    title: "POLYOMAVIRUS BK (CHARGE VIRALE)",
+    code: "POLBK",
+    DELAI: "8 J",
+    price: "1900.00",
+  },
+  {
+    title: "POLYOMAVIRUS JC (PCR QUALITATIVE)",
+    code: "POLJC",
+    DELAI: "8 J",
+    price: "1900.00",
+  },
+  {
+    title: "RAGE (PCR QUALITATIVE)",
+    code: "RAGBM",
+    DELAI: "3 J",
+    price: "900.00",
+  },
+  {
+    title: "ROTAVIRUS",
+    code: "ROTA",
+    DELAI: "1 J",
+    price: "180.00",
+  },
+  {
+    title: "TITRAGE Ac ANTI-RABIQUES",
+    code: "ACARB",
+    DELAI: "10 J",
+    price: "280.00",
+  },
+  {
+    title: "VARICELLE ZONA VIRUS (PCR QUALITIATIVE)",
+    code: "PCRVZ",
+    DELAI: "2 J",
+    price: "900.00",
+  },
+  {
+    title: "VARICELLE ZONA VIRUS IGG",
+    code: "VARIG",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "VARICELLE ZONA VIRUS IGM",
+    code: "VARIM",
+    DELAI: "3 J",
+    price: "180.00",
+  },
+  {
+    title: "VIRUS FIEVRE JAUNE ANTICORPS",
+    code: "FJ",
+    DELAI: "10 J",
+    price: "250.00",
+  },
+  {
+    title: "VIRUS RESPIRATOIRE SYNCYTIAL A/B (PCR QUALITATIVE)",
+    code: "VRSBM",
+    DELAI: "2 J",
+    price: "900.00",
+  },
+  {
+    title: "YERSINIA",
+    code: "YERS",
+    DELAI: "10 J",
+    price: "350.00",
+  },
 ];
 
 export const Analyses = {

@@ -29,6 +29,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useGlobalOperationPreference } from "../../hooks/getOperationPrefs";
 import getGlobal from "../../hooks/getGlobal";
 import {
+  CACHE_KEY_ExamenCategory,
+  CACHE_KEY_ExamenPreferences,
   CACHE_KEY_xrayCategory,
   CACHE_KEY_XrayPreferences,
 } from "../../constants";
@@ -39,21 +41,26 @@ import {
   categoryXrayApiClient,
   deleteCategoryApiClient,
 } from "../../services/XrayService";
+import {
+  categoryExamenApiClient,
+  deleteExamenCategoryApiClient,
+  ExamenPreferenceApiClient,
+} from "../../services/ExamenService";
 interface Category {
   id: number;
   name: string;
 }
 interface xrayProps {
-  xray_type: string;
+  Examen_type: string;
   price: number;
   xray_category: string[];
 }
-const XraySettings = () => {
+const ExamenDemanderSettings = () => {
   const { showSnackbar } = useSnackbarStore();
   const { data, refetch, isLoading } = getGlobal(
     {} as XrayPreferencesResponse,
-    CACHE_KEY_XrayPreferences,
-    XrayPreferenceApiClient,
+    CACHE_KEY_ExamenPreferences,
+    ExamenPreferenceApiClient,
     undefined
   );
   const {
@@ -62,19 +69,19 @@ const XraySettings = () => {
     refetch: refetch2,
   } = getGlobal(
     {} as Category,
-    CACHE_KEY_xrayCategory,
-    categoryXrayApiClient,
+    CACHE_KEY_ExamenCategory,
+    categoryExamenApiClient,
     undefined
   );
 
-  const addmutation = addGlobal({}, XrayPreferenceApiClient);
+  const addmutation = addGlobal({}, ExamenPreferenceApiClient);
   const { control, handleSubmit, reset } = useForm<xrayProps>();
 
   const onSubmit = async (data: xrayProps) => {
     await addmutation.mutateAsync(
       {
         xray_category: data.xray_category,
-        xray_type: data.xray_type,
+        Examen_type: data.Examen_type,
         price: data.price,
       },
       {
@@ -95,7 +102,7 @@ const XraySettings = () => {
     );
   };
   const categoryDelete = async (key: number) => {
-    const response = await deleteItem(key, deleteCategoryApiClient);
+    const response = await deleteItem(key, deleteExamenCategoryApiClient);
 
     if (response) {
       refetch2();
@@ -105,7 +112,7 @@ const XraySettings = () => {
     }
   };
   const onDelete = async (key: number) => {
-    const response = await deleteItem(key, XrayPreferenceApiClient);
+    const response = await deleteItem(key, ExamenPreferenceApiClient);
 
     if (response) {
       refetch();
@@ -123,10 +130,10 @@ const XraySettings = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <p className="font-light text-gray-600 text-md md:text-xl text-center">
-        Ajouter une radiographie
+        Ajouter un Examen
       </p>
       <p className=" text-start font-thin  text-sm md:text-lg">
-        Entrez les détails de la paraclinique.
+        Veuillez entrer les détails de l’examen
       </p>
       <Box className=" flex flex-col md:flex-row gap-4 flex-wrap ">
         <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center ">
@@ -206,26 +213,10 @@ const XraySettings = () => {
           <FormControl className="w-full md:flex-1">
             <Controller
               defaultValue=""
-              name="xray_type"
+              name="Examen_type"
               control={control}
               render={({ field }) => (
-                <TextField {...field} id="xray_type" label="Radiographie" />
-              )}
-            />
-          </FormControl>
-        </Box>
-        <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
-          <label htmlFor="price" className="w-full md:w-[160px]">
-            Prix:
-          </label>
-          <FormControl className="w-full md:flex-1">
-            <Controller
-              //@ts-ignore
-              defaultValue={0.0}
-              name="price"
-              control={control}
-              render={({ field }) => (
-                <TextField {...field} id="price" type="number" label="Prix" />
+                <TextField {...field} id="Examen_type" label="Radiographie" />
               )}
             />
           </FormControl>
@@ -252,19 +243,15 @@ const XraySettings = () => {
                 <strong>Nom de la radiographie</strong>
               </TableCell>
 
-              <TableCell>
-                <strong>Prix</strong>
-              </TableCell>
               <TableCell className="w-20" />
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((xray: XrayPreference, index: number) => (
+            {data?.map((xray: any, index: number) => (
               <TableRow key={index}>
                 <TableCell>{xray.category}</TableCell>
-                <TableCell>{xray.xray_type}</TableCell>
+                <TableCell>{xray.Examen_type}</TableCell>
 
-                <TableCell>{xray.price} MAD</TableCell>
                 <TableCell className="w-20">
                   <Button
                     onClick={() => onDelete(xray.id!)}
@@ -299,4 +286,4 @@ const autocompleteStyles = {
     },
   },
 };
-export default XraySettings;
+export default ExamenDemanderSettings;

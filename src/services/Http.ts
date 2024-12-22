@@ -49,12 +49,28 @@ export class APIClient<T> {
       return res.data.data; // Explicitly return the `data`
     });
   };
-  getalls = (page = 1, perPage = 10, search = "") => {
+  /*   getalls = (page = 1, perPage = 10, search = "") => {
     const endpoint = `${
       this.endpoint
     }?page=${page}&per_page=${perPage}&searchQuery=${encodeURIComponent(
       search
     )}`;
+
+    return axiosInstance.get<ApiResponse<T>>(endpoint).then((res) => res.data);
+  }; */
+  getalls = (page = 1, perPage = 10, search = "", filters = {}) => {
+    const filterQueryString = Object.entries(filters)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
+
+    const endpoint = `${
+      this.endpoint
+    }?page=${page}&per_page=${perPage}&searchQuery=${encodeURIComponent(
+      search
+    )}&${filterQueryString}`;
 
     return axiosInstance.get<ApiResponse<T>>(endpoint).then((res) => res.data);
   };

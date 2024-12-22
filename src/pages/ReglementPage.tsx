@@ -1,4 +1,4 @@
-import ReglementTable from "../components/ReglementTable";
+import ReglementTable from "../components/Tables/ReglementTable";
 import { Outlet, useLocation } from "react-router";
 
 const ReglementPage = () => {

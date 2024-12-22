@@ -79,29 +79,29 @@ const PatientsTable = () => {
 
           return (
             <Box className="w-max">
-              <Tooltip title="Ajouter lepatient a la salle d'atente">
-                <IconButton className="btn-patient-waiting text-gray-950 hover:text-blue-700 cursor-pointer">
-                  <AccessAlarmOutlinedIcon color="primary" />
+              <Tooltip title="Ajouter le patient à la salle d'attente">
+                <IconButton className="btn-patient-waiting !text-gray-600 hover:!text-blue-700 cursor-pointer">
+                  <AccessAlarmOutlinedIcon color="inherit" />
                 </IconButton>
               </Tooltip>
               {can(["doctor"]) && (
                 <Tooltip title="Nouveau operation">
-                  <IconButton className="btn-patient-info text-gray-950 hover:text-blue-700 cursor-pointer">
+                  <IconButton className="btn-patient-info !text-gray-600 hover:!text-blue-700 cursor-pointer">
                     <HealthAndSafetyOutlinedIcon />
                   </IconButton>
                 </Tooltip>
               )}
               {can(["update_patient", "doctor"]) && (
                 <Tooltip title="Modifier le patient">
-                  <IconButton className="btn-patient-edit text-gray-950 hover:text-blue-700 cursor-pointer">
+                  <IconButton className="btn-patient-edit !text-gray-600 hover:!text-blue-700 cursor-pointer">
                     <EditOutlinedIcon />
                   </IconButton>
                 </Tooltip>
               )}
               {can(["delete_patient", "doctor"]) && (
                 <Tooltip title="Supprimer le patient">
-                  <IconButton className="btn-patient-delete text-gray-950 hover:text-blue-700 cursor-pointer">
-                    <DeleteOutlineIcon color="error" />
+                  <IconButton className="btn-patient-delete  !text-gray-600 hover:!text-red-700 cursor-pointer">
+                    <DeleteOutlineIcon />
                   </IconButton>
                 </Tooltip>
               )}

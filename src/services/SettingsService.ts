@@ -26,6 +26,7 @@ export const DeleteOperationsPrefApiClient =
 
 export interface XrayPreference {
   id: number;
+  category: string;
   xray_type: string;
   price: string;
 }

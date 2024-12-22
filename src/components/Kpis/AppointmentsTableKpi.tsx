@@ -121,7 +121,7 @@ const AppointmentsTableKpi = () => {
                 </IconButton>
               </Tooltip>
             )}
-            <Tooltip title="Supprimer patient de salle d'attente">
+            <Tooltip title="Supprimer le patient de la salle d'attente">
               <IconButton className=" text-3xl btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer">
                 <DeleteOutlineIcon
                   color="error"

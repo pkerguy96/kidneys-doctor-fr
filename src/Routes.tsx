@@ -57,6 +57,9 @@ import BloodTestPrintableComponent from "./components/BloodTestPrintableComponen
 import Lobby from "./components/Lobby";
 import Lobby2new from "./components/Lobby2new";
 import ParentOperationPage from "./pages/OperationPagesUpdated/ParentOperationPage";
+import ExamenDemanderSettings from "./components/Settings/ExamenDemanderSettings";
+import ChangeUserPassword from "./components/ChangeUserPassword";
+import BloodTestSettings from "./components/Settings/BloodTestSettings";
 
 const router = createBrowserRouter([
   {
@@ -157,6 +160,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <AdminProfile />,
+      },
+      {
+        path: "profile/password",
+        element: <ChangeUserPassword />,
       },
       {
         path: "Nurses",
@@ -266,8 +273,16 @@ const router = createBrowserRouter([
             element: <XraySettings />,
           },
           {
+            path: "Examen",
+            element: <ExamenDemanderSettings />,
+          },
+          {
             path: "Clinic",
             element: <HospitalsSettings />,
+          },
+          {
+            path: "Blood",
+            element: <BloodTestSettings />,
           },
         ],
       },

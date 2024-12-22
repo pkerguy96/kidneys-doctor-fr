@@ -18,6 +18,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Autocomplete,
 } from "@mui/material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -27,10 +28,18 @@ import { useState } from "react";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import addGlobal from "../../hooks/addGlobal";
-import { xrayApiClient, XrayProps } from "../../services/XrayService";
+import {
+  xrayApiClient,
+  XrayPreferencesByCategory,
+  XrayProps,
+  xraysWithCategoryApiClient,
+} from "../../services/XrayService";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { CACHE_KEY_XraysWithCategory } from "../../constants";
+import getGlobal from "../../hooks/getGlobal";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
@@ -78,7 +87,7 @@ const MenuProps = {
   },
 };
 
-const data = {
+/* const data = {
   échographie: [
     { name: "Abdomino pelvienne", price: 200 },
     { name: "Scrotale", price: 250 },
@@ -97,7 +106,7 @@ const data = {
     { name: "Hématurie sondage à 03 voies", price: 600 },
     { name: "CN / PNA injection IM,IV,VV", price: 750 },
   ],
-};
+}; */
 
 const printables = {
   irm: ["Brain MRI", "Spine MRI", "Knee MRI"],
@@ -117,9 +126,16 @@ const RadioPage = ({ onNext }) => {
   const queryClient = useQueryClient();
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
+  const { data, isLoading } = getGlobal(
+    {} as XrayPreferencesByCategory,
+    CACHE_KEY_XraysWithCategory,
+    xraysWithCategoryApiClient,
+    undefined
+  );
+
   const addMutation = addGlobal({} as XrayProps, xrayApiClient, undefined);
-  const radiologyChange = (event: SelectChangeEvent) => {
-    setRadiology(event.target.value);
+  const radiologyChange = (value) => {
+    setRadiology(value);
   };
 
   const printableChange = (event: SelectChangeEvent<string[]>) => {
@@ -208,7 +224,7 @@ const RadioPage = ({ onNext }) => {
   };
 
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
-
+  if (isLoading) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -230,10 +246,10 @@ const RadioPage = ({ onNext }) => {
         <Box className="flex flex-col items-center gap-6 flex-wrap">
           <Box className="w-full flex flex-wrap items-center gap-4">
             <FormControl className="flex-1">
-              <InputLabel id="demo-simple-select-helper-label">
+              {/*     <InputLabel id="demo-simple-select-helper-label">
                 Paraclinique
-              </InputLabel>
-              <Select
+              </InputLabel> */}
+              {/*    <Select
                 className="w-full"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
@@ -241,12 +257,65 @@ const RadioPage = ({ onNext }) => {
                 label="Paraclinique"
                 onChange={radiologyChange}
               >
-                {Object.keys(data).map((radio, index) => (
-                  <MenuItem key={`radio_${index}`} value={radio}>
-                    {radio}
-                  </MenuItem>
-                ))}
-              </Select>
+                {Object.keys(data).length > 0
+                  ? Object.keys(data).map((radio, index) => (
+                      <MenuItem key={`radio_${index}`} value={radio}>
+                        {radio}
+                      </MenuItem>
+                    ))
+                  : [
+                      <MenuItem key="no-data" disabled>
+                        Aucune donnée disponible
+                      </MenuItem>,
+                      <MenuItem
+                        key="add-data"
+                        onClick={() => navigate("/settings/xrays")}
+                        style={{ color: "blue" }}
+                      >
+                        Ajouter des données
+                      </MenuItem>,
+                    ]}
+              </Select> */}
+              <Autocomplete
+                className="w-full"
+                id="demo-autocomplete-paraclinique"
+                options={Object.keys(data)} // Use Object.keys(data) as the options
+                getOptionLabel={(option) => option} // Define how to display options
+                value={radiology || null} // Bind selected value
+                onChange={(event, newValue) => {
+                  radiologyChange(newValue);
+                }} // Handle change
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Paraclinique"
+                    variant="outlined"
+                    placeholder="Choisissez une option"
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <li {...props} key={`radio_${option}`}>
+                    {option}
+                  </li>
+                )}
+                noOptionsText={
+                  <div>
+                    <div style={{ padding: "8px 16px" }}>
+                      Aucune donnée disponible
+                    </div>
+                    <div
+                      style={{
+                        color: "blue",
+                        cursor: "pointer",
+                        padding: "8px 16px",
+                      }}
+                      onClick={() => navigate("/settings/xrays")}
+                    >
+                      Ajouter des données
+                    </div>
+                  </div>
+                }
+              />
             </FormControl>
             <Button
               className="!px-4 !py-2 !min-w-max !rounded-full"
@@ -266,8 +335,7 @@ const RadioPage = ({ onNext }) => {
                 <TableHead className="bg-gray-200">
                   <TableRow>
                     <TableCell width={300}>Operation</TableCell>
-                    {/*                     <TableCell width="300px">Prix</TableCell>
-                     */}{" "}
+
                     <TableCell>Note</TableCell>
                     <TableCell width={60} align="center">
                       Action
@@ -275,7 +343,7 @@ const RadioPage = ({ onNext }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fields.length ? (
+                  {fields.length > 0 ? (
                     fields.map((carry, index) => (
                       <TableRow
                         key={index}
@@ -299,7 +367,7 @@ const RadioPage = ({ onNext }) => {
                                 )
                               }
                             >
-                              {data[carry.type].map((radio, _index) => (
+                              {data[carry.type]?.map((radio, _index) => (
                                 <MenuItem
                                   key={`radio_${_index}`}
                                   value={radio.name}
@@ -310,18 +378,6 @@ const RadioPage = ({ onNext }) => {
                             </Select>
                           </FormControl>
                         </TableCell>
-                        {/* <TableCell width="300px">
-                        <FormControl className="w-full md:flex-1" size="medium">
-                          <TextField
-                            id={`price_${index}`}
-                            type="number"
-                            value={carry.price}
-                            onChange={(e) =>
-                              changeRadiologyPrice(e.target.value, index)
-                            }
-                          />
-                        </FormControl>
-                      </TableCell> */}
                         <TableCell>
                           <FormControl
                             className="w-full md:flex-1"
@@ -336,7 +392,7 @@ const RadioPage = ({ onNext }) => {
                             />
                           </FormControl>
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="center">
                           <IconButton onClick={() => handleRemoveRow(index)}>
                             <DeleteOutlineIcon
                               color="error"
@@ -349,14 +405,8 @@ const RadioPage = ({ onNext }) => {
                     ))
                   ) : (
                     <TableRow className="border-t border-gray-300">
-                      <TableCell
-                        colSpan={3}
-                        align="center"
-                        className="!text-gray-600 p-4"
-                      >
-                        <p className="text-lg">
-                          Désolé, aucun diagnostic pour le moment.
-                        </p>
+                      <TableCell colSpan={3} align="center">
+                        Désolé, aucun diagnostic pour le moment.
                       </TableCell>
                     </TableRow>
                   )}

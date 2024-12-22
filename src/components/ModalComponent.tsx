@@ -44,14 +44,14 @@ const ModalComponent = ({ open, onClose }: ModalComponentProps) => {
       <Modal open={open} onClose={onClose}>
         <Box sx={style} className="w-[300px] md:w-[400px]">
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Are you sure you want to logout ?
+            Etes-vous sûr de vouloir vous déconnecter ?
           </Typography>
           <Box className="flex flex-row mt-5 content-center">
             <Button variant="outlined" sx={{ marginRight: "30px" }}>
-              Cancel
+              Annuler
             </Button>
             <Button onClick={logOut} variant="contained">
-              Confirm
+              Confirmer
             </Button>
           </Box>
         </Box>

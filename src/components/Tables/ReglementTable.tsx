@@ -1,40 +1,21 @@
 //@ts-ignore
-import MUIDataTable from "mui-datatables-mara";
-import { Box, Chip, IconButton, Tooltip } from "@mui/material";
-import LoadingSpinner from "./LoadingSpinner";
+import { Box, Chip, IconButton, Switch, Tooltip } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import PaymentModal from "./PaymentModal";
+import PaymentModal from "../PaymentModal";
 import { useState } from "react";
-import { confirmDialog } from "./ConfirmDialog";
-import { useSnackbarStore } from "../zustand/useSnackbarStore";
+import { confirmDialog } from "../ConfirmDialog";
+import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import { useQueryClient } from "@tanstack/react-query";
-import getGlobal from "../hooks/getGlobal";
-import operationApiClient from "../services/OperationService";
-import { CACHE_KEY_Operation } from "../constants";
-import deleteItem from "../hooks/deleteItem";
-import DataTable from "./DataTable";
-import getGlobalv2 from "../hooks/getGlobalv2";
-import useUserRoles from "../zustand/UseRoles";
+import operationApiClient from "../../services/OperationService";
+import { CACHE_KEY_Operation } from "../../constants";
+import deleteItem from "../../hooks/deleteItem";
+import DataTable from "../DataTable";
+import getGlobalv2 from "../../hooks/getGlobalv2";
+import useUserRoles from "../../zustand/UseRoles";
 
-interface CustomPaymentInfo {
-  id: number;
-  date: string;
-  full_name: string;
-  patient_id: number;
-  totalPaid: number;
-  total_cost: number;
-  isPaid: boolean;
-}
-
-interface Payment {
-  id: number;
-  amount_paid: string;
-  is_paid: number;
-  total_cost: string;
-}
 const ReglementTable = () => {
   const { can } = useUserRoles();
-
+  const [isPaidFilter, setIsPaidFilter] = useState<boolean | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [modalOperationId, setModalOperationId] = useState<number | null>(null);
   const { showSnackbar } = useSnackbarStore();
@@ -58,6 +39,13 @@ const ReglementTable = () => {
       label: "Nom complet",
       options: {
         filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "Mutuelle",
+      label: "Mutuelle",
+      options: {
         sort: true,
       },
     },
@@ -118,7 +106,6 @@ const ReglementTable = () => {
               <Tooltip title="Supprimer paiement">
                 <IconButton
                   className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                  title="Supprimer"
                   onClick={() => {
                     const id = tableMeta.rowData[0]; // "id" is the first column
                     confirmDialog(
@@ -178,7 +165,8 @@ const ReglementTable = () => {
       rowsPerPage,
       searchQuery,
 
-      undefined
+      undefined,
+      isPaidFilter !== null ? { isPaid: isPaidFilter ? 1 : 0 } : undefined
     );
   return (
     <>
@@ -192,6 +180,21 @@ const ReglementTable = () => {
             options={{
               searchPlaceholder: "Rechercher une opération",
               selectableRowsHideCheckboxes: true,
+              customToolbar: () => {
+                return (
+                  <Tooltip title="Filtrer par non payé">
+                    <IconButton>
+                      <Switch
+                        aria-label="hhhh"
+                        checked={isPaidFilter === false}
+                        onChange={() =>
+                          setIsPaidFilter(isPaidFilter === false ? null : false)
+                        }
+                      />
+                    </IconButton>
+                  </Tooltip>
+                );
+              },
               onRowClick: (s: any, _m: any, e: any) => {
                 if (
                   e.target.querySelector(".btn-ordonance-delete") ||

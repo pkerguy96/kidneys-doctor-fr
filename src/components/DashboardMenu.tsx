@@ -3,7 +3,9 @@ import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import ModalComponent from "./ModalComponent";
-
+import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 const AdminProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -48,21 +50,64 @@ const AdminProfile = () => {
         id="menu-appbar"
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: "bottom", // Adjust the vertical position to bottom
+          vertical: "bottom",
           horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: "top", // Adjust the vertical position to top
+          vertical: "top",
           horizontal: "right",
         }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem component={Link} to="/profile" onClick={handleClose}>
-          Profil
-        </MenuItem>
-        <MenuItem onClick={HandleLogout}>déconnecter</MenuItem>
+        <Box className="w-[180px] flex flex-col">
+          <MenuItem
+            component={Link}
+            to="/profile"
+            onClick={handleClose}
+            className="text-inherit flex-1 flex items-center hover:text-blue-500"
+          >
+            <Box className="flex flex-wrap gap-2 items-center">
+              <AssignmentIndOutlinedIcon
+                className="text-lg text-inherit"
+                fontSize="medium"
+                fill="currentColor"
+              />
+              <span className="w-0 flex-1">Profil</span>
+            </Box>
+          </MenuItem>
+
+          <MenuItem
+            component={Link}
+            to="/profile/password"
+            onClick={handleClose}
+            className="text-inherit flex-1 flex items-center hover:text-blue-500"
+          >
+            <Box className="flex flex-wrap gap-2 items-center">
+              <LockOutlinedIcon
+                className="text-lg text-inherit"
+                fontSize="medium"
+                fill="currentColor"
+              />
+              <span className="w-0 flex-1">Mot de passe</span>
+            </Box>
+          </MenuItem>
+
+          <MenuItem
+            onClick={HandleLogout}
+            className="text-inherit flex-1 flex items-center hover:text-blue-500"
+          >
+            <Box className="flex flex-wrap gap-2 items-center">
+              <LogoutOutlinedIcon
+                className="text-lg text-inherit"
+                fontSize="medium"
+                fill="currentColor"
+              />
+              Déconnecter
+            </Box>
+          </MenuItem>
+        </Box>
       </Menu>
       {isModalOpen && (
         <ModalComponent

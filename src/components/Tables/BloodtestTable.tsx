@@ -36,11 +36,18 @@ const BloodtestTable = () => {
       },
     },
     {
-      name: "blood_test",
+      name: "blood_tests",
       label: "Test sanguin",
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          // Check if blood_tests is an array and map the titles
+          if (Array.isArray(value)) {
+            return value.map((test) => test.title).join(", ");
+          }
+          return ""; // Return empty string if blood_tests is not an array
+        },
       },
     },
     {
@@ -62,10 +69,7 @@ const BloodtestTable = () => {
             <>
               {can(["delete_blood", "doctor"]) && (
                 <Tooltip title="Supprimer l'ordonance">
-                  <IconButton
-                    className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                    title="Supprimer"
-                  >
+                  <IconButton className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer">
                     <DeleteOutlineIcon
                       color="error"
                       className="pointer-events-none"

@@ -95,9 +95,9 @@ const DashboardKpiPage = () => {
           )}
         </Box>
         <Box className="flex flex-col gap-6 lg:col-span-4">
-          <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+          {/*  <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
             <h1 className="text-xl font-semibold">Hna ajouti hadik alhrgawi</h1>
-          </Box>
+          </Box> */}
           <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
             <h1 className="text-xl font-semibold">Groupe d’âge des patients</h1>
             <PatientAgeGroupKpi />

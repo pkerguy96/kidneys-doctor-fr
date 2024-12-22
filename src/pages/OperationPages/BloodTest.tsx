@@ -4,16 +4,31 @@ import {
   Typography,
   FormControl,
   Autocomplete,
-  Chip,
   TextField,
   Button,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { BodySides, BoneDoctorBloodTests } from "../../constants";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { CACHE_KEY_BloodtestList } from "../../constants";
 import addGlobal from "../../hooks/addGlobal";
-import { bloodTestApiClient, BloodTestProps } from "../../services/BloodTest";
+import {
+  bloodTestApiClient,
+  bloodTestpreflistApiClient,
+  BloodTestProps,
+} from "../../services/BloodTest";
 import { useLocation } from "react-router";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import getGlobal from "../../hooks/getGlobal";
+import LoadingSpinner from "../../components/LoadingSpinner";
+
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
   return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
@@ -54,13 +69,20 @@ interface Props {
 }
 const BloodTest = ({ onNext }) => {
   const location = useLocation();
+  const [analyse, setAnalyse] = useState<number>(NaN);
+  const [fields, setFields] = useState([]);
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
   const operationId = queryParams.get("operation_id");
   const [row, setRow] = useState<any>();
-  const [call, setCall] = useState<any>(false);
   const { handleSubmit, control, watch } = useForm<Props>();
   const addMutation = addGlobal({} as BloodTestProps, bloodTestApiClient);
+  const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
+    {},
+    CACHE_KEY_BloodtestList,
+    bloodTestpreflistApiClient,
+    undefined
+  );
   if (!patient_id) {
     return (
       <Typography variant="h6" color="error" align="center">
@@ -69,18 +91,33 @@ const BloodTest = ({ onNext }) => {
       </Typography>
     );
   }
+
+  /*   const analyseChange = (event: SelectChangeEvent) => {
+    setAnalyse(event.target.value);
+  }; */
+
+  const handleAddRow = () => {
+    if (Number.isNaN(analyse)) return;
+    setFields((old) => [...old, BoneDoctorBloodTests[analyse]]);
+    setAnalyse(NaN);
+  };
+
+  const handleRemoveRow = (index) => {
+    setFields((old) => old.filter((current, _index) => _index !== index));
+  };
+
   const onSubmit = async (data) => {
-    const formatedData = {
+    const formatedData: any = {
       patient_id: patient_id,
       operation_id: operationId ? parseInt(operationId) : null,
-      ...data,
+      blood_test: fields,
     };
+    console.log(formatedData);
 
     try {
       addMutation.mutateAsync(formatedData, {
         onSuccess: (data: any) => {
           setRow(data.data);
-          setCall(true);
         },
         onError: (error) => {
           console.log(error);
@@ -88,14 +125,15 @@ const BloodTest = ({ onNext }) => {
       });
     } catch (error) {}
   };
-  const rows = watch("blood_test") || [];
+  // const rows = watch("blood_test") || [];
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
   useEffect(() => {
-    if (!row || !call) return;
+    if (!row) return;
     Print("#page", () => {
       onNext();
     });
-  }, [row, call]);
+  }, [row]);
+  if (isLoading) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -111,54 +149,102 @@ const BloodTest = ({ onNext }) => {
             component="h2"
             className="text-center !text-2xl font-bold"
           >
-            Sélection d'Analyses de Sang
+            Sélection d'analyses
           </Typography>
         </Box>
         <Box className="flex gap-4 flex-col">
-          <Box className="w-full flex flex-col gap-2">
-            <label htmlFor="note" className="w-full md:w-[160px]">
-              Analyses
-            </label>
-            <FormControl className="w-full md:flex-1">
-              <Controller
-                name="blood_test"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    className="bg-white"
-                    multiple
-                    id="tags-filled"
-                    options={BoneDoctorBloodTests.map((option) => option.title)}
-                    defaultValue={[]}
-                    value={field.value || []}
-                    onChange={(event, newValue) => field.onChange(newValue)}
-                    freeSolo
-                    renderTags={(value: readonly string[], getTagProps) =>
-                      value.map((option: string, index: number) => {
-                        const { key, ...tagProps } = getTagProps({ index });
-                        return (
-                          <Chip
-                            variant="outlined"
-                            label={option}
-                            key={key}
-                            {...tagProps}
-                          />
-                        );
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        placeholder="Analyses "
-                        sx={autocompleteStyles}
-                      />
-                    )}
+          <Box className="w-full flex flex-wrap items-center gap-4">
+            <FormControl className="flex-1">
+              <Autocomplete
+                className="w-full"
+                id="demo-autocomplete-helper"
+                options={BoneDoctorBloodTests} // Array of options
+                getOptionLabel={(option) => option.title} // Define how to display options
+                value={BoneDoctorBloodTests[analyse] || null} // Bind selected value
+                onChange={(event, newValue) => {
+                  setAnalyse(
+                    newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
+                  );
+                }} // Handle change
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Analyses"
+                    variant="outlined"
+                    placeholder="Choisissez une analyse"
                   />
                 )}
               />
             </FormControl>
+            <Button
+              className="!px-4 !py-2 !min-w-max !rounded-full"
+              variant="outlined"
+              onClick={handleAddRow}
+            >
+              <AddIcon />
+            </Button>
           </Box>
+        </Box>
+        <Box className="w-full flex flex-col gap-2">
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            className="border border-gray-300"
+          >
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead className="bg-gray-200">
+                <TableRow>
+                  <TableCell width={100}>Code</TableCell>
+                  <TableCell>Analyse</TableCell>
+                  <TableCell width={200}>Prix</TableCell>
+                  <TableCell width={200}>Délai</TableCell>
+                  <TableCell width={60} align="center">
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fields.length ? (
+                  fields.map((carry, index) => (
+                    <TableRow key={index} className="border-t border-gray-300">
+                      <TableCell>{carry.code}</TableCell>
+                      <TableCell>{carry.title}</TableCell>
+                      <TableCell>
+                        {carry.price} {carry.price ? "MAD" : "n/a"}
+                      </TableCell>
+                      <TableCell>
+                        {carry.DELAI === null || carry.DELAI === ""
+                          ? "n/a"
+                          : carry.DELAI}
+                      </TableCell>
+
+                      <TableCell>
+                        <IconButton onClick={() => handleRemoveRow(index)}>
+                          <DeleteOutlineIcon
+                            color="error"
+                            className="pointer-events-none"
+                            fill="currentColor"
+                          />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow className="border-t border-gray-300">
+                    <TableCell
+                      colSpan={3}
+                      align="center"
+                      className="!text-gray-600 p-4"
+                    >
+                      <p className="text-lg">
+                        Désolé, aucun analyse pour le moment.
+                      </p>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
         <Box className="flex justify-between flex-row content-center">
           <Button
@@ -190,16 +276,15 @@ const BloodTest = ({ onNext }) => {
               {FormattedDate[2]}
             </p>
             <p className="font-semibold">
-              Nom & Prenom: {row?.nom}
-              {row?.prenom}
+              Nom & Prenom: {row?.nom} {row?.prenom}
             </p>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex flex-col gap-2">
-              {rows.map((details: any, index: number) => (
+              {fields.map((details: any, index: number) => (
                 <div key={index}>
                   <h3 className="font-bold">
-                    {index + 1}- {details}
+                    {index + 1}- {details.title}
                   </h3>
                 </div>
               ))}

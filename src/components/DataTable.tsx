@@ -69,6 +69,7 @@ const DataTable = ({
       onChangePage: handlePageChange,
       onSearchClose: closeSearch,
       filterType: "dropdown",
+      filter: false,
       textLabels: {
         body: {
           noMatch:
@@ -89,11 +90,7 @@ const DataTable = ({
           viewColumns: "Afficher les colonnes",
           filterTable: "Filtrer les données",
         },
-        filter: {
-          all: "Tous",
-          title: "FILTRES",
-          reset: "RÉINITIALISER",
-        },
+
         viewColumns: {
           title: "Afficher les colonnes",
           titleAria: "Afficher/Cacher les colonnes",

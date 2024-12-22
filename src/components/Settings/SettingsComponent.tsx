@@ -17,7 +17,9 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LocalPoliceOutlinedIcon from "@mui/icons-material/LocalPoliceOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import HealingOutlinedIcon from "@mui/icons-material/HealingOutlined";
+import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import useUserRoles from "../../zustand/UseRoles";
+import BloodtypeOutlinedIcon from "@mui/icons-material/BloodtypeOutlined";
 
 /*  */
 const SettingsComponent = () => {
@@ -48,11 +50,25 @@ const SettingsComponent = () => {
       permissions: ["doctor", "access_op_settings"],
     },
     {
-      name: "Gestion des radiographie",
+      name: "Gestion paraclinique",
       url: "/Settings/Xrays",
       icon: LocalHospitalOutlinedIcon,
       checkPermissions: true,
       permissions: ["doctor", "access_xray_settings"],
+    },
+    {
+      name: "Gestion des Examens Demandés",
+      url: "/Settings/Examen",
+      icon: NoteAltOutlinedIcon,
+      checkPermissions: true,
+      permissions: ["doctor"],
+    },
+    {
+      name: "Gestion des Analyses",
+      url: "/Settings/Blood",
+      icon: BloodtypeOutlinedIcon,
+      checkPermissions: true,
+      permissions: ["doctor"],
     },
     {
       name: "Gestion des rôles",

@@ -70,7 +70,6 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
 
       // Check if this is an outsourced operation
       setIsOutsource(data.outsource === 1);
-      console.log("outsource?", data.outsource === 1);
 
       if (data.outsource === 1) {
         // Use fee for external operations
@@ -78,7 +77,6 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
           (total: number, external: any) => total + Number(external.fee),
           0
         );
-        console.log("externalFee?", externalFee);
 
         setTotalCost(externalFee);
       } else {
@@ -246,7 +244,7 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
                           className="!px-2 !py-1 !border-0"
                           align="right"
                         >
-                          {row.price} MAD
+                          {row.fee} MAD
                         </TableCell>
                       </TableRow>
                     ))}
@@ -357,7 +355,7 @@ const PaymentModal = ({ open, onClose, operationID }: ModalComponentProps) => {
                           className="!text-gray-600 p-4"
                         >
                           <p className="text-lg">
-                            Désolé, aucun paiment pour le moment.
+                            Désolé, aucun paiement pour le moment.
                           </p>
                         </TableCell>
                       </TableRow>

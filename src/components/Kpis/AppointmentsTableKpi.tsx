@@ -28,7 +28,7 @@ const AppointmentsTableKpi = () => {
       CACHE_KEY_WAITINGLIST,
       FetchWaitingList,
       page,
-      5,
+      10,
       searchQuery,
 
       {

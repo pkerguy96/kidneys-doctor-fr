@@ -220,6 +220,7 @@ function WaitingRoomMenu() {
                 setPatient={setSelectedPatient}
                 onOptionsChange={adjustHeight}
                 showExternalLabel={false}
+                options={[]}
               />
             </Box>
             <Box className="flex flex-wrap items-center justify-end gap-4">

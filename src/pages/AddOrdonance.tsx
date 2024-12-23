@@ -1,10 +1,7 @@
-//@ts-nocheck
 import {
   Paper,
   Box,
-  Divider,
   TextField,
-  Autocomplete,
   Button,
   Typography,
   FormControl,
@@ -12,14 +9,12 @@ import {
 } from "@mui/material";
 import { items } from "../services/Medicines.json";
 import AddIcon from "@mui/icons-material/Add";
-import { useState, useEffect, lazy, Suspense, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Patient } from "./AddPatientForm";
-import { redirect, useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { AxiosError } from "axios";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -28,21 +23,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useSnackbarStore } from "../zustand/useSnackbarStore";
 import { useQueryClient } from "@tanstack/react-query";
-import getGlobal from "../hooks/getGlobal";
-import { CACHE_KEY_Operation, CACHE_KEY_PATIENTS } from "../constants";
-import patientAPIClient, { OnlyPatientData } from "../services/PatientService";
+import { CACHE_KEY_PATIENTS } from "../constants";
+import patientAPIClient from "../services/PatientService";
 import updateItem from "../hooks/updateItem";
 import ordonanceApiClient, { Ordonance } from "../services/OrdonanceService";
 import addGlobal from "../hooks/addGlobal";
-import CreateAppointmentModal from "../components/CreateAppointmentModal";
-import useGlobalStore from "../zustand/useGlobalStore";
-import { PayementVerificationApiClient } from "../services/OperationService";
 import getGlobalById from "../hooks/getGlobalById";
-import {
-  FetchPatientsWaitingRoom,
-  PatientNameWaitingRoom,
-} from "../services/WaitingroomService";
-import useDebounce from "../hooks/useDebounce";
+import PatientSearchAutocomplete from "../components/PatientSearchAutocomplete";
+import usePrint from "./PrintGlobal";
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
   return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
@@ -78,22 +66,21 @@ function Print(target: any, callback: Function = () => {}) {
     }, 1000);
   };
 }
+interface FormData {
+  date: string;
+  patient: { id: number; name: string } | null;
+}
 const AddOrdonanceUpdated = ({ onNext }: any) => {
   const [drugs, setDrugs] = useState([]);
-  /*  const [drug, setDrug] = useState({}); */
-  const [selectedPatient, setSelectedPatient] = useState(null);
   const [name, setName] = useState("");
   const [fromOperation, setFromOperation] = useState(false);
   const [optionsArray, setOptionsArray] = useState(null);
   const [iserror, setIsError] = useState(false);
   const queryClient = useQueryClient();
-  const [options, setOptions] = useState([]);
   const { showSnackbar } = useSnackbarStore();
-  const [searchQuery, setSearchQuery] = useState("");
+  const { print, Printable } = usePrint();
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const [isLoadingPatient, setLoading] = useState(false);
-  const { handleSubmit, setValue, getValues, control } = useForm({
+  const { handleSubmit, setValue, getValues, control } = useForm<FormData>({
     defaultValues: {
       date: new Date().toISOString().split("T")[0],
     },
@@ -107,15 +94,8 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
   const queryParams = new URLSearchParams(search);
   const id = queryParams.get("id");
   const ordonanceID = queryParams.get("ordonanceID");
-  const operation_id = queryParams.get("operation_id");
   const direct = queryParams.get("direct");
   const navigate = useNavigate();
-  /*   const { data: patientsData, isLoading } = getGlobal(
-    {} as OnlyPatientData, // Tname (you can use a placeholder object here)
-    [CACHE_KEY_PATIENTS[0]], // query
-    patientAPIClient, // service
-    undefined // opts
-  ); */
 
   const { data: SpecifiedPatient, isLoading: isLoading3 } = id
     ? getGlobalById(
@@ -126,46 +106,29 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
         parseInt(id)
       )
     : { data: {}, isLoading: false };
-  const searchMutation = addGlobal(
-    {} as PatientNameWaitingRoom,
-    FetchPatientsWaitingRoom
-  );
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery((prevQuery) => (prevQuery !== query ? query : prevQuery));
-  }, []);
 
   const isAddMode = !id;
 
-  /* if (
-    patientsData &&
-    typeof patientsData === "object" &&
-    Object.keys(patientsData).length > 0
-  ) {
-    dataArray = Object.values(patientsData);
-  } */
   useEffect(() => {
     if (!isAddMode) {
       if (SpecifiedPatient && id && !ordonanceID) {
-        setOptionsArray(
-          [SpecifiedPatient].map((p) => ({
-            name: `${p.nom} ${p.prenom}`,
-            id: p.id,
-          }))
-        );
+        const formattedPatient = {
+          id: SpecifiedPatient.id,
+          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
+        };
 
-        SpecifiedPatient.name = `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`;
-        setValue("patient", SpecifiedPatient);
+        setOptionsArray([formattedPatient]);
+        setValue("patient", formattedPatient);
+        console.log("im entered", formattedPatient);
         setFromOperation(true);
       } else if (SpecifiedPatient) {
-        setOptionsArray(
-          [SpecifiedPatient].map((p) => ({
-            name: `${p.nom} ${p.prenom}`,
-            id: p.id,
-          }))
-        );
+        const formattedPatient = {
+          id: SpecifiedPatient.id,
+          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
+        };
 
-        SpecifiedPatient.name = `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`;
-        setValue("patient", SpecifiedPatient);
+        setOptionsArray([formattedPatient]);
+        setValue("patient", formattedPatient);
 
         const SpecifiedOrdonance = SpecifiedPatient.ordonances.find(
           (ordonance) => ordonance.id === parseInt(ordonanceID)
@@ -173,17 +136,18 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
 
         if (SpecifiedOrdonance) {
           setValue("date", SpecifiedOrdonance.date);
-          const DrugsDetails = SpecifiedOrdonance.ordonance_details;
-          const extractedDetails = DrugsDetails.map((item) => {
-            return {
+
+          const DrugsDetails = SpecifiedOrdonance.ordonance_details.map(
+            (item) => ({
               id: item.id,
               medicine_name: item.medicine_name,
               note: item.note,
               price: "",
               type: "",
-            };
-          });
-          setDrugs(extractedDetails);
+            })
+          );
+
+          setDrugs(DrugsDetails);
         }
       }
     }
@@ -222,7 +186,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
   const createUser = async (formData: Ordonance) => {
     return await Addmutation.mutateAsync(formData, {
       onSuccess: () => {
-        Print("#page", () => {
+        print(() => {
           if (direct) {
             showSnackbar("Ordonnance ajoutée avec succès.", "success");
             navigate("/Ordonnance");
@@ -266,41 +230,12 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
       )
     );
   };
-  const handlePatientSelect = useCallback((event: any, newValue: any) => {
-    setSelectedPatient(newValue);
-  }, []);
+
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
   const removeOrdonance = (id: any) => {
     setDrugs((old) => old.filter((e) => e.id !== id));
   };
-  useEffect(() => {
-    const fetchPatients = async () => {
-      if (!debouncedSearchQuery) {
-        setOptionsArray([]);
 
-        return;
-      }
-      if (debouncedSearchQuery) {
-        setLoading(true);
-        try {
-          const response = (await searchMutation.mutateAsync({
-            searchQuery: debouncedSearchQuery,
-          })) as { data: { id: number; name: string }[] };
-
-          const patients = response?.data ?? [];
-
-          setOptionsArray(patients);
-        } catch (error) {
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setOptionsArray([]);
-      }
-    };
-
-    fetchPatients();
-  }, [debouncedSearchQuery]);
   if (isLoading3) {
     return <LoadingSpinner />;
   }
@@ -332,40 +267,14 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
               <Controller
                 name="patient"
                 control={control}
-                defaultValue={null}
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => {
-                  return (
-                    <Autocomplete
-                      disablePortal
-                      options={optionsArray} // Options array
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={
-                        (option, value) => option.id === value?.id // Ensure match by ID
-                      }
-                      value={value || null} // Ensure the value matches the expected format
-                      onChange={(event, newValue) => {
-                        onChange(newValue); // Update the selected value in RHF
-                      }}
-                      onInputChange={(event, newInputValue) => {
-                        handleSearch(newInputValue); // Trigger search logic
-                      }}
-                      loading={isLoadingPatient}
-                      loadingText={<LoadingSpinner size="2rem" />}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Rechercher un patient"
-                          error={!!error}
-                          helperText={error ? error.message : null}
-                        />
-                      )}
-                    />
-                  );
-                }}
-                rules={{ required: "Patient selection is required" }} // Validation rule
+                render={({ field }) => (
+                  <PatientSearchAutocomplete
+                    options={optionsArray || []}
+                    showExternalLabel={false}
+                    setPatient={field.onChange}
+                    defaultValue={field.value}
+                  />
+                )}
               />
             </Box>
           </Box>
@@ -392,7 +301,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
                     type="date"
                     {...field}
                     id="outlined-required"
-                    size="large"
+                    size="medium"
                   />
                 )}
               />
@@ -463,10 +372,6 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
             </Typography>
           )}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
-            {/*     <label htmlFor="nom" className="w-full md:w-[160px]">
-              Sélectionné:
-            </label> */}
-
             <TableContainer
               component={Paper}
               elevation={0}
@@ -560,34 +465,18 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
           </Button>
         </Box>
       </Box>
-      <div
-        id="page"
-        className="hidden w-full flex-col gap-4 bg-white rounded-sm"
-      >
-        <div className="w-full flex flex-col gap-6">
-          <div className="w-full flex gap-4 items-center flex-col">
-            <p className="font-semibold">
-              Fait a beni mellal Le {FormattedDate[0]}/{FormattedDate[1]}/
-              {FormattedDate[2]}
-            </p>
-            <p className="font-semibold">
-              Nom & Prenom: {getValues("patient")?.name}
-            </p>
+      <Printable
+        name={getValues("patient")?.name}
+        items={drugs}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1}- {item.medicine_name}
+            </h3>
+            <p className="ms-4">{item.note}</p>
           </div>
-          <div className="w-full flex flex-col gap-4">
-            <div className="w-full flex flex-col gap-2">
-              {drugs.map((details: any, index: number) => (
-                <div key={index}>
-                  <h3 className="font-bold">
-                    {index + 1}- {details.medicine_name}
-                  </h3>
-                  <p className="ms-4">{details.note}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+        )}
+      />
     </Paper>
   );
 };

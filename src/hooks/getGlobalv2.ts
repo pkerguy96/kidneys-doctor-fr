@@ -5,7 +5,7 @@ const getGlobalv2 = <T>(
   queryKey: string[],
   service: any,
   page = 0, // Default page number
-  pageSize = 20,
+  pageSize = 10,
   searchQuery?: string, // Default page size
   opts?: UseQueryOptions<T[], Error, any, any>,
   filters?: Record<string, any>

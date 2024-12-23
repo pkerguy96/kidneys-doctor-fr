@@ -70,10 +70,7 @@ const OrdonanceTable = () => {
             <Box className="w-max">
               {can(["update_ordonance", "doctor"]) && !patientDeletedAt && (
                 <Tooltip title="Modifier l'ordonance">
-                  <IconButton
-                    className="btn-ordonance-edit text-gray-950 hover:text-blue-700 cursor-pointer"
-                    title="Modifier"
-                  >
+                  <IconButton className="btn-ordonance-edit text-gray-950 hover:text-blue-700 cursor-pointer">
                     <EditOutlinedIcon
                       className="pointer-events-none"
                       fill="currentColor"
@@ -83,10 +80,7 @@ const OrdonanceTable = () => {
               )}
               {can(["delete_ordonance", "doctor"]) && (
                 <Tooltip title="Supprimer l'ordonance">
-                  <IconButton
-                    className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer"
-                    title="Supprimer"
-                  >
+                  <IconButton className="btn-ordonance-delete text-gray-950 hover:text-blue-700 cursor-pointer">
                     <DeleteOutlineIcon
                       color="error"
                       className="pointer-events-none"

@@ -20,13 +20,13 @@ const DataTable = ({
   columns,
   dataHook,
   options = {},
-  defaultPageSize = 15,
+  defaultPageSize = 10,
   noMatchMessage = "No matching records found.",
 }: DataTableProps) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(defaultPageSize);
   const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 500); // Debounced query
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   // Fetching data using the debounced search query
   const { data, isLoading, isError, error } = dataHook(

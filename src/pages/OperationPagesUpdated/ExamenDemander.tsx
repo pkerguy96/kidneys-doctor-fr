@@ -40,6 +40,7 @@ import { patientTinyDataAPIClient } from "../../services/PatientService";
 import getGlobal from "../../hooks/getGlobal";
 import { ExamenPreferencewithCategoriesApiClient } from "../../services/ExamenService";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import usePrint from "../PrintGlobal";
 
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
@@ -82,7 +83,7 @@ const ExamenDemander = ({ onNext }) => {
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
   const navigate = useNavigate();
-
+  const { print, Printable } = usePrint();
   const { data } = getGlobalById(
     {},
     CACHE_KEY_PatienttinyData,
@@ -123,7 +124,7 @@ const ExamenDemander = ({ onNext }) => {
     e.preventDefault();
     if (!fields.length) return;
 
-    Print("#page", () => {
+    print(() => {
       onNext();
     });
   };
@@ -336,7 +337,18 @@ const ExamenDemander = ({ onNext }) => {
           </Button>
         </Box>
       </Box>
-      <div
+      <Printable
+        name={data?.nom + " " + data?.prenom}
+        items={fields}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1}- {item.name} {item.type}
+            </h3>
+          </div>
+        )}
+      />
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -362,7 +374,7 @@ const ExamenDemander = ({ onNext }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </Paper>
   );
 };

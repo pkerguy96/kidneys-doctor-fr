@@ -28,6 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import getGlobal from "../../hooks/getGlobal";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import usePrint from "../PrintGlobal";
 
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
@@ -76,6 +77,7 @@ const BloodTest = ({ onNext }) => {
   const operationId = queryParams.get("operation_id");
   const [row, setRow] = useState<any>();
   const { handleSubmit, control, watch } = useForm<Props>();
+  const { print, Printable } = usePrint();
   const addMutation = addGlobal({} as BloodTestProps, bloodTestApiClient);
   const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
     {},
@@ -129,7 +131,7 @@ const BloodTest = ({ onNext }) => {
   const FormattedDate = new Date().toISOString().split("T")[0].split("-");
   useEffect(() => {
     if (!row) return;
-    Print("#page", () => {
+    print(() => {
       onNext();
     });
   }, [row]);
@@ -265,7 +267,18 @@ const BloodTest = ({ onNext }) => {
           </Button>
         </Box>
       </Box>
-      <div
+      <Printable
+        name={row?.nom + " " + row?.prenom}
+        items={fields}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1}- {item.title}
+            </h3>
+          </div>
+        )}
+      />
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -291,7 +304,7 @@ const BloodTest = ({ onNext }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </Paper>
   );
 };

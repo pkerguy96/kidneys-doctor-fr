@@ -8,6 +8,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import { Box } from "@mui/material";
 import { CACHE_KEY_Ordonance } from "../constants";
 import getGlobalById from "../hooks/getGlobalById";
+import usePrint from "../pages/PrintGlobal";
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
   return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
@@ -49,6 +50,8 @@ const PrintableComponant = () => {
     return <div>No ID specified.</div>;
   }
 
+  const { print, Printable } = usePrint();
+  4;
   const { data, isLoading } = getGlobalById(
     {} as Ordonance,
     [CACHE_KEY_Ordonance[0], id],
@@ -62,6 +65,7 @@ const PrintableComponant = () => {
   }
 
   const FormattedDate = data?.date.split("-");
+  console.log(data);
 
   return (
     <>
@@ -90,7 +94,19 @@ const PrintableComponant = () => {
           </div>
         </div>
       </div>
-      <div
+      <Printable
+        name={data?.patient.nom + " " + data?.patient.prenom}
+        items={data?.ordonance_details}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1}- {item.medicine_name}
+            </h3>
+            <p className="ms-4">{item.note}</p>
+          </div>
+        )}
+      />
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -117,7 +133,7 @@ const PrintableComponant = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <Box className="flex flex-col gap-4 sm:flex-row justify-end  mt-2 w-full ">
         <Button
           className="mt-4"
@@ -125,7 +141,7 @@ const PrintableComponant = () => {
           size="large"
           color="primary"
           startIcon={<PrintIcon />}
-          onClick={() => Print("#page")}
+          onClick={() => print()}
         >
           Print
         </Button>

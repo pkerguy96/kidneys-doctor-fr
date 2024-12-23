@@ -28,6 +28,7 @@ import {
 import { useNavigate } from "react-router";
 import getGlobal from "../../hooks/getGlobal";
 import PatientSearchAutocomplete from "../../components/PatientSearchAutocomplete";
+import usePrint from "../PrintGlobal";
 
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
@@ -69,6 +70,7 @@ const BloodTestAdd = () => {
   const [patient, setPatient] = useState<any>();
   const [analyse, setAnalyse] = useState<number>(NaN);
   const [fields, setFields] = useState([]);
+  const { print, Printable } = usePrint();
   const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
     {},
     CACHE_KEY_BloodtestList,
@@ -98,7 +100,7 @@ const BloodTestAdd = () => {
     try {
       addMutation.mutateAsync(formdata, {
         onSuccess: (data: any) => {
-          Print("#page", () => navigate("/bloodtest"));
+          print(() => navigate("/bloodtest"));
         },
         onError: (error) => {
           console.log(error);
@@ -234,7 +236,18 @@ const BloodTestAdd = () => {
           </Button>
         </Box>
       </Box>
-      <div
+      <Printable
+        name={patient?.name}
+        items={fields}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1}- {item.title}
+            </h3>
+          </div>
+        )}
+      />
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -258,7 +271,7 @@ const BloodTestAdd = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </Paper>
   );
 };

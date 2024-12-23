@@ -5,6 +5,7 @@ import getGlobalById from "../hooks/getGlobalById";
 import LoadingSpinner from "./LoadingSpinner";
 import { CACHE_KEY_Bloodtest } from "../constants";
 import { bloodTestApiClient } from "../services/BloodTest";
+import usePrint from "../pages/PrintGlobal";
 function $tempkate(opts: any) {
   const { lang, dir, size, margin, css, page } = opts;
   return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
@@ -45,6 +46,8 @@ const BloodTestPrintableComponent = () => {
   if (!id) {
     return <div>No ID specified.</div>;
   }
+
+  const { print, Printable } = usePrint();
 
   const { data, isLoading } = getGlobalById(
     {} as any,
@@ -88,7 +91,19 @@ const BloodTestPrintableComponent = () => {
           </div>
         </div>
       </div>
-      <div
+      <Printable
+        name={data?.patient_name}
+        date={data?.created_at}
+        items={data.blood_tests}
+        render={(item, index) => (
+          <div key={index}>
+            <h3 className="font-bold">
+              {index + 1} - {item.title}
+            </h3>
+          </div>
+        )}
+      />
+      {/* <div
         id="page"
         className="hidden w-full flex-col gap-4 bg-white rounded-sm"
       >
@@ -118,7 +133,7 @@ const BloodTestPrintableComponent = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <Box className="flex flex-col gap-4 sm:flex-row justify-end  mt-2 w-full ">
         <Button
           className="mt-4"
@@ -126,7 +141,7 @@ const BloodTestPrintableComponent = () => {
           size="large"
           color="primary"
           startIcon={<PrintIcon />}
-          onClick={() => Print("#page")}
+          onClick={() => print()}
         >
           Print
         </Button>

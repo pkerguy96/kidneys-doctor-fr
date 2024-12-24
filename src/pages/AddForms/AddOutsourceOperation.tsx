@@ -1,26 +1,23 @@
-import React, { useState } from "react";
 import {
   Paper,
   Box,
-  Divider,
   FormControl,
   TextField,
   Button,
-  Autocomplete,
-  CircularProgress,
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import {
   AddOutsourceOperationForm,
-  useSearchHospitals,
-  useSearchPatients,
+  SearchHospitalApiClient,
 } from "../../services/OutsourceOperationService";
 import addGlobal from "../../hooks/addGlobal";
 import { hospitalOperationApiClient } from "../../services/HospitalService";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import PatientSearchAutocomplete from "../../components/PatientSearchAutocomplete";
+import { useMemo } from "react";
 
 interface TransformedOutsourceOperation {
   operation_id: any; // Nullable
@@ -36,22 +33,23 @@ interface TransformedOutsourceOperation {
   hospital?: { id: number; name: string } | null;
 }
 const AddOutsourceOperation = () => {
-  const [patientSearch, setPatientSearch] = useState("");
-  const [hospitalSearch, setHospitalSearch] = useState("");
   const queryClient = useQueryClient();
   const { showSnackbar } = useSnackbarStore();
   const navigate = useNavigate();
 
-  const defaultValues: AddOutsourceOperationForm = {
-    patient: null,
-    hospital: null,
-    operation_type: "",
-    description: "",
-    operation_date: new Date().toISOString().split("T")[0], // Default to today
-    total_price: 0,
-    amount_paid: 0,
-    fee: 0,
-  };
+  const defaultValues: AddOutsourceOperationForm = useMemo(
+    () => ({
+      patient: null,
+      hospital: null,
+      operation_type: "",
+      description: "",
+      operation_date: new Date().toISOString().split("T")[0],
+      total_price: 0,
+      amount_paid: 0,
+      fee: 0,
+    }),
+    []
+  );
   const addmutation = addGlobal(
     {} as AddOutsourceOperationForm,
     hospitalOperationApiClient
@@ -59,34 +57,16 @@ const AddOutsourceOperation = () => {
   const {
     control,
     handleSubmit,
-    setValue,
-    reset, // Allows resetting the form with new default values
     formState: { errors },
   } = useForm<AddOutsourceOperationForm>({
-    defaultValues, // Set default values here
+    defaultValues,
   });
-
-  const {
-    data: patientData,
-    fetchNextPage: fetchNextPatients,
-    hasNextPage: hasNextPatientPage,
-    isFetchingNextPage: isFetchingNextPatientPage,
-  } = useSearchPatients(patientSearch);
-  const {
-    data: hospitalData,
-    fetchNextPage: fetchNextHospitals,
-    hasNextPage: hasNextHospitalPage,
-    isFetchingNextPage: isFetchingNextHospitalPage,
-  } = useSearchHospitals(hospitalSearch);
-
-  const patients = patientData?.pages.flatMap((page) => page.data) || [];
-  const hospitals = hospitalData?.pages.flatMap((page) => page.data) || [];
 
   const onSubmit = async (data: AddOutsourceOperationForm) => {
     const transformedData: TransformedOutsourceOperation = {
-      operation_id: null, // Default value for operation_id
-      hospital_id: data.hospital?.id || 0, // Extract the hospital ID or use a fallback
-      patient_id: data.patient?.id || 0, // Extract the patient ID or use a fallback
+      operation_id: null,
+      hospital_id: data.hospital?.id || 0,
+      patient_id: data.patient?.id || 0,
       operation_type: data.operation_type,
       description: data.description,
       operation_date: data.operation_date,
@@ -131,7 +111,6 @@ const AddOutsourceOperation = () => {
         </Box>
 
         <Box className="w-full flex flex-col gap-4">
-          {/* Patient Search */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
             <label htmlFor="patient" className="w-full md:w-[200px]">
               Patient
@@ -142,41 +121,15 @@ const AddOutsourceOperation = () => {
                 control={control}
                 rules={{ required: "Veuillez sélectionner un patient." }}
                 render={({ field }) => (
-                  <Autocomplete
-                    options={patients}
-                    getOptionLabel={(option) => option.name || ""}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    loading={isFetchingNextPatientPage}
-                    onInputChange={(e, value) => setPatientSearch(value)}
-                    onChange={(e, value) => field.onChange(value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Rechercher un patient"
-                        error={!!errors.patient}
-                        helperText={errors.patient?.message}
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {isFetchingNextPatientPage ? (
-                                <CircularProgress size={20} />
-                              ) : null}
-                              {params.InputProps.endAdornment}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
+                  <PatientSearchAutocomplete
+                    setPatient={field.onChange}
+                    showExternalLabel={false}
                   />
                 )}
               />
             </FormControl>
           </Box>
 
-          {/* Hospital Search */}
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center mt-2">
             <label htmlFor="hospital" className="w-full md:w-[200px]">
               Clinique
@@ -187,34 +140,12 @@ const AddOutsourceOperation = () => {
                 control={control}
                 rules={{ required: "Veuillez sélectionner un clinique." }}
                 render={({ field }) => (
-                  <Autocomplete
-                    options={hospitals}
-                    getOptionLabel={(option) => option.name || ""}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    loading={isFetchingNextHospitalPage}
-                    onInputChange={(e, value) => setHospitalSearch(value)}
-                    onChange={(e, value) => field.onChange(value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Rechercher un clinique"
-                        error={!!errors.hospital}
-                        helperText={errors.hospital?.message}
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {isFetchingNextHospitalPage ? (
-                                <CircularProgress size={20} />
-                              ) : null}
-                              {params.InputProps.endAdornment}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
+                  <PatientSearchAutocomplete
+                    label="Rechercher un clinique"
+                    setPatient={field.onChange}
+                    showExternalLabel={false}
+                    ApiClient={SearchHospitalApiClient as any}
+                    empty={"Aucun clinique trouvé"}
                   />
                 )}
               />

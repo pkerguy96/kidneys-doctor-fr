@@ -1,12 +1,9 @@
-import { usePaginatedSearch } from "../hooks/usePaginatedSearch";
 import { APIClient } from "./Http";
 
 const SearchPatientApiClient = new APIClient<{ id: number; name: string }>(
   "/searchPatients"
 );
-const SearchHospitalApiClient = new APIClient<{ id: number; name: string }>(
-  "/searchHospitals"
-);
+export const SearchHospitalApiClient = new APIClient<any>("/searchHospitals");
 export interface AddOutsourceOperationForm {
   patient?: { id: number; name: string } | null; // Selected patient
   hospital?: { id: number; name: string } | null; // Selected hospital
@@ -17,8 +14,3 @@ export interface AddOutsourceOperationForm {
   amount_paid: number;
   fee: number;
 }
-
-export const useSearchPatients = (search: string) =>
-  usePaginatedSearch(SearchPatientApiClient, ["searchPatients"], search);
-export const useSearchHospitals = (search: string) =>
-  usePaginatedSearch(SearchHospitalApiClient, ["searchHospitals"], search);

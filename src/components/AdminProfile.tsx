@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {
   Avatar,
   Box,
@@ -8,7 +7,7 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import addGlobal from "../hooks/addGlobal";
 import { AuthProfileServiceClient } from "../services/AuthService";
@@ -30,12 +29,12 @@ const AdminProfile = () => {
     },
   });
 
-  const storedUserData = localStorage.getItem("user_login");
-  const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
-  const userProfilePicture = parsedUserData
-    ? parsedUserData.profile || null
-    : null;
-  const userData = parsedUserData.user;
+  const storedUserData = useMemo(() => {
+    const data = localStorage.getItem("user_login");
+    return data ? JSON.parse(data) : null;
+  }, []);
+  const userProfilePicture = storedUserData?.profile || null;
+  const userData = storedUserData?.user || {};
 
   const {
     handleSubmit,
@@ -55,34 +54,37 @@ const AdminProfile = () => {
       required: "Le champ Email est requis.",
     },
   };
-  const onSubmit: SubmitHandler<Props> = async (data) => {
-    try {
-      var form = new FormData();
-      form.append("name", data.name);
-      form.append("email", data.email);
-      if (data.picture) {
-        form.append("picture", data.picture);
+  const onSubmit: SubmitHandler<Props> = useCallback(
+    async (data) => {
+      try {
+        var form: any = new FormData();
+        form.append("name", data.name);
+        form.append("email", data.email);
+        if (data.picture) {
+          form.append("picture", data.picture);
+        }
+        await addmutation.mutateAsync(form, {
+          onSuccess(data: any) {
+            const user = JSON.parse(localStorage.getItem("user_login") || "{}");
+            user.user = data.data;
+            user.profile = data.profile;
+            localStorage.setItem("user_login", JSON.stringify(user));
+            showSnackbar("Utilisateur modifié avec succès", "success");
+          },
+          onError: (error: any) => {
+            const message =
+              error instanceof AxiosError
+                ? error.response?.data?.message
+                : error.message;
+            showSnackbar(`Oops.. ${message}`, "error");
+          },
+        });
+      } catch (error) {
+        showSnackbar(`Oops.. ${error}`, "error");
       }
-      await addmutation.mutateAsync(form, {
-        onSuccess(data: any) {
-          const user = JSON.parse(localStorage.getItem("user_login") || "{}");
-          user.user = data.data;
-          user.profile = data.profile;
-          localStorage.setItem("user_login", JSON.stringify(user));
-          showSnackbar("Utilisateur modifié avec succès", "success");
-        },
-        onError: (error: any) => {
-          const message =
-            error instanceof AxiosError
-              ? error.response?.data?.message
-              : error.message;
-          showSnackbar(`Oops.. ${message}`, "error");
-        },
-      });
-    } catch (error) {
-      showSnackbar(`Oops.. ${error}`, "error");
-    }
-  };
+    },
+    [addmutation]
+  );
   return (
     <Paper className="p-4">
       <Box
@@ -109,7 +111,6 @@ const AdminProfile = () => {
                 return (
                   <Input
                     {...field}
-                    value={value?.fileName}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       onChange(event.target.files?.[0]);
 

@@ -16,7 +16,7 @@ const generateUniqueColors = (count: number) => {
   return Array.from(colors);
 };
 
-const ReferralPatient = () => {
+const ReferralPatient = ({ setLoading }) => {
   const [data, setData] = useState({
     labels: [],
     datasets: [],
@@ -66,9 +66,12 @@ const ReferralPatient = () => {
     }
   }, [referal, chartColors, data]);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  // useEffect(() => {
+  //   console.log("====================================");
+  //   console.log(200, isLoading);
+  //   console.log("====================================");
+  //   setLoading(isLoading);
+  // }, [isLoading]);
 
   if (!data?.datasets.length) return <></>;
 

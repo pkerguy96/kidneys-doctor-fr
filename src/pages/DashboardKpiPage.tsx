@@ -22,6 +22,8 @@ import {
 } from "../services/KpisService";
 import ReferralPatient from "../components/Kpis/ReferralPatient";
 import useUserRoles from "../zustand/UseRoles";
+import PatientKpi from "../components/Kpis/patientKpi";
+import PaymentRateKpi from "../components/Kpis/paymentRateKpi";
 
 const DashboardKpiPage = () => {
   const navigate = useNavigate();
@@ -103,8 +105,10 @@ const DashboardKpiPage = () => {
             <PatientAgeGroupKpi />
           </Box>
           <Box className="w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
-            <TotalpatientsKpi />
-            <ReferralPatient />
+            <PatientKpi />
+          </Box>
+          <Box className="w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+            <PaymentRateKpi />
           </Box>
         </Box>
       </Box>

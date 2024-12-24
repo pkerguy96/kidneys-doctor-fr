@@ -5,15 +5,22 @@ import {
 } from "../../services/KpisService";
 import { CACHE_KEY_totalPatients } from "../../constants";
 import LoadingSpinner from "../LoadingSpinner";
+import { useEffect } from "react";
 
-const TotalpatientsKpi = () => {
+const TotalpatientsKpi = ({ setLoading }) => {
   const { data, isLoading } = getGlobal(
     {} as TotalPatients,
     CACHE_KEY_totalPatients,
     TotalPatientKpiClient,
     undefined
   );
-  if (isLoading) return <LoadingSpinner />;
+
+  // useEffect(() => {
+  //   console.log("====================================");
+  //   console.log(100, isLoading);
+  //   console.log("====================================");
+  //   setLoading(isLoading);
+  // }, [isLoading]);
 
   return (
     <div className="flex flex-wrap  gap-2">

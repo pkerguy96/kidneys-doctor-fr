@@ -11,10 +11,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": false, // Disable strict type-checking
+    /*    "strict": false, // Disable strict type-checking
     "noUnusedLocals": false, // Allow unused local variables
     "noUnusedParameters": false, // Allow unused parameters
-    "noFallthroughCasesInSwitch": false, // Disable switch case fallthrough checking
+    "noFallthroughCasesInSwitch": false, // Disable switch case fallthrough checking */
+    "strict": true, // Enforce all strict type-checking rules
+    "noUnusedLocals": true, // Warn about unused variables
+    "noUnusedParameters": true, // Warn about unused parameters
+    "noFallthroughCasesInSwitch": true, // Prevent missing 'break' in switch cases
     "allowJs": true // Allow JavaScript files
   },
   "include": ["src", "public/viewer.js"],

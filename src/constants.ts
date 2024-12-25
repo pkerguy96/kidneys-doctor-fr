@@ -46,6 +46,7 @@ export const CACHE_KEY_CanceledMonthlyAppointments = [
 export const CACHE_KEY_TvWaitingRoom = ["TvWaitingRoom"];
 export const CACHE_KEY_PatientReferral = ["PatientReferral"];
 export const CACHE_KEY_BloodTestPreference = ["BloodTestPreference"];
+export const CACHE_KEY_CreanceDashboardKpi = ["debtlolllll"];
 
 export const CACHE_KEY_Url = "urllist";
 export const CACHE_KEY_StockExit = ["StockExit"];

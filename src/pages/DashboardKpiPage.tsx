@@ -3,10 +3,8 @@ import RevenueKpi from "../components/Kpis/RevenueKpi";
 import TotalAppointmentsKpi from "../components/Kpis/TotalAppointmentsKpi";
 import CanceledAppointmentsKpi from "../components/Kpis/CanceledAppointmentsKpi";
 import PatientAgeGroupKpi from "../components/Kpis/PatientAgeGroupKpi";
-import TotalpatientsKpi from "../components/Kpis/TotalpatientsKpi";
 import AppointmentsTableKpi from "../components/Kpis/AppointmentsTableKpi";
 import CashierKpi from "../components/Kpis/CashierKpi";
-import LinechartKPI from "../components/Kpis/LinechartKPI";
 import { useNavigate } from "react-router";
 import getGlobal from "../hooks/getGlobal";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -20,7 +18,6 @@ import {
   CanceledAppointments,
   CanceledMonthlyAppointmentsKpiClient,
 } from "../services/KpisService";
-import ReferralPatient from "../components/Kpis/ReferralPatient";
 import useUserRoles from "../zustand/UseRoles";
 import PatientKpi from "../components/Kpis/patientKpi";
 import PaymentRateKpi from "../components/Kpis/paymentRateKpi";

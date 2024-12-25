@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {
   Modal,
   Box,
@@ -7,17 +6,13 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import MuiAlert, { AlertColor } from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { APIClient } from "../services/Http";
 import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-
 import { CACHE_KEY_APPOINTMENTS } from "../constants";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSnackbarStore } from "../zustand/useSnackbarStore";
 
 interface ModalComponentProps {
   open: boolean;
@@ -37,11 +32,7 @@ const AppointmentConfirmation = ({
 }: ModalComponentProps) => {
   const queryClient = useQueryClient();
 
-  const [snackBar, setSnackBar] = useState({
-    isopen: false,
-    message: "",
-    severity: "success",
-  });
+  const { showSnackbar } = useSnackbarStore();
   const [date, time] = data?.date.split("T");
 
   const deleteAppointement = async () => {
@@ -49,64 +40,18 @@ const AppointmentConfirmation = ({
       const apiclient = new APIClient("Appointment");
       await apiclient.DeleteOne(data?.id);
       queryClient.invalidateQueries(CACHE_KEY_APPOINTMENTS);
-      setSnackBar({
-        isopen: true,
-        message: "Le rendez-vous est supprimé",
-        severity: "warning",
-      });
+      showSnackbar("Le rendez-vous est supprimé", "warning");
     } catch (error: any) {
       const message =
         error instanceof AxiosError
           ? error.response?.data?.message
           : error.message;
-      setSnackBar({
-        isopen: true,
-        message: message,
-        severity: "error",
-      });
+      showSnackbar(message, "error");
     }
   };
-  //todo zustand
-  useEffect(() => {
-    let intervalId: number;
-    if (snackBar.severity === "warning") {
-      intervalId = setInterval(() => {
-        setSnackBar({
-          severity: "success",
-        });
-        onClose();
-      }, 1500);
-    }
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [snackBar.severity]);
+
   return (
     <>
-      <Snackbar
-        open={snackBar.isopen}
-        autoHideDuration={3000} // Adjust the duration for how long the snackbar should be displayed
-        onClose={() =>
-          setSnackBar((prevState) => ({ ...prevState, isopen: false }))
-        }
-        anchorOrigin={{
-          vertical: "top", // Set the vertical position to top
-          horizontal: "right", // Set the horizontal position to right
-        }}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() =>
-            setSnackBar((prevState) => ({ ...prevState, isopen: false }))
-          }
-          severity={snackBar.severity as AlertColor}
-        >
-          {snackBar.message}
-        </MuiAlert>
-      </Snackbar>
       <Modal
         open={open}
         onClose={onClose}
@@ -118,15 +63,14 @@ const AppointmentConfirmation = ({
           sx={{ width: 400, bgcolor: "background.paper", p: 2 }}
           className="flex flex-col items-center gap-3 rounded-lg border-0"
         >
-          <Box className=" w-full flex flex-row justify-end">
+          <Box className=" w-full flex flex-row justify-between">
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Détails du rendez-vous
+            </Typography>
             <IconButton onClick={() => onClose()}>
               <ClearIcon />
             </IconButton>
           </Box>
-
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Détails du rendez-vous
-          </Typography>
 
           <TextField
             fullWidth

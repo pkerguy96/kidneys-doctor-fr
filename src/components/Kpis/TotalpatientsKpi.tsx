@@ -21,7 +21,7 @@ const TotalpatientsKpi = ({ setLoading }) => {
   //   console.log("====================================");
   //   setLoading(isLoading);
   // }, [isLoading]);
-
+  if (isLoading) return <LoadingSpinner />;
   return (
     <div className="flex flex-wrap  gap-2">
       <h1 className="text-xl font-semibold w-max">Total patients</h1>

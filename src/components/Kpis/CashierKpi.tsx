@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-
 import { CACHE_KEY_Cachier, CACHE_KEY_CachierNumber } from "../../constants";
 import getGlobal from "../../hooks/getGlobal";
 import {
@@ -10,41 +9,48 @@ import {
 import LoadingSpinner from "../LoadingSpinner";
 import LinechartKPI from "./LinechartKPI";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import { useMemo } from "react";
 
 const CashierKpi = () => {
-  const { data: data1, isLoading: isLoading1 } = getGlobal(
+  const { data: totalCachierData, isLoading: isLoadingCachier } = getGlobal(
     {} as any,
     CACHE_KEY_Cachier,
     TotalcachierAmount,
     undefined
   );
-  const { data: data2, isLoading: isLoading2 } = getGlobal(
-    {} as CashierNumber,
-    CACHE_KEY_CachierNumber,
-    CashierNumberKpiClient,
-    undefined
+  const { data: cashierNumberData, isLoading: isLoadingCashierNumber } =
+    getGlobal(
+      {} as CashierNumber,
+      CACHE_KEY_CachierNumber,
+      CashierNumberKpiClient,
+      undefined
+    );
+
+  const labels = useMemo(
+    () => totalCachierData && Object.keys(totalCachierData),
+    [totalCachierData]
   );
-  if (isLoading1 || isLoading2) return <LoadingSpinner />;
-
-  const labels = data1 ? Object.keys(data1) : [];
-  const dataset1 = {
-    labels,
-    datasets: [
-      {
-        label: "Recettes en espèces",
-        data: data1 ? Object.values(data1) : [],
-        borderColor: "rgb(59 130 246)",
-        background: "rgb(59 130 246)",
-      },
-    ],
-  };
-
+  const dataset1 = useMemo(
+    () => ({
+      labels: labels || [],
+      datasets: [
+        {
+          label: "Recettes en espèces",
+          data: totalCachierData ? Object.values(totalCachierData) : [],
+          borderColor: "rgb(59 130 246)",
+          backgroundColor: "rgb(59 130 246)",
+        },
+      ],
+    }),
+    [labels, totalCachierData]
+  );
+  if (isLoadingCachier || isLoadingCashierNumber) return <LoadingSpinner />;
   return (
     <Box className="flex flex-col !w-full h-full py-2 gap-6">
       <Box className="!w-full flex flex-row justify-between items-center pt-4 px-6">
         <Box className="flex flex-col gap-1 mr-auto my-auto">
           <p className="text-xl font-semibold mr-auto">Caisse</p>
-          <p className="text-3xl font-semibold"> {data2} MAD</p>
+          <p className="text-3xl font-semibold">{cashierNumberData || 0} MAD</p>
         </Box>
         <Box className="aspect-square shadow-md w-14 flex items-center justify-center rounded-full bg-blue-500">
           <PointOfSaleIcon

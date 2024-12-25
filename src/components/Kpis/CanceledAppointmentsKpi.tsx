@@ -8,6 +8,7 @@ import {
 import LoadingSpinner from "../LoadingSpinner";
 import LinechartKPI from "./LinechartKPI";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
+import { useMemo } from "react";
 
 const CanceledAppointmentsKpi = ({ dataset }: { dataset?: any }) => {
   const { data, isLoading } = getGlobal(
@@ -16,21 +17,26 @@ const CanceledAppointmentsKpi = ({ dataset }: { dataset?: any }) => {
     CanceledAppointmentsKpiClient,
     undefined
   );
+
+  const labels = useMemo(
+    () => (dataset ? Object.keys(dataset) : []),
+    [dataset]
+  );
+  const dataset1 = useMemo(
+    () => ({
+      labels,
+      datasets: [
+        {
+          label: "Rendez-vous annulés",
+          data: dataset ? Object.values(dataset) : [],
+          borderColor: "rgb(239 68 68)",
+          backgroundColor: "rgb(239 68 68)",
+        },
+      ],
+    }),
+    [labels, dataset]
+  );
   if (isLoading) return <LoadingSpinner />;
-
-  const labels = dataset ? Object.keys(dataset) : [];
-  const dataset1 = {
-    labels,
-    datasets: [
-      {
-        label: "Rendez-vous annulés",
-        data: dataset ? Object.values(dataset) : [],
-        borderColor: "rgb(239 68 68)",
-        background: "rgb(239 68 68)",
-      },
-    ],
-  };
-
   return (
     <Box className="flex flex-col !w-full h-full py-2 gap-6">
       <Box className="!w-full flex flex-row justify-between items-center pt-4 px-6">

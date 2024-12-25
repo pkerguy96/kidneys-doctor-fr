@@ -78,6 +78,7 @@ export const PatientsReferralClient = new APIClient<AgeData>(
   "/countPatientsByReferral"
 );
 export const TotalcachierAmount = new APIClient<any>("/retrieveFromCashier");
+export const getCreanceApiClient = new APIClient<any>("/getPaymentKpi");
 export const CanceledAppointmentsKpiClient =
   new APIClient<CanceledappointmentsCount>("/getCanceledAppointments");
 

@@ -40,6 +40,7 @@ const PrintGlobal = ({
   name = "",
   items = [],
   render = (item, index) => item,
+  renderTop = () => <></>,
 }) => {
   if (!date) {
     const FormattedDate = new Date().toISOString().split("T")[0].split("-");
@@ -56,6 +57,7 @@ const PrintGlobal = ({
           <p className="font-semibold">{date}</p>
           <p className="font-semibold">{name}</p>
         </div>
+        {renderTop()}
         <div className="w-full flex flex-col gap-4">
           <div className="w-full flex flex-col gap-2">
             {items.map((item: any, index: number) => render(item, index))}

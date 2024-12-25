@@ -4,12 +4,8 @@ import {
   Typography,
   FormControl,
   Autocomplete,
-  Chip,
   TextField,
   Button,
-  SelectChangeEvent,
-  InputLabel,
-  ListSubheader,
   MenuItem,
   Select,
   IconButton,
@@ -19,67 +15,28 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@mui/material";
-import React, { useState } from "react";
-import { Controller } from "react-hook-form";
+import { useState } from "react";
 import {
   CACHE_KEY_ExamenWithCategory,
   CACHE_KEY_PatienttinyData,
 } from "../../constants";
-import { useQueryClient } from "@tanstack/react-query";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
 import { useNavigate } from "react-router";
-import addGlobal from "../../hooks/addGlobal";
-import { XrayProps, xrayApiClient } from "../../services/XrayService";
-import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import getGlobalById from "../../hooks/getGlobalById";
 import { patientTinyDataAPIClient } from "../../services/PatientService";
 import getGlobal from "../../hooks/getGlobal";
 import { ExamenPreferencewithCategoriesApiClient } from "../../services/ExamenService";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import usePrint from "../PrintGlobal";
 
-function $tempkate(opts: any) {
-  const { lang, dir, size, margin, css, page } = opts;
-  return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
-}
-function Print(target: any, callback: Function = () => {}) {
-  const page = document.querySelector(target);
-
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  document.body.appendChild(iframe);
-  var iframeDoc = iframe.contentDocument || iframe?.contentWindow?.document;
-  iframeDoc?.open();
-  iframeDoc?.write(
-    $tempkate({
-      size: {
-        page: "A5",
-        head: "100px",
-        foot: "80px",
-      },
-      page: page.innerHTML,
-      margin: "10mm 10mm 10mm 10mm",
-      css: [
-        '<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">',
-      ],
-    })
-  );
-  iframeDoc?.close();
-  iframe.onload = function () {
-    iframe?.contentWindow?.print();
-    callback();
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000);
-  };
-}
 const ExamenDemander = ({ onNext }) => {
   const [examen, setExamen] = useState("");
   const [fields, setFields] = useState([]);
+  const [note, setNote] = useState("");
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
   const navigate = useNavigate();
@@ -128,7 +85,7 @@ const ExamenDemander = ({ onNext }) => {
       onNext();
     });
   };
-  const FormattedDate = new Date().toISOString().split("T")[0].split("-");
+
   if (isLoading) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
@@ -137,8 +94,17 @@ const ExamenDemander = ({ onNext }) => {
         noValidate
         autoComplete="off"
         onSubmit={submit}
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-6 relative"
       >
+        <Tooltip title="Retour">
+          <IconButton className="!absolute -top-1 left-0">
+            <KeyboardBackspaceOutlinedIcon
+              color="primary"
+              className="pointer-events-none"
+              fill="currentColor"
+            />
+          </IconButton>
+        </Tooltip>
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
@@ -147,6 +113,17 @@ const ExamenDemander = ({ onNext }) => {
           >
             Examens demandée
           </Typography>
+        </Box>
+        <Box className="w-full flex flex-col gap-2">
+          <Box className="w-full flex flex-col gap-2">
+            <TextField
+              id="outlined-required"
+              onChange={(e) => setNote(e.target.value)}
+              multiline
+              rows={3}
+              label="Note"
+            />
+          </Box>
         </Box>
         <Box className="flex flex-col items-center gap-4 flex-wrap">
           <Box className="w-full flex flex-wrap items-center gap-4">
@@ -340,6 +317,7 @@ const ExamenDemander = ({ onNext }) => {
       <Printable
         name={data?.nom + " " + data?.prenom}
         items={fields}
+        renderTop={() => <div className="font-semibold">{note}</div>}
         render={(item, index) => (
           <div key={index}>
             <h3 className="font-bold">
@@ -348,33 +326,6 @@ const ExamenDemander = ({ onNext }) => {
           </div>
         )}
       />
-      {/* <div
-        id="page"
-        className="hidden w-full flex-col gap-4 bg-white rounded-sm"
-      >
-        <div className="w-full flex flex-col gap-6">
-          <div className="w-full flex gap-4 items-center flex-col">
-            <p className="font-semibold">
-              Fait a beni mellal Le {FormattedDate[0]}/{FormattedDate[1]}/
-              {FormattedDate[2]}
-            </p>
-            <p className="font-semibold">
-              Nom & Prenom: {data?.nom} {data?.prenom}
-            </p>
-          </div>
-          <div className="w-full flex flex-col gap-4">
-            <div className="w-full flex flex-col gap-2">
-              {fields.map((examen: any, index: number) => (
-                <div key={index}>
-                  <h3 className="font-bold">
-                    {index + 1}- {examen.name} {examen.type}
-                  </h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div> */}
     </Paper>
   );
 };

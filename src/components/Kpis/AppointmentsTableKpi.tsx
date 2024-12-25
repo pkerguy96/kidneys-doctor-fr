@@ -15,20 +15,20 @@ import DataTable from "../DataTable";
 import { useQueryClient } from "@tanstack/react-query";
 import useUserRoles from "../../zustand/UseRoles";
 import FolderSharedOutlinedIcon from "@mui/icons-material/FolderSharedOutlined";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 const AppointmentsTableKpi = () => {
   const { showSnackbar } = useSnackbarStore();
   const queryClient = useQueryClient();
   const { can } = useUserRoles();
   const navigate = useNavigate();
-  const dataHook = (page: number, searchQuery: string) =>
+  const dataHook = (page: number, searchQuery: string, rowsPerPage: number) =>
     getGlobalv2(
       {},
       CACHE_KEY_WAITINGLIST,
       FetchWaitingList,
       page,
-      10,
+      rowsPerPage,
       searchQuery,
 
       {
@@ -67,8 +67,11 @@ const AppointmentsTableKpi = () => {
           filter: false,
           sort: false,
           customBodyRender: (_value: any, tableMeta: any) => {
-            // Generate order based on row index
-            return tableMeta.rowData[2] + tableMeta.rowIndex + 1;
+            return (
+              tableMeta.tableState.rowsPerPage * tableMeta.tableState.page +
+              tableMeta.rowIndex +
+              1
+            );
           },
         },
       },
@@ -189,6 +192,7 @@ const AppointmentsTableKpi = () => {
     },
     [handleDeletePatient, navigate, can]
   );
+
   return (
     <DataTable
       title="Liste des patients dans la salle d'attente"

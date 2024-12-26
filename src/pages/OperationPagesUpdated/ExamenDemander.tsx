@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Paper,
   Box,
@@ -32,8 +33,12 @@ import { ExamenPreferencewithCategoriesApiClient } from "../../services/ExamenSe
 import LoadingSpinner from "../../components/LoadingSpinner";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import usePrint from "../PrintGlobal";
+import { CliniquerensignementProps } from "./Cliniquerensignement";
 
-const ExamenDemander = ({ onNext }) => {
+const ExamenDemander: React.FC<CliniquerensignementProps> = ({
+  onNext,
+  onBack,
+}) => {
   const [examen, setExamen] = useState("");
   const [fields, setFields] = useState([]);
   const [note, setNote] = useState("");
@@ -54,7 +59,7 @@ const ExamenDemander = ({ onNext }) => {
     ExamenPreferencewithCategoriesApiClient,
     undefined
   );
-  const examenChange = (value) => {
+  const examenChange = (value: any) => {
     setExamen(value);
   };
 
@@ -64,12 +69,12 @@ const ExamenDemander = ({ onNext }) => {
     setExamen("");
   };
 
-  const handleRemoveRow = (index) => {
+  const handleRemoveRow = (index: number) => {
     setFields((old) => old.filter((current, _index) => _index !== index));
   };
 
-  const changeExamenType = (value, index) => {
-    const newRows = [...fields].map((e, _index) => {
+  const changeExamenType = (value: string, index: number) => {
+    const newRows = [...fields].map((e: any, _index) => {
       if (index === _index) {
         e.type = value;
       }
@@ -77,6 +82,7 @@ const ExamenDemander = ({ onNext }) => {
     });
     setFields(newRows);
   };
+  //TODO: make this dynamic so the back can work
   const submit = async (e) => {
     e.preventDefault();
     if (!fields.length) return;
@@ -97,7 +103,7 @@ const ExamenDemander = ({ onNext }) => {
         className="flex flex-col gap-6 relative"
       >
         <Tooltip title="Retour">
-          <IconButton className="!absolute -top-1 left-0">
+          <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
             <KeyboardBackspaceOutlinedIcon
               color="primary"
               className="pointer-events-none"

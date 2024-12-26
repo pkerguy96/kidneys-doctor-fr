@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Paper,
   Box,
@@ -6,6 +7,7 @@ import {
   Typography,
   FormControl,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { items } from "../services/Medicines.json";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,46 +33,16 @@ import addGlobal from "../hooks/addGlobal";
 import getGlobalById from "../hooks/getGlobalById";
 import PatientSearchAutocomplete from "../components/PatientSearchAutocomplete";
 import usePrint from "./PrintGlobal";
-function $tempkate(opts: any) {
-  const { lang, dir, size, margin, css, page } = opts;
-  return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
-}
-function Print(target: any, callback: Function = () => {}) {
-  const page = document.querySelector(target);
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  document.body.appendChild(iframe);
-  var iframeDoc = iframe.contentDocument || iframe?.contentWindow?.document;
-  iframeDoc?.open();
-  iframeDoc?.write(
-    $tempkate({
-      size: {
-        page: "A5",
-        head: "100px",
-        foot: "80px",
-      },
-      page: page.innerHTML,
-      margin: "10mm 10mm 10mm 10mm",
-      css: [
-        '<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">',
-      ],
-    })
-  );
-  iframeDoc?.close();
-  iframe.onload = function () {
-    iframe?.contentWindow?.print();
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-      callback();
-    }, 1000);
-  };
-}
 interface FormData {
   date: string;
   patient: { id: number; name: string } | null;
 }
-const AddOrdonanceUpdated = ({ onNext }: any) => {
+const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
+  onNext,
+  onBack,
+}: any) => {
   const [drugs, setDrugs] = useState([]);
   const [name, setName] = useState("");
   const [fromOperation, setFromOperation] = useState(false);
@@ -239,6 +211,7 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
   if (isLoading3) {
     return <LoadingSpinner />;
   }
+  console.log(direct, isAddMode);
 
   return (
     <Paper className="p-4">
@@ -247,15 +220,28 @@ const AddOrdonanceUpdated = ({ onNext }: any) => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-6"
+        className="w-full flex flex-col gap-6 relative"
       >
+        {!direct && !isAddMode && !ordonanceID && (
+          <Tooltip title="Retour">
+            <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
+              <KeyboardBackspaceOutlinedIcon
+                color="primary"
+                className="pointer-events-none"
+                fill="currentColor"
+              />
+            </IconButton>
+          </Tooltip>
+        )}
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
             component="h2"
             className="text-center !text-2xl font-bold"
           >
-            {isAddMode ? "Ajouter une ordonance" : "Modifier l'ordonance"}
+            {isAddMode || !ordonanceID
+              ? "Ajouter une ordonance"
+              : "Modifier l'ordonance"}
           </Typography>
         </Box>
         <Box className="w-full flex flex-col gap-4">

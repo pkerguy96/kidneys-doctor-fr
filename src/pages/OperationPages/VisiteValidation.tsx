@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {
   Paper,
   Box,
@@ -9,9 +8,10 @@ import {
   IconButton,
   Select,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Controller, useForm, useFieldArray, useWatch } from "react-hook-form";
+import React, { useEffect, useMemo, useState } from "react";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -22,6 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import getGlobalById from "../../hooks/getGlobalById";
 import {
   insertOpwithoutxray,
+  origonalxrayApiClient,
   PatientXrayApiClient,
   xrayApiClient,
   XrayData,
@@ -31,21 +32,21 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   CACHE_KEY_OperationPref,
   CACHE_KEY_ProductOperation,
-  CACHE_KEY_Xray,
 } from "../../constants";
 import updateItem from "../../hooks/updateItem";
 import addGlobal from "../../hooks/addGlobal";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import getGlobal from "../../hooks/getGlobal";
 import { OperationPrefApiClient } from "../../services/SettingsService";
 import { useQueryClient } from "@tanstack/react-query";
-import useOperationStore from "../../zustand/usePatientOperation";
+
 import { productOperationApiClient } from "../../services/StockService";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import { AxiosError } from "axios";
+import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
+
 interface RowData {
   id?: string | number;
   xray_type: string;
@@ -56,22 +57,27 @@ interface Consomables {
   consomable: string;
   qte: number;
 }
-const VisiteValidation = ({ onNext }) => {
+const VisiteValidation: React.FC<CliniquerensignementProps> = ({
+  onNext,
+  onBack,
+}) => {
   const [operations, setOperations] = useState([]);
   const [consomables, setConsomables] = useState([]);
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbarStore();
-  const { clearPatientOperation } = useOperationStore();
+
   const queryClient = useQueryClient();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const operation_id = queryParams.get("operation_id");
   const patient_id = queryParams.get("id");
   const isdone = queryParams.get("isdone");
+  const withxrays = queryParams.get("withxrays");
+  
 
   const addmutation = addGlobal({} as RowData, insertOpwithoutxray);
-  const updateMutation = updateItem({} as XrayData, xrayApiClient);
+  const updateMutation = updateItem({} as XrayData, origonalxrayApiClient);
 
   const { data: consomableArrayList, isLoading: isLoading1 } = getGlobal(
     {},
@@ -151,7 +157,7 @@ const VisiteValidation = ({ onNext }) => {
 
     try {
       // Check if operation_id exists
-      if (operation_id) {
+      if (withxrays !== null) {
         const formData = {
           operation_id: operation_id,
           patient_id: patient_id,
@@ -184,10 +190,10 @@ const VisiteValidation = ({ onNext }) => {
                 "L'opération a été enregistrée avec succès",
                 "success"
               );
-              clearPatientOperation(patient_id);
+
               navigate("/Patients");
             },
-            onError: (error) => {
+            onError: (error: any) => {
               const message = error.response?.data?.error;
 
               showSnackbar(message, "error");
@@ -201,7 +207,6 @@ const VisiteValidation = ({ onNext }) => {
           consomables: consomables,
           rows: operations,
         };
-
         await addmutation.mutateAsync(formData, {
           onSuccess: (data) => {
             queryClient.invalidateQueries({
@@ -216,7 +221,6 @@ const VisiteValidation = ({ onNext }) => {
           },
           onError: (error) => {
             const message = error.response?.data?.error;
-
             showSnackbar(message, "error");
           },
         });
@@ -255,9 +259,18 @@ const VisiteValidation = ({ onNext }) => {
         component="form"
         noValidate
         autoComplete="off"
-        className="flex gap-6 flex-col"
+        className="flex gap-6 flex-col relative"
         onSubmit={onSubmit}
       >
+        <Tooltip title="Retour">
+          <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
+            <KeyboardBackspaceOutlinedIcon
+              color="primary"
+              className="pointer-events-none"
+              fill="currentColor"
+            />
+          </IconButton>
+        </Tooltip>
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"

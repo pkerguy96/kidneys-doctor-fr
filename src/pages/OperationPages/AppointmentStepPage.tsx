@@ -1,4 +1,12 @@
-import { Paper, Box, Typography, TextField, Button } from "@mui/material";
+import {
+  Paper,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
 import {
   LocalizationProvider,
   DateTimePicker,
@@ -19,6 +27,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import { AxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router";
+import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
 interface DataSend {
   patient_id: number;
@@ -26,7 +36,10 @@ interface DataSend {
   date: string;
   note?: string;
 }
-const AppointmentStepPage = ({ onNext }: any) => {
+const AppointmentStepPage: React.FC<CliniquerensignementProps> = ({
+  onNext,
+  onBack,
+}: any) => {
   const [selectedDateTime, setSelectedDateTime] = useState(moment());
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,7 +49,9 @@ const AppointmentStepPage = ({ onNext }: any) => {
   const { showSnackbar } = useSnackbarStore();
   const noteRef = useRef<HTMLInputElement>(null);
   const dateTimePickerRef = useRef(null);
-
+  if (!patient_id) {
+    throw new Error("Patient ID is required and must not be null");
+  }
   const { data, isLoading } = getGlobalById(
     {} as OnlyPatientData,
     [CACHE_KEY_PATIENTS[0], patient_id],
@@ -96,7 +111,16 @@ const AppointmentStepPage = ({ onNext }: any) => {
   return (
     <div>
       <Paper className="!p-6 w-full flex flex-col gap-6">
-        <Box className="flex justify-center">
+        <Box className="flex justify-center relative">
+          <Tooltip title="Retour">
+            <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
+              <KeyboardBackspaceOutlinedIcon
+                color="primary"
+                className="pointer-events-none"
+                fill="currentColor"
+              />
+            </IconButton>
+          </Tooltip>
           <Typography
             id="modal-modal-title"
             component="h2"

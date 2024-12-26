@@ -47,7 +47,11 @@ export const CACHE_KEY_TvWaitingRoom = ["TvWaitingRoom"];
 export const CACHE_KEY_PatientReferral = ["PatientReferral"];
 export const CACHE_KEY_BloodTestPreference = ["BloodTestPreference"];
 export const CACHE_KEY_CreanceDashboardKpi = ["debtlolllll"];
+/* new apis */
+export const CACHE_KEY_operationNote = ["operationNote"];
+export const CACHE_KEY_XraysWithCategoryBACK = ["XraysWithCategoryBACK"];
 
+/* new apis */
 export const CACHE_KEY_Url = "urllist";
 export const CACHE_KEY_StockExit = ["StockExit"];
 export const CACHE_KEY_StockEntry = ["StockEntry"];

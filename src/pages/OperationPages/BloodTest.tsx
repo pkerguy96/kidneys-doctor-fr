@@ -13,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,54 +30,27 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import getGlobal from "../../hooks/getGlobal";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import usePrint from "../PrintGlobal";
+import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
-function $tempkate(opts: any) {
-  const { lang, dir, size, margin, css, page } = opts;
-  return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
-}
-function Print(target: any, callback: Function = () => {}) {
-  const page = document.querySelector(target);
-
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  document.body.appendChild(iframe);
-  var iframeDoc = iframe.contentDocument || iframe?.contentWindow?.document;
-  iframeDoc?.open();
-  iframeDoc?.write(
-    $tempkate({
-      size: {
-        page: "A5",
-        head: "100px",
-        foot: "80px",
-      },
-      page: page.innerHTML,
-      margin: "10mm 10mm 10mm 10mm",
-      css: [
-        '<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">',
-      ],
-    })
-  );
-  iframeDoc?.close();
-  iframe.onload = function () {
-    iframe?.contentWindow?.print();
-    callback();
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000);
-  };
-}
 interface Props {
   blood_test: string[];
 }
-const BloodTest = ({ onNext }) => {
+interface BloodTestItem {
+  code: string;
+  title: string;
+  price?: number;
+  DELAI?: string | null;
+}
+const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const location = useLocation();
   const [analyse, setAnalyse] = useState<number>(NaN);
-  const [fields, setFields] = useState([]);
+  const [fields, setFields] = useState<BloodTestItem[]>([]);
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
   const operationId = queryParams.get("operation_id");
   const [row, setRow] = useState<any>();
-  const { handleSubmit, control, watch } = useForm<Props>();
+  const { handleSubmit } = useForm<Props>();
   const { print, Printable } = usePrint();
   const addMutation = addGlobal({} as BloodTestProps, bloodTestApiClient);
   const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
@@ -94,27 +68,22 @@ const BloodTest = ({ onNext }) => {
     );
   }
 
-  /*   const analyseChange = (event: SelectChangeEvent) => {
-    setAnalyse(event.target.value);
-  }; */
-
   const handleAddRow = () => {
     if (Number.isNaN(analyse)) return;
     setFields((old) => [...old, BoneDoctorBloodTests[analyse]]);
     setAnalyse(NaN);
   };
 
-  const handleRemoveRow = (index) => {
-    setFields((old) => old.filter((current, _index) => _index !== index));
+  const handleRemoveRow = (index: any) => {
+    setFields((old) => old.filter((_current, _index) => _index !== index));
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     const formatedData: any = {
       patient_id: patient_id,
       operation_id: operationId ? parseInt(operationId) : null,
       blood_test: fields,
     };
-    console.log(formatedData);
 
     try {
       addMutation.mutateAsync(formatedData, {
@@ -127,8 +96,7 @@ const BloodTest = ({ onNext }) => {
       });
     } catch (error) {}
   };
-  // const rows = watch("blood_test") || [];
-  const FormattedDate = new Date().toISOString().split("T")[0].split("-");
+
   useEffect(() => {
     if (!row) return;
     print(() => {
@@ -143,8 +111,17 @@ const BloodTest = ({ onNext }) => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        className="flex gap-6 flex-col"
+        className="flex gap-6 flex-col relative"
       >
+        <Tooltip title="Retour">
+          <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
+            <KeyboardBackspaceOutlinedIcon
+              color="primary"
+              className="pointer-events-none"
+              fill="currentColor"
+            />
+          </IconButton>
+        </Tooltip>
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
@@ -234,7 +211,7 @@ const BloodTest = ({ onNext }) => {
                 ) : (
                   <TableRow className="border-t border-gray-300">
                     <TableCell
-                      colSpan={3}
+                      colSpan={5}
                       align="center"
                       className="!text-gray-600 p-4"
                     >
@@ -269,7 +246,7 @@ const BloodTest = ({ onNext }) => {
       </Box>
       <Printable
         name={row?.nom + " " + row?.prenom}
-        items={fields}
+        items={fields as never[]}
         render={(item, index) => (
           <div key={index}>
             <h3 className="font-bold">
@@ -308,19 +285,5 @@ const BloodTest = ({ onNext }) => {
     </Paper>
   );
 };
-const autocompleteStyles = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "white",
-    borderColor: "rgba(0, 0, 0, 0.23)",
-    "& fieldset": {
-      borderColor: "rgba(0, 0, 0, 0.23)",
-    },
-    "&:hover fieldset": {
-      borderColor: "dark",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "primary.main",
-    },
-  },
-};
+
 export default BloodTest;

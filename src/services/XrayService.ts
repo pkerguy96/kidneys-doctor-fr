@@ -31,13 +31,20 @@ export interface XrayPreferencesByCategory {
     price: string;
   }[];
 }
-export const xrayApiClient = new APIClient<XrayProps>("xray");
+export const xrayApiClient = new APIClient<XrayProps>("StoreParaclinique");
+export const origonalxrayApiClient = new APIClient<XrayProps>("xray");
 export const categoryXrayApiClient = new APIClient<any>("getxrayCategorys");
 export const deleteCategoryApiClient = new APIClient<any>("deleteCategory");
 export const PatientXrayApiClient = new APIClient<XrayData>("showpatientxrays");
 export const insertOpwithoutxray = new APIClient<XrayData>("insertWihtoutxray");
+
 export const xraysWithCategoryApiClient =
   new APIClient<XrayPreferencesByCategory>("getXrayPreferencesWithCategories");
 export const NurseXrayvalidationApiClient = new APIClient<XrayResponse>(
   "getXraysByOperation"
 );
+export const fetchxrayfirststep = new APIClient<any>("fetchXrays");
+/* new apis  */
+
+export const getnoteApiClient = new APIClient<any>("fetchNote");
+export const editnoteApiclient = new APIClient<any>("EditOpNote");

@@ -2,33 +2,30 @@ import {
   Box,
   Button,
   FormControl,
-  FormHelperText,
-  IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
-  SelectChangeEvent,
-  ListSubheader,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
+  IconButton,
   TableRow,
   TextField,
   Typography,
   Autocomplete,
+  Tooltip,
 } from "@mui/material";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
-import Chip from "@mui/material/Chip";
-import OutlinedInput from "@mui/material/OutlinedInput";
+import { useMemo, useState } from "react";
 import addGlobal from "../../hooks/addGlobal";
 import {
+  fetchxrayfirststep,
   xrayApiClient,
   XrayPreferencesByCategory,
   XrayProps,
@@ -36,96 +33,33 @@ import {
 } from "../../services/XrayService";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 import { useNavigate } from "react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import { CACHE_KEY_XraysWithCategory } from "../../constants";
+
+import {
+  CACHE_KEY_XraysWithCategory,
+  CACHE_KEY_XraysWithCategoryBACK,
+} from "../../constants";
 import getGlobal from "../../hooks/getGlobal";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { CliniquerensignementProps } from "./Cliniquerensignement";
+import getGlobalById from "../../hooks/getGlobalById";
+import CheckAction from "../../components/CheckAction";
 
-function $tempkate(opts: any) {
-  const { lang, dir, size, margin, css, page } = opts;
-  return `<!DOCTYPE html><html lang="${lang}"dir="${dir}"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible"content="IE=edge"/><meta name="viewport"content="width=device-width, initial-scale=1.0"/><style>@page{size:${size.page};margin:${margin}}#page{width:100%}#head{height:${size.head}}#foot{height:${size.foot}}</style>${css}</head><body><table id="page"><thead><tr><td><div id="head"></div></td></tr></thead><tbody><tr><td><main id="main">${page}</main></td></tr></tbody><tfoot><tr><td><div id=foot></div></td></tr></tfoot></table></body></html>`;
+interface Field {
+  type: string;
+  name: string;
+  price: number;
+  note: string;
 }
-function Print(target: any, callback: Function = () => {}) {
-  const page = document.querySelector(target);
 
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  document.body.appendChild(iframe);
-  var iframeDoc = iframe.contentDocument || iframe?.contentWindow?.document;
-  iframeDoc?.open();
-  iframeDoc?.write(
-    $tempkate({
-      size: {
-        page: "A5",
-        head: "100px",
-        foot: "80px",
-      },
-      page: page.innerHTML,
-      margin: "10mm 10mm 10mm 10mm",
-      css: [
-        '<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">',
-      ],
-    })
-  );
-  iframeDoc?.close();
-  iframe.onload = function () {
-    iframe?.contentWindow?.print();
-    callback();
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000);
-  };
-}
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-/* const data = {
-  échographie: [
-    { name: "Abdomino pelvienne", price: 200 },
-    { name: "Scrotale", price: 250 },
-  ],
-
-  Cystoscopie: [
-    { name: "Exploration", price: 700 },
-    { name: "Ablation de sonde jj", price: 1200 },
-  ],
-  Gestes: [
-    { name: "Biopsie prostatique", price: 300 },
-    { name: "dilatation au béniquet", price: 200 },
-  ],
-  Urgences: [
-    { name: "RA sondage vésicale", price: 800 },
-    { name: "Hématurie sondage à 03 voies", price: 600 },
-    { name: "CN / PNA injection IM,IV,VV", price: 750 },
-  ],
-}; */
-
-const printables = {
-  irm: ["Brain MRI", "Spine MRI", "Knee MRI"],
-  ausp: ["Abdominal Ultrasound", "Pelvic Ultrasound", "Chest Ultrasound"],
-  ecographie: [
-    "Cardiac Echography",
-    "Thyroid Echography",
-    "Vascular Echography",
-  ],
-};
-
-const RadioPage = ({ onNext }) => {
+const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const [radiology, setRadiology] = useState("");
-  const [printable, setPrintable] = useState<string[]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbarStore();
-  const queryClient = useQueryClient();
-  const queryParams = new URLSearchParams(location.search);
+
+  const queryParams = useMemo(() => new URLSearchParams(location.search), []);
   const patient_id = queryParams.get("id");
+  const operation_id = queryParams.get("operation_id");
   const { data, isLoading } = getGlobal(
     {} as XrayPreferencesByCategory,
     CACHE_KEY_XraysWithCategory,
@@ -133,16 +67,19 @@ const RadioPage = ({ onNext }) => {
     undefined
   );
 
+  const { data: HistoryXray, isLoading: isLoading2 } = operation_id
+    ? getGlobalById(
+        {} as any,
+        CACHE_KEY_XraysWithCategoryBACK,
+        fetchxrayfirststep,
+        { refetchOnWindowFocus: false },
+        parseInt(operation_id!)
+      )
+    : {};
   const addMutation = addGlobal({} as XrayProps, xrayApiClient, undefined);
-  const radiologyChange = (value) => {
-    setRadiology(value);
+  const radiologyChange = (value: string | null) => {
+    setRadiology(value || "");
   };
-
-  const printableChange = (event: SelectChangeEvent<string[]>) => {
-    setPrintable(event.target.value as string[]);
-  };
-
-  const [fields, setFields] = useState([]);
 
   const handleAddRow = () => {
     if (!radiology) return;
@@ -153,12 +90,12 @@ const RadioPage = ({ onNext }) => {
     setRadiology("");
   };
 
-  const handleRemoveRow = (index) => {
+  const handleRemoveRow = (index: number) => {
     setFields((old) => old.filter((current, _index) => _index !== index));
   };
 
-  const changeRadiologyName = (value, type, index) => {
-    const price = data[type].find((e) => e.name === value)?.price || 0;
+  const changeRadiologyName = (value: string, type: string, index: number) => {
+    const price = data[type]?.find((e: any) => e.name === value)?.price || 0;
 
     const newRows = [...fields].map((e, _index) => {
       if (index === _index) {
@@ -170,17 +107,7 @@ const RadioPage = ({ onNext }) => {
     setFields(newRows);
   };
 
-  /*  const changeRadiologyPrice = (value, index) => {
-    const newRows = [...fields].map((e, _index) => {
-      if (index === _index) {
-        e.price = value;
-      }
-      return e;
-    });
-    setFields(newRows);
-  }; */
-
-  const changeRadiologyNote = (value, index) => {
+  const changeRadiologyNote = (value: string, index: number) => {
     const newRows = [...fields].map((e, _index) => {
       if (index === _index) {
         e.note = value;
@@ -190,7 +117,7 @@ const RadioPage = ({ onNext }) => {
     setFields(newRows);
   };
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formatedxrays = [...fields].filter((carry) => carry.name);
 
@@ -201,19 +128,14 @@ const RadioPage = ({ onNext }) => {
 
     const formatedData: any = {
       patient_id: patient_id,
+      operation_id: operation_id,
       xrays: formatedxrays,
     };
 
     await addMutation.mutateAsync(formatedData, {
       onSuccess: (data: any) => {
-        const operationId = data.data;
-
-        navigate(`?id=${patient_id}&operation_id=${operationId}`, {
+        navigate(`?id=${patient_id}&operation_id=${data.data}&withxrays`, {
           replace: true,
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["Waitinglist"],
-          exact: false,
         });
         onNext();
       },
@@ -222,9 +144,19 @@ const RadioPage = ({ onNext }) => {
       },
     });
   };
+  const create = CheckAction(() => {
+    setFields(
+      HistoryXray.map((xray: any) => ({
+        name: xray.xray_name,
+        type: xray.xray_type,
+        price: xray.price,
+        note: "",
+      }))
+    );
+  }, HistoryXray);
+  console.log("HistoryXray:", HistoryXray);
 
-  const FormattedDate = new Date().toISOString().split("T")[0].split("-");
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading || isLoading2) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -232,8 +164,17 @@ const RadioPage = ({ onNext }) => {
         noValidate
         autoComplete="off"
         onSubmit={submit}
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-6 relative"
       >
+        <Tooltip title="Retour">
+          <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
+            <KeyboardBackspaceOutlinedIcon
+              color="primary"
+              className="pointer-events-none"
+              fill="currentColor"
+            />
+          </IconButton>
+        </Tooltip>
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
@@ -367,14 +308,16 @@ const RadioPage = ({ onNext }) => {
                                 )
                               }
                             >
-                              {data[carry.type]?.map((radio, _index) => (
-                                <MenuItem
-                                  key={`radio_${_index}`}
-                                  value={radio.name}
-                                >
-                                  {radio.name}
-                                </MenuItem>
-                              ))}
+                              {data[carry.type]?.map(
+                                (radio: any, _index: any) => (
+                                  <MenuItem
+                                    key={`radio_${_index}`}
+                                    value={radio.name}
+                                  >
+                                    {radio.name}
+                                  </MenuItem>
+                                )
+                              )}
                             </Select>
                           </FormControl>
                         </TableCell>

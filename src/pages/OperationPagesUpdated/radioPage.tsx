@@ -22,7 +22,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
 import AddIcon from "@mui/icons-material/Add";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import addGlobal from "../../hooks/addGlobal";
 import {
   fetchxrayfirststep,
@@ -77,45 +77,52 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
       )
     : {};
   const addMutation = addGlobal({} as XrayProps, xrayApiClient, undefined);
-  const radiologyChange = (value: string | null) => {
-    setRadiology(value || "");
-  };
 
-  const handleAddRow = () => {
+  const radiologyChange = useCallback((value: string | null) => {
+    setRadiology(value || "");
+  }, []);
+
+  const handleAddRow = useCallback(() => {
     if (!radiology) return;
     setFields((old) => [
       ...old,
       { type: radiology, name: "", price: 0, note: "" },
     ]);
     setRadiology("");
-  };
+  }, [radiology]);
 
-  const handleRemoveRow = (index: number) => {
-    setFields((old) => old.filter((current, _index) => _index !== index));
-  };
+  const handleRemoveRow = useCallback((index: number) => {
+    setFields((old) => old.filter((_current, _index) => _index !== index));
+  }, []);
 
-  const changeRadiologyName = (value: string, type: string, index: number) => {
-    const price = data[type]?.find((e: any) => e.name === value)?.price || 0;
+  const changeRadiologyName = useCallback(
+    (value: string, type: string, index: number) => {
+      const price = data[type]?.find((e: any) => e.name === value)?.price || 0;
 
-    const newRows = [...fields].map((e, _index) => {
-      if (index === _index) {
-        e.price = price;
-        e.name = value;
-      }
-      return e;
-    });
-    setFields(newRows);
-  };
+      const newRows = [...fields].map((e, _index) => {
+        if (index === _index) {
+          e.price = price;
+          e.name = value;
+        }
+        return e;
+      });
+      setFields(newRows);
+    },
+    [data, fields]
+  );
 
-  const changeRadiologyNote = (value: string, index: number) => {
-    const newRows = [...fields].map((e, _index) => {
-      if (index === _index) {
-        e.note = value;
-      }
-      return e;
-    });
-    setFields(newRows);
-  };
+  const changeRadiologyNote = useCallback(
+    (value: string, index: number) => {
+      const newRows = [...fields].map((e, _index) => {
+        if (index === _index) {
+          e.note = value;
+        }
+        return e;
+      });
+      setFields(newRows);
+    },
+    [fields]
+  );
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,7 +230,7 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
                 options={Object.keys(data)} // Use Object.keys(data) as the options
                 getOptionLabel={(option) => option} // Define how to display options
                 value={radiology || null} // Bind selected value
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   radiologyChange(newValue);
                 }} // Handle change
                 renderInput={(params) => (

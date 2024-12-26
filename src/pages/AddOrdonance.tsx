@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {
   Paper,
   Box,
@@ -34,19 +33,27 @@ import getGlobalById from "../hooks/getGlobalById";
 import PatientSearchAutocomplete from "../components/PatientSearchAutocomplete";
 import usePrint from "./PrintGlobal";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
+import { CliniquerensignementProps } from "./OperationPagesUpdated/Cliniquerensignement";
 
 interface FormData {
   date: string;
   patient: { id: number; name: string } | null;
 }
+interface OrdonnanceDetail {
+  id: number;
+  medicine_name: string;
+  note: string;
+}
 const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
   onNext,
   onBack,
 }: any) => {
-  const [drugs, setDrugs] = useState([]);
+  const [drugs, setDrugs] = useState<any>([]);
   const [name, setName] = useState("");
   const [fromOperation, setFromOperation] = useState(false);
-  const [optionsArray, setOptionsArray] = useState(null);
+  const [optionsArray, setOptionsArray] = useState<
+    { id: number; name: string }[]
+  >([]);
   const [iserror, setIsError] = useState(false);
   const queryClient = useQueryClient();
   const { showSnackbar } = useSnackbarStore();
@@ -81,50 +88,6 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
 
   const isAddMode = !id;
 
-  useEffect(() => {
-    if (!isAddMode) {
-      if (SpecifiedPatient && id && !ordonanceID) {
-        const formattedPatient = {
-          id: SpecifiedPatient.id,
-          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
-        };
-
-        setOptionsArray([formattedPatient]);
-        setValue("patient", formattedPatient);
-        console.log("im entered", formattedPatient);
-        setFromOperation(true);
-      } else if (SpecifiedPatient) {
-        const formattedPatient = {
-          id: SpecifiedPatient.id,
-          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
-        };
-
-        setOptionsArray([formattedPatient]);
-        setValue("patient", formattedPatient);
-
-        const SpecifiedOrdonance = SpecifiedPatient.ordonances.find(
-          (ordonance) => ordonance.id === parseInt(ordonanceID)
-        );
-
-        if (SpecifiedOrdonance) {
-          setValue("date", SpecifiedOrdonance.date);
-
-          const DrugsDetails = SpecifiedOrdonance.ordonance_details.map(
-            (item) => ({
-              id: item.id,
-              medicine_name: item.medicine_name,
-              note: item.note,
-              price: "",
-              type: "",
-            })
-          );
-
-          setDrugs(DrugsDetails);
-        }
-      }
-    }
-  }, [SpecifiedPatient, id]);
-
   const onSubmit = async (data: any) => {
     data.drugs = drugs;
 
@@ -142,10 +105,10 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
         if (isAddMode || fromOperation) {
           response = await createUser(formData);
         } else {
-          await editUser(formData, parseInt(ordonanceID));
+          await editUser(formData, parseInt(ordonanceID!));
         }
         queryClient.invalidateQueries({ queryKey: ["ordonance"] });
-      } catch (error) {
+      } catch (error: any) {
         const message =
           error instanceof AxiosError
             ? error.response?.data?.message
@@ -195,23 +158,66 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
     );
   };
 
-  const handleNoteChange = (id, value) => {
-    setDrugs((prevDrugs) =>
-      prevDrugs.map((drug) =>
+  const handleNoteChange = (id: number, value: string) => {
+    setDrugs((prevDrugs: any) =>
+      prevDrugs.map((drug: any) =>
         drug.id === id ? { ...drug, note: value } : drug
       )
     );
   };
 
-  const FormattedDate = new Date().toISOString().split("T")[0].split("-");
-  const removeOrdonance = (id: any) => {
-    setDrugs((old) => old.filter((e) => e.id !== id));
+  console.log(200);
+
+  const removeOrdonance = (id: number) => {
+    setDrugs((old: any) => old.filter((e: any) => e.id !== id));
   };
 
+  useEffect(() => {
+    if (!isAddMode) {
+      if (SpecifiedPatient && id && !ordonanceID) {
+        const formattedPatient = {
+          id: SpecifiedPatient.id,
+          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
+        };
+
+        setOptionsArray([formattedPatient]);
+        setValue("patient", formattedPatient);
+
+        setFromOperation(true);
+      } else if (SpecifiedPatient) {
+        const formattedPatient = {
+          id: SpecifiedPatient.id,
+          name: `${SpecifiedPatient.nom} ${SpecifiedPatient.prenom}`,
+        };
+
+        setOptionsArray([formattedPatient]);
+        setValue("patient", formattedPatient);
+
+        const SpecifiedOrdonance = SpecifiedPatient.ordonances.find(
+          (ordonance: any) => ordonance.id === parseInt(ordonanceID!)
+        );
+
+        if (SpecifiedOrdonance) {
+          setValue("date", SpecifiedOrdonance.date);
+
+          const DrugsDetails = SpecifiedOrdonance.ordonance_details.map(
+            (item: OrdonnanceDetail) => ({
+              id: item.id,
+              medicine_name: item.medicine_name,
+              note: item.note,
+              price: "",
+              type: "",
+            })
+          );
+
+          setDrugs(DrugsDetails);
+        }
+      }
+    }
+  }, [SpecifiedPatient, id]);
   if (isLoading3) {
     return <LoadingSpinner />;
   }
-  console.log(direct, isAddMode);
 
   return (
     <Paper className="p-4">
@@ -322,7 +328,8 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
                 const valid =
                   name.trim() !== "" &&
                   !drugs.some(
-                    (e) => e.medicine_name.toUpperCase() === name.toUpperCase()
+                    (e: any) =>
+                      e.medicine_name.toUpperCase() === name.toUpperCase()
                   );
                 if (valid) {
                   const found = items.find((e) => e.name === name);
@@ -377,7 +384,7 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
                 </TableHead>
                 <TableBody>
                   {drugs.length ? (
-                    drugs.map((row, index) => (
+                    drugs.map((row: any, index: number) => (
                       <TableRow
                         key={index}
                         className="border-t border-gray-300"

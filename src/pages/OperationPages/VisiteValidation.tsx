@@ -187,18 +187,7 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
           },
           {
             onSuccess: (data) => {
-              queryClient.invalidateQueries(CACHE_KEY_operationNote);
-              queryClient.invalidateQueries({
-                queryKey: ["Waitinglist"],
-                exact: false,
-              });
-              queryClient.invalidateQueries(CACHE_KEY_XraysWithCategoryBACK);
-              queryClient.invalidateQueries(CACHE_KEY_OperationBloodTest);
-              queryClient.invalidateQueries(CACHE_KEY_OrdonanceId);
-              queryClient.invalidateQueries({
-                queryKey: ["operation"],
-                exact: false,
-              });
+              queryClient.clear();
               showSnackbar(
                 "L'opération a été enregistrée avec succès",
                 "success"

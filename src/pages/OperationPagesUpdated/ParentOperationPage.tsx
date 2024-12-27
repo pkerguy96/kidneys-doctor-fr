@@ -38,7 +38,7 @@ const ParentOperationPage = () => {
   }
   return (
     <div className="flex flex-col w-full gap-2">
-      <StepperComponant activeStep={activeStep} />
+      <StepperComponant activeStep={activeStep} setActiveStep={setActiveStep} />
       {activeStep === 0 && (
         <Cliniquerensignement onNext={handleNext} onBack={handleBack} />
       )}

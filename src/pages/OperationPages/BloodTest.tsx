@@ -202,6 +202,28 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
         <Box className="flex gap-4 flex-col">
           <Box className="w-full flex flex-wrap items-center gap-4">
             <FormControl className="flex-1">
+              {/* <Autocomplete
+                className="w-full"
+                id="demo-autocomplete-helper"
+                options={BoneDoctorBloodTests} // Array of options
+                getOptionLabel={(option) => option.title} // Define how to display options
+                value={BoneDoctorBloodTests[analyse] || null} // Bind selected value
+                onChange={(_event, newValue) => {
+                  setAnalyse(
+                    newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
+                  );
+                }} // Handle change
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Analyses"
+                    variant="outlined"
+                    placeholder="Choisissez une analyse"
+                  />
+                )}
+
+              /> */}
+
               <Autocomplete
                 className="w-full"
                 id="demo-autocomplete-helper"
@@ -213,6 +235,17 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
                     newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
                   );
                 }} // Handle change
+                filterOptions={(options, state) => {
+                  const filtered = options.filter((option) => {
+                    // Filter by code or title
+                    const lowerCaseQuery = state.inputValue.toLowerCase();
+                    return (
+                      option.title.toLowerCase().includes(lowerCaseQuery) ||
+                      option.code.toLowerCase().includes(lowerCaseQuery)
+                    );
+                  });
+                  return filtered;
+                }} // Custom filtering logic to match both title and code
                 renderInput={(params) => (
                   <TextField
                     {...params}

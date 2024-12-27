@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -8,7 +7,8 @@ import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
 
 interface StepperComponentProps {
-  activeStep: number; // Define the activeStep prop
+  activeStep: number;
+  setActiveStep: (step: number) => void;
 }
 
 const steps = [
@@ -21,7 +21,10 @@ const steps = [
   "Paiement",
 ];
 
-const StepperComponant: React.FC<StepperComponentProps> = ({ activeStep }) => {
+const StepperComponant: React.FC<StepperComponentProps> = ({
+  activeStep,
+  setActiveStep,
+}) => {
   // Use React.FC and provide StepperComponentProps
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
@@ -43,6 +46,11 @@ const StepperComponant: React.FC<StepperComponentProps> = ({ activeStep }) => {
     setSkipped(newSkipped);
   };
 
+  const handleStepClick = (index: number) => {
+    if (activeStep > 0 || index === 0) {
+      setActiveStep(index);
+    }
+  };
   const handleBack = () => {
     // Handle back logic here if needed
   };
@@ -60,9 +68,7 @@ const StepperComponant: React.FC<StepperComponentProps> = ({ activeStep }) => {
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
+          const labelProps: { optional?: React.ReactNode } = {};
           if (isStepOptional(index)) {
             labelProps.optional = (
               <Typography variant="caption">Optional</Typography>
@@ -73,12 +79,17 @@ const StepperComponant: React.FC<StepperComponentProps> = ({ activeStep }) => {
           }
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+              <StepLabel
+                {...labelProps}
+                onClick={() => handleStepClick(index)} // Handle click event on step
+                style={{ cursor: "pointer" }} // Make the step clickable
+              >
+                {label}
+              </StepLabel>
             </Step>
           );
         })}
       </Stepper>
-      {/* Render additional content based on activeStep if needed */}
     </Box>
   );
 };

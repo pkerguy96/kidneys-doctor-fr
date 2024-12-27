@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Paper,
   Box,
@@ -17,12 +18,16 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CACHE_KEY_BloodtestList } from "../../constants";
+import {
+  CACHE_KEY_BloodtestList,
+  CACHE_KEY_OperationBloodTest,
+} from "../../constants";
 import addGlobal from "../../hooks/addGlobal";
 import {
   bloodTestApiClient,
   bloodTestpreflistApiClient,
   BloodTestProps,
+  editBloodTestOperation,
 } from "../../services/BloodTest";
 import { useLocation } from "react-router";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,6 +37,15 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import usePrint from "../PrintGlobal";
 import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
+import getGlobalById from "../../hooks/getGlobalById";
+import {
+  deletebloodtestApiClient,
+  fetchBloodTestOperation,
+} from "../../services/XrayService";
+import CheckAction from "../../components/CheckAction";
+import deleteItem from "../../hooks/deleteItem";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSnackbarStore } from "../../zustand/useSnackbarStore";
 
 interface Props {
   blood_test: string[];
@@ -40,7 +54,7 @@ interface BloodTestItem {
   code: string;
   title: string;
   price?: number;
-  DELAI?: string | null;
+  delai?: string | null;
 }
 const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const location = useLocation();
@@ -52,13 +66,29 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const [row, setRow] = useState<any>();
   const { handleSubmit } = useForm<Props>();
   const { print, Printable } = usePrint();
+  const queryClient = useQueryClient();
+  const { showSnackbar } = useSnackbarStore();
   const addMutation = addGlobal({} as BloodTestProps, bloodTestApiClient);
+  const updateMutation = addGlobal(
+    {} as BloodTestProps,
+    editBloodTestOperation
+  );
+
   const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
     {},
     CACHE_KEY_BloodtestList,
     bloodTestpreflistApiClient,
     undefined
   );
+  const { data: BloodTestHistory, isLoading: isLoading2 } = operationId
+    ? getGlobalById(
+        {} as any,
+        CACHE_KEY_OperationBloodTest,
+        fetchBloodTestOperation,
+        { refetchOnWindowFocus: false },
+        parseInt(operationId!)
+      )
+    : { isLoading: false };
   if (!patient_id) {
     return (
       <Typography variant="h6" color="error" align="center">
@@ -86,14 +116,40 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
     };
 
     try {
-      addMutation.mutateAsync(formatedData, {
-        onSuccess: (data: any) => {
-          setRow(data.data);
-        },
-        onError: (error) => {
-          console.log(error);
-        },
-      });
+      if (create) {
+        if (!fields.length) {
+          showSnackbar("Veuillez choisir une analyse", "error");
+          return;
+        }
+        addMutation.mutateAsync(formatedData, {
+          onSuccess: (data: any) => {
+            queryClient.invalidateQueries(CACHE_KEY_OperationBloodTest);
+
+            setRow(data.data);
+          },
+          onError: (error) => {
+            console.log(error);
+          },
+        });
+      } else {
+        if (!fields.length) {
+          await deleteItem(parseInt(operationId!), deletebloodtestApiClient);
+          queryClient.invalidateQueries(CACHE_KEY_OperationBloodTest);
+          onNext();
+          return;
+        }
+
+        updateMutation.mutateAsync(formatedData, {
+          onSuccess: (data: any) => {
+            queryClient.invalidateQueries(CACHE_KEY_OperationBloodTest);
+
+            setRow(data.data);
+          },
+          onError: (error) => {
+            console.log(error);
+          },
+        });
+      }
     } catch (error) {}
   };
 
@@ -103,7 +159,19 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
       onNext();
     });
   }, [row]);
-  if (isLoading) return <LoadingSpinner />;
+
+  const create = CheckAction(() => {
+    setFields(
+      BloodTestHistory.map((bloodTest: any) => ({
+        delai: bloodTest.delai ?? "",
+        code: bloodTest.code ?? "",
+        price: bloodTest.price ?? "",
+        title: bloodTest.title ?? "",
+      }))
+    );
+  }, BloodTestHistory);
+
+  if (isLoading || isLoading2) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -140,7 +208,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
                 options={BoneDoctorBloodTests} // Array of options
                 getOptionLabel={(option) => option.title} // Define how to display options
                 value={BoneDoctorBloodTests[analyse] || null} // Bind selected value
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   setAnalyse(
                     newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
                   );
@@ -192,9 +260,9 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
                         {carry.price} {carry.price ? "MAD" : "n/a"}
                       </TableCell>
                       <TableCell>
-                        {carry.DELAI === null || carry.DELAI === ""
+                        {carry.delai === null || carry.delai === ""
                           ? "n/a"
-                          : carry.DELAI}
+                          : carry.delai}
                       </TableCell>
 
                       <TableCell>

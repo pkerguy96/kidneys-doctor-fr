@@ -32,11 +32,26 @@ export interface XrayPreferencesByCategory {
   }[];
 }
 export const xrayApiClient = new APIClient<XrayProps>("StoreParaclinique");
+export const updateParacliniqueApiClient = new APIClient<any>(
+  "updateParaclinique"
+);
+export const fetchBloodTestOperation = new APIClient<any>(
+  "fetchOperationBloodTests"
+);
+export const getOrdonanceIdApiClient = new APIClient<any>("getOrdonanceId");
 export const origonalxrayApiClient = new APIClient<XrayProps>("xray");
 export const categoryXrayApiClient = new APIClient<any>("getxrayCategorys");
 export const deleteCategoryApiClient = new APIClient<any>("deleteCategory");
 export const PatientXrayApiClient = new APIClient<XrayData>("showpatientxrays");
 export const insertOpwithoutxray = new APIClient<XrayData>("insertWihtoutxray");
+
+export const DeleteradioApiClient = new APIClient<XrayData>("deleteRadio");
+export const deletebloodtestApiClient = new APIClient<XrayData>(
+  "deleteBloodTest"
+);
+export const deleteOrdonanceApiClient = new APIClient<XrayData>(
+  "deleteOrdonance"
+);
 
 export const xraysWithCategoryApiClient =
   new APIClient<XrayPreferencesByCategory>("getXrayPreferencesWithCategories");

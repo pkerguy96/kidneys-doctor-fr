@@ -50,6 +50,8 @@ export const CACHE_KEY_CreanceDashboardKpi = ["debtlolllll"];
 /* new apis */
 export const CACHE_KEY_operationNote = ["operationNote"];
 export const CACHE_KEY_XraysWithCategoryBACK = ["XraysWithCategoryBACK"];
+export const CACHE_KEY_OperationBloodTest = ["OperationBloodTest"];
+export const CACHE_KEY_OrdonanceId = ["OrdonanceId"];
 
 /* new apis */
 export const CACHE_KEY_Url = "urllist";

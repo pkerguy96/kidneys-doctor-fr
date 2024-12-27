@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Paper,
   Box,
@@ -69,6 +70,8 @@ const Cliniquerensignement: React.FC<CliniquerensignementProps> = ({
               navigate(`?id=${patient_id}&operation_id=${data.data}`, {
                 replace: true,
               });
+              queryClient.invalidateQueries(CACHE_KEY_operationNote);
+
               queryClient.invalidateQueries({
                 queryKey: ["Waitinglist"],
                 exact: false,

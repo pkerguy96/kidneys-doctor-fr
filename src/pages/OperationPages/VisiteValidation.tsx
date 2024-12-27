@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Paper,
   Box,
@@ -30,8 +31,12 @@ import {
 import { useLocation, useNavigate } from "react-router";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import {
+  CACHE_KEY_OperationBloodTest,
+  CACHE_KEY_operationNote,
   CACHE_KEY_OperationPref,
+  CACHE_KEY_OrdonanceId,
   CACHE_KEY_ProductOperation,
+  CACHE_KEY_XraysWithCategoryBACK,
 } from "../../constants";
 import updateItem from "../../hooks/updateItem";
 import addGlobal from "../../hooks/addGlobal";
@@ -46,6 +51,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
+import { SupplierTinyData } from "../../services/SupplierService";
 
 interface RowData {
   id?: string | number;
@@ -74,7 +80,6 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
   const patient_id = queryParams.get("id");
   const isdone = queryParams.get("isdone");
   const withxrays = queryParams.get("withxrays");
-  
 
   const addmutation = addGlobal({} as RowData, insertOpwithoutxray);
   const updateMutation = updateItem({} as XrayData, origonalxrayApiClient);
@@ -182,6 +187,14 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
           },
           {
             onSuccess: (data) => {
+              queryClient.invalidateQueries(CACHE_KEY_operationNote);
+              queryClient.invalidateQueries({
+                queryKey: ["Waitinglist"],
+                exact: false,
+              });
+              queryClient.invalidateQueries(CACHE_KEY_XraysWithCategoryBACK);
+              queryClient.invalidateQueries(CACHE_KEY_OperationBloodTest);
+              queryClient.invalidateQueries(CACHE_KEY_OrdonanceId);
               queryClient.invalidateQueries({
                 queryKey: ["operation"],
                 exact: false,

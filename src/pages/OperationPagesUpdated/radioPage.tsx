@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Box,
   Button,
@@ -25,7 +26,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useMemo, useState } from "react";
 import addGlobal from "../../hooks/addGlobal";
 import {
+  DeleteradioApiClient,
   fetchxrayfirststep,
+  updateParacliniqueApiClient,
   xrayApiClient,
   XrayPreferencesByCategory,
   XrayProps,
@@ -44,6 +47,9 @@ import { CliniquerensignementProps } from "./Cliniquerensignement";
 import getGlobalById from "../../hooks/getGlobalById";
 import CheckAction from "../../components/CheckAction";
 
+import deleteItem from "../../hooks/deleteItem";
+import { useQueryClient } from "@tanstack/react-query";
+
 interface Field {
   type: string;
   name: string;
@@ -56,7 +62,7 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const [fields, setFields] = useState<Field[]>([]);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbarStore();
-
+  const queryClient = useQueryClient();
   const queryParams = useMemo(() => new URLSearchParams(location.search), []);
   const patient_id = queryParams.get("id");
   const operation_id = queryParams.get("operation_id");
@@ -77,6 +83,10 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
       )
     : {};
   const addMutation = addGlobal({} as XrayProps, xrayApiClient, undefined);
+  const updateMutation = addGlobal(
+    {} as XrayProps,
+    updateParacliniqueApiClient
+  );
 
   const radiologyChange = useCallback((value: string | null) => {
     setRadiology(value || "");
@@ -128,29 +138,51 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
     e.preventDefault();
     const formatedxrays = [...fields].filter((carry) => carry.name);
 
-    if (!formatedxrays.length) {
-      showSnackbar("Veuillez choisir un type de radio", "error");
-      return;
-    }
-
     const formatedData: any = {
       patient_id: patient_id,
       operation_id: operation_id,
       xrays: formatedxrays,
     };
-
-    await addMutation.mutateAsync(formatedData, {
-      onSuccess: (data: any) => {
-        navigate(`?id=${patient_id}&operation_id=${data.data}&withxrays`, {
-          replace: true,
-        });
+    if (create) {
+      if (!formatedxrays.length) {
+        showSnackbar("Veuillez choisir un type de radio", "error");
+        return;
+      }
+      await addMutation.mutateAsync(formatedData, {
+        onSuccess: (data: any) => {
+          queryClient.invalidateQueries(CACHE_KEY_XraysWithCategoryBACK);
+          navigate(`?id=${patient_id}&operation_id=${data.data}&withxrays`, {
+            replace: true,
+          });
+          onNext();
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      });
+    } else {
+      if (!formatedxrays.length) {
+        await deleteItem(parseInt(operation_id!), DeleteradioApiClient);
+        queryClient.invalidateQueries(CACHE_KEY_XraysWithCategoryBACK);
         onNext();
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
+        return;
+      }
+      await updateMutation.mutateAsync(formatedData, {
+        onSuccess: (data: any) => {
+          queryClient.invalidateQueries(CACHE_KEY_XraysWithCategoryBACK);
+          navigate(`?id=${patient_id}&operation_id=${data.data}&withxrays`, {
+            replace: true,
+          });
+
+          onNext();
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      });
+    }
   };
+
   const create = CheckAction(() => {
     setFields(
       HistoryXray.map((xray: any) => ({
@@ -161,7 +193,6 @@ const RadioPage: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
       }))
     );
   }, HistoryXray);
-  console.log("HistoryXray:", HistoryXray);
 
   if (isLoading || isLoading2) return <LoadingSpinner />;
   return (

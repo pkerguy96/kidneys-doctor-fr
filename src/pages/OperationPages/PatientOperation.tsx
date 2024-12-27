@@ -128,7 +128,6 @@ const PatientOperation = ({ onNext }) => {
     try {
       await addMutation.mutateAsync(cleanedData, {
         onSuccess: () => {
-          console.log("ddaaaaaaaazt");
           onNext();
         },
       });

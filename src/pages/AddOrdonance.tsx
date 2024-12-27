@@ -44,10 +44,7 @@ interface OrdonnanceDetail {
   medicine_name: string;
   note: string;
 }
-const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
-  onNext,
-  onBack,
-}: any) => {
+const AddOrdonanceUpdated = () => {
   const [drugs, setDrugs] = useState<any>([]);
   const [name, setName] = useState("");
   const [fromOperation, setFromOperation] = useState(false);
@@ -122,12 +119,8 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
     return await Addmutation.mutateAsync(formData, {
       onSuccess: () => {
         print(() => {
-          if (direct) {
-            showSnackbar("Ordonnance ajoutée avec succès.", "success");
-            navigate("/Ordonnance");
-          } else if (onNext) {
-            onNext();
-          }
+          showSnackbar("Ordonnance ajoutée avec succès.", "success");
+          navigate("/Ordonnance");
         });
       },
       onError: (error: any) => {
@@ -228,17 +221,6 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-6 relative"
       >
-        {!direct && !isAddMode && !ordonanceID && (
-          <Tooltip title="Retour">
-            <IconButton className="!absolute -top-1 left-0" onClick={onBack}>
-              <KeyboardBackspaceOutlinedIcon
-                color="primary"
-                className="pointer-events-none"
-                fill="currentColor"
-              />
-            </IconButton>
-          </Tooltip>
-        )}
         <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
@@ -437,18 +419,6 @@ const AddOrdonanceUpdated: React.FC<CliniquerensignementProps> = ({
           </Box>
         </Box>
         <Box className="flex justify-between flex-row content-center">
-          {!direct && !ordonanceID && (
-            <Button
-              className="w-full md:w-max !px-10 !py-3 rounded-lg "
-              variant="outlined"
-              type="button"
-              onClick={() => {
-                onNext();
-              }}
-            >
-              <p className="text-sm ">Passer</p>
-            </Button>
-          )}
           <Button
             type="submit"
             variant="contained"

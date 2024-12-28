@@ -64,7 +64,10 @@ const Cliniquerensignement: React.FC<CliniquerensignementProps> = ({
     try {
       if (create) {
         addMutation.mutateAsync(
-          { data: { note: data.note }, id: parseInt(patient_id) },
+          {
+            data: { note: data.note, operation: operation_id },
+            id: parseInt(patient_id),
+          },
           {
             onSuccess: (data: any) => {
               navigate(`?id=${patient_id}&operation_id=${data.data}`, {

@@ -4,7 +4,7 @@ import {
   //@ts-ignore
 } from "react-vertical-timeline-component";
 import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOutlined";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 import { useMemo } from "react";
 import { Box } from "@mui/material";
 const AppointmentVerticalTimeline = ({

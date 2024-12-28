@@ -5,6 +5,10 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
 import Typography from "@mui/material/Typography";
+import { useLocation, useNavigate } from "react-router";
+import updateItem from "../hooks/updateItem";
+import { noteoperationApiClient } from "../services/OperationService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface StepperComponentProps {
   activeStep: number;
@@ -27,7 +31,13 @@ const StepperComponant: React.FC<StepperComponentProps> = ({
 }) => {
   // Use React.FC and provide StepperComponentProps
   const [skipped, setSkipped] = React.useState(new Set<number>());
-
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(search);
+  const operation_id = queryParams.get("operation_id");
+  const patient_id = queryParams.get("id");
+  const queryClient = useQueryClient();
+  const addMutation = updateItem({}, noteoperationApiClient);
   const isStepOptional = (step: number) => {
     return null;
   };
@@ -46,10 +56,24 @@ const StepperComponant: React.FC<StepperComponentProps> = ({
     setSkipped(newSkipped);
   };
 
-  const handleStepClick = (index: number) => {
-    if (activeStep > 0 || index === 0) {
-      setActiveStep(index);
-    }
+  const handleStepClick = async (index: number) => {
+    if (!operation_id) {
+      await addMutation.mutateAsync(
+        { data: {}, id: parseInt(patient_id) },
+        {
+          onSuccess: (data: any) => {
+            navigate(`?id=${patient_id}&operation_id=${data.data}`, {
+              replace: true,
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["Waitinglist"],
+              exact: false,
+            });
+            setActiveStep(index);
+          },
+        }
+      );
+    } else setActiveStep(index);
   };
   const handleBack = () => {
     // Handle back logic here if needed

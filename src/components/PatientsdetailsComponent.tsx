@@ -26,7 +26,6 @@ const PatientsdetailsComponent = ({
   const { can } = useUserRoles();
   const navigate = useNavigate();
   if (isLoading) return <LoadingSpinner />;
-  console.log(info);
 
   const handleRowClick = (id: number) => {
     navigate(`/OrdonanceDetails/${id}`);
@@ -251,8 +250,8 @@ const PatientsdetailsComponent = ({
                     style={{ cursor: "pointer" }}
                     className="border-t border-gray-300"
                   >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{ordonance.date}</TableCell>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="center">{ordonance.date}</TableCell>
                   </TableRow>
                 ))
               ) : (

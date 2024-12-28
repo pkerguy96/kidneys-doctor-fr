@@ -1,11 +1,8 @@
-//@ts-nocheck
 import {
   Paper,
   Box,
   Typography,
   FormControl,
-  Autocomplete,
-  TextField,
   Button,
   IconButton,
   Table,
@@ -18,21 +15,16 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  CACHE_KEY_BloodtestList,
-  CACHE_KEY_OperationBloodTest,
-} from "../../constants";
+import { CACHE_KEY_OperationBloodTest } from "../../constants";
 import addGlobal from "../../hooks/addGlobal";
 import {
   bloodTestApiClient,
-  bloodTestpreflistApiClient,
   BloodTestProps,
   editBloodTestOperation,
 } from "../../services/BloodTest";
 import { useLocation } from "react-router";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import getGlobal from "../../hooks/getGlobal";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import usePrint from "../PrintGlobal";
 import { CliniquerensignementProps } from "../OperationPagesUpdated/Cliniquerensignement";
@@ -46,6 +38,7 @@ import CheckAction from "../../components/CheckAction";
 import deleteItem from "../../hooks/deleteItem";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbarStore } from "../../zustand/useSnackbarStore";
+import BloodTestSearchAutocomplete from "../../components/BloodTestSearchAutocomplete";
 
 interface Props {
   blood_test: string[];
@@ -58,7 +51,7 @@ interface BloodTestItem {
 }
 const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
   const location = useLocation();
-  const [analyse, setAnalyse] = useState<number>(NaN);
+  const [analyse, setAnalyse] = useState<any>(NaN);
   const [fields, setFields] = useState<BloodTestItem[]>([]);
   const queryParams = new URLSearchParams(location.search);
   const patient_id = queryParams.get("id");
@@ -74,13 +67,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
     editBloodTestOperation
   );
 
-  const { data: BoneDoctorBloodTests, isLoading } = getGlobal(
-    {},
-    CACHE_KEY_BloodtestList,
-    bloodTestpreflistApiClient,
-    undefined
-  );
-  const { data: BloodTestHistory, isLoading: isLoading2 } = operationId
+  const { data: BloodTestHistory, isLoading } = operationId
     ? getGlobalById(
         {} as any,
         CACHE_KEY_OperationBloodTest,
@@ -100,7 +87,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
 
   const handleAddRow = () => {
     if (Number.isNaN(analyse)) return;
-    setFields((old) => [...old, BoneDoctorBloodTests[analyse]]);
+    setFields((old) => [...old, analyse]);
     setAnalyse(NaN);
   };
 
@@ -171,7 +158,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
     );
   }, BloodTestHistory);
 
-  if (isLoading || isLoading2) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner />;
   return (
     <Paper className="!p-6 w-full flex flex-col gap-4">
       <Box
@@ -202,58 +189,11 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
         <Box className="flex gap-4 flex-col">
           <Box className="w-full flex flex-wrap items-center gap-4">
             <FormControl className="flex-1">
-              {/* <Autocomplete
-                className="w-full"
-                id="demo-autocomplete-helper"
-                options={BoneDoctorBloodTests} // Array of options
-                getOptionLabel={(option) => option.title} // Define how to display options
-                value={BoneDoctorBloodTests[analyse] || null} // Bind selected value
-                onChange={(_event, newValue) => {
-                  setAnalyse(
-                    newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
-                  );
-                }} // Handle change
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Analyses"
-                    variant="outlined"
-                    placeholder="Choisissez une analyse"
-                  />
-                )}
-
-              /> */}
-
-              <Autocomplete
-                className="w-full"
-                id="demo-autocomplete-helper"
-                options={BoneDoctorBloodTests} // Array of options
-                getOptionLabel={(option) => option.title} // Define how to display options
-                value={BoneDoctorBloodTests[analyse] || null} // Bind selected value
-                onChange={(_event, newValue) => {
-                  setAnalyse(
-                    newValue ? BoneDoctorBloodTests.indexOf(newValue) : NaN
-                  );
-                }} // Handle change
-                filterOptions={(options, state) => {
-                  const filtered = options.filter((option) => {
-                    // Filter by code or title
-                    const lowerCaseQuery = state.inputValue.toLowerCase();
-                    return (
-                      option.title.toLowerCase().includes(lowerCaseQuery) ||
-                      option.code.toLowerCase().includes(lowerCaseQuery)
-                    );
-                  });
-                  return filtered;
-                }} // Custom filtering logic to match both title and code
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Analyses"
-                    variant="outlined"
-                    placeholder="Choisissez une analyse"
-                  />
-                )}
+              <BloodTestSearchAutocomplete
+                showExternalLabel={false}
+                setBloodTest={(value) => {
+                  setAnalyse(value);
+                }}
               />
             </FormControl>
             <Button
@@ -356,33 +296,6 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
           </div>
         )}
       />
-      {/* <div
-        id="page"
-        className="hidden w-full flex-col gap-4 bg-white rounded-sm"
-      >
-        <div className="w-full flex flex-col gap-6">
-          <div className="w-full flex gap-4 items-center flex-col">
-            <p className="font-semibold">
-              Fait a beni mellal Le {FormattedDate[0]}/{FormattedDate[1]}/
-              {FormattedDate[2]}
-            </p>
-            <p className="font-semibold">
-              Nom & Prenom: {row?.nom} {row?.prenom}
-            </p>
-          </div>
-          <div className="w-full flex flex-col gap-4">
-            <div className="w-full flex flex-col gap-2">
-              {fields.map((details: any, index: number) => (
-                <div key={index}>
-                  <h3 className="font-bold">
-                    {index + 1}- {details.title}
-                  </h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div> */}
     </Paper>
   );
 };

@@ -75,7 +75,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
         { refetchOnWindowFocus: false },
         parseInt(operationId!)
       )
-    : { isLoading: false };
+    : { data: [], isLoading: false };
   if (!patient_id) {
     return (
       <Typography variant="h6" color="error" align="center">

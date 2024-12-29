@@ -35,7 +35,7 @@ const stockTable = () => {
       label: "Désignation",
       options: { filter: true, sort: true },
     },
-    { name: "qte", label: "Quantité", options: { filter: true, sort: true } },
+
     {
       name: "product_family",
       label: "Famille",
@@ -46,6 +46,7 @@ const stockTable = () => {
       label: "Nature",
       options: { filter: true, sort: true },
     },
+    { name: "qte", label: "Quantité", options: { filter: true, sort: true } },
     {
       name: "min_stock",
       label: "Min Quantité",
@@ -129,7 +130,7 @@ const stockTable = () => {
       undefined
     );
   const rowClassGenerator = useCallback((row: any) => {
-    const qte = row[3];
+    const qte = row[5];
     const minStock = row[6];
 
     if (qte <= minStock) {

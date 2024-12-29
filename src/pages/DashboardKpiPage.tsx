@@ -11,16 +11,20 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import {
   CACHE_KEY_MonthlyAppointments,
   CACHE_KEY_CanceledMonthlyAppointments,
+  CACHE_KEY_AvgWaitingRoom,
 } from "../constants";
 import {
   NewAppointments,
   MonthlyAppointmentsKpiClient,
   CanceledAppointments,
   CanceledMonthlyAppointmentsKpiClient,
+  getAvgWaitingRoomApiClient,
+  AvgWaitingRoom,
 } from "../services/KpisService";
 import useUserRoles from "../zustand/UseRoles";
 import PatientKpi from "../components/Kpis/patientKpi";
 import PaymentRateKpi from "../components/Kpis/paymentRateKpi";
+import AppointmentCancelRate from "../components/Kpis/AppointmentCancelRate";
 
 const DashboardKpiPage = () => {
   const navigate = useNavigate();
@@ -38,31 +42,14 @@ const DashboardKpiPage = () => {
     CanceledMonthlyAppointmentsKpiClient,
     { staleTime: 300000 }
   );
-  if (isLoading || isLoading1) return <LoadingSpinner />;
-  Object;
-  // const labels = data ? Object.keys(data) : [];
-  // const dataset = {
-  //   labels,
-  //   datasets: [
-  //     {
-  //       label: "Rendez-vous",
-  //       data: data ? Object.values(data1) : [],
-  //       borderColor: "rgb(255, 99, 132)",
-  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //     },
-  //   ],
-  // };
-  // const dataset1 = {
-  //   labels,
-  //   datasets: [
-  //     {
-  //       label: "Rendez-vous annulés",
-  //       data: data ? Object.values(data1) : [],
-  //       borderColor: "#db2777",
-  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //     },
-  //   ],
-  // };
+  const { data: data2, isLoading: isLoading2 } = getGlobal(
+    {} as AvgWaitingRoom,
+    CACHE_KEY_AvgWaitingRoom,
+    getAvgWaitingRoomApiClient,
+    { staleTime: 300000 }
+  );
+
+  if (isLoading || isLoading1 || isLoading2) return <LoadingSpinner />;
 
   return (
     <Box className="flex flex-col gap-6">
@@ -94,9 +81,12 @@ const DashboardKpiPage = () => {
           )}
         </Box>
         <Box className="flex flex-col gap-6 lg:col-span-4">
-          {/*  <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
-            <h1 className="text-xl font-semibold">Hna ajouti hadik alhrgawi</h1>
-          </Box> */}
+          <Box className="!w-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 shadow-lg rounded-lg text-white flex flex-col p-6 gap-4 overflow-hidden">
+            <h1 className="text-2xl font-bold">Temps moyen de traitement</h1>
+            <p className="text-xl font-semibold text-center">
+              {data2.formatted_time}
+            </p>
+          </Box>
           <Box className="!w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
             <h1 className="text-xl font-semibold">Groupe d’âge des patients</h1>
             <PatientAgeGroupKpi />
@@ -106,6 +96,9 @@ const DashboardKpiPage = () => {
           </Box>
           <Box className="w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
             <PaymentRateKpi />
+          </Box>
+          <Box className="w-full bg-white shadow-md lg:col-span-6 text-gray-950 flex flex-col p-6 gap-3 overflow-hidden">
+            <AppointmentCancelRate />
           </Box>
         </Box>
       </Box>

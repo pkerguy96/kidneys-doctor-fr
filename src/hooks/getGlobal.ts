@@ -10,7 +10,6 @@ const getGlobal = <T>(
     queryKey: queryKey,
     queryFn: async () => {
       const data = await service.getall();
-
       return data;
     },
     ...opts,

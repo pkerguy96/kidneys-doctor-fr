@@ -66,7 +66,7 @@ const ChangeUserPassword = () => {
         className="w-full flex flex-col gap-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Box className="flex flex-col gap-4">
+        <Box className="flex justify-center">
           <Typography
             id="modal-modal-title"
             component="h2"
@@ -74,6 +74,8 @@ const ChangeUserPassword = () => {
           >
             Changer le mot de passe
           </Typography>
+        </Box>
+        <Box className="flex flex-col gap-4">
           <Box className="w-full flex flex-col gap-2 md:flex-row md:flex-wrap items-center">
             <label htmlFor="password" className="w-full md:w-[200px]">
               Nouveau mot de passe

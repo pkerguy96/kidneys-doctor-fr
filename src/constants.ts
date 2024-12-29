@@ -10,6 +10,7 @@ export const CACHE_KEY_OperationDetail = "operationdetail";
 export const CACHE_KEY_UploadInfo = ["uploadinfo"];
 export const CACHE_KEY_UploadUrl = ["UploadUrl"];
 export const CACHE_KEY_AppointmentsCount = ["AppointmentsCount"];
+export const CACHE_KEY_CancellationRateKpi = ["CancellationRateKpi"];
 export const CACHE_KEY_RevenueKpi = ["RevenueKpi"];
 export const CACHE_KEY_CanceledApppointments = ["CanceledApppointments"];
 export const CACHE_KEY_Agegroup = ["PatientsAgeGroup"];
@@ -43,6 +44,7 @@ export const CACHE_KEY_SearchPatients = ["SearchPatients"];
 export const CACHE_KEY_CanceledMonthlyAppointments = [
   "CanceledMonthlyAppointments",
 ];
+export const CACHE_KEY_AvgWaitingRoom = ["AvgWaitingRoom"];
 export const CACHE_KEY_TvWaitingRoom = ["TvWaitingRoom"];
 export const CACHE_KEY_PatientReferral = ["PatientReferral"];
 export const CACHE_KEY_BloodTestPreference = ["BloodTestPreference"];

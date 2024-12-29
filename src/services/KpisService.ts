@@ -50,6 +50,15 @@ export interface OperationDataDebt {
 export interface DebtApiResponse {
   data: OperationDataDebt[];
 }
+export interface AppointmentCancelrate {
+  totalAppointments: number;
+  canceledAppointments: number;
+  cancellationRate: number | null;
+}
+export interface AvgWaitingRoom {
+  average_time_in_current: number;
+  formatted_time: string;
+}
 export const AppointmentsKpiClient = new APIClient<appointmentsCount>(
   "/getAppointments"
 );
@@ -78,8 +87,13 @@ export const PatientsReferralClient = new APIClient<AgeData>(
   "/countPatientsByReferral"
 );
 export const TotalcachierAmount = new APIClient<any>("/retrieveFromCashier");
+export const getCancellationRateApiClient =
+  new APIClient<AppointmentCancelrate>("/getAppointmentCancellationRate");
 export const getCreanceApiClient = new APIClient<any>("/getPaymentKpi");
 export const CanceledAppointmentsKpiClient =
   new APIClient<CanceledappointmentsCount>("/getCanceledAppointments");
+export const getAvgWaitingRoomApiClient = new APIClient<AvgWaitingRoom>(
+  "/getAverageTimeInCurrent"
+);
 
 export default AppointmentsKpiClient;

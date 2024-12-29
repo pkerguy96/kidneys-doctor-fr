@@ -291,7 +291,7 @@ const BloodTest: React.FC<CliniquerensignementProps> = ({ onNext, onBack }) => {
         render={(item, index) => (
           <div key={index}>
             <h3 className="font-bold">
-              {index + 1}- {item.title}
+              {index + 1}- {item.title} {"  "} ({item.code})
             </h3>
           </div>
         )}

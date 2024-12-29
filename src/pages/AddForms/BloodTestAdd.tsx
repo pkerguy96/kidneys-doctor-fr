@@ -76,7 +76,7 @@ const BloodTestAdd = () => {
             component="h2"
             className="text-center !text-2xl font-bold"
           >
-            Ajouter un bilan sanguin
+            Ajouter un bilan
           </Typography>
         </Box>
 
@@ -120,6 +120,7 @@ const BloodTestAdd = () => {
                   <TableCell width={100}>Code</TableCell>
                   <TableCell>Analyse</TableCell>
                   <TableCell width={200}>Prix</TableCell>
+                  <TableCell width={200}>Délai</TableCell>
                   <TableCell width={60} align="center">
                     Action
                   </TableCell>
@@ -133,6 +134,11 @@ const BloodTestAdd = () => {
                       <TableCell>{carry.title}</TableCell>
                       <TableCell>
                         {carry.price} {carry.price ? "MAD" : "n/a"}
+                      </TableCell>
+                      <TableCell>
+                        {carry.delai === null || carry.delai === ""
+                          ? "n/a"
+                          : carry.delai}
                       </TableCell>
                       <TableCell>
                         <IconButton onClick={() => handleRemoveRow(index)}>
@@ -178,7 +184,7 @@ const BloodTestAdd = () => {
         render={(item, index) => (
           <div key={index}>
             <h3 className="font-bold">
-              {index + 1}- {item.title}
+              {index + 1}- {item.title} {"  "} ({item.code})
             </h3>
           </div>
         )}

@@ -16,10 +16,12 @@ const ParentOperationPage = () => {
 
   const handleNext = () => {
     setActiveStep((prevStep) => prevStep + 1);
+    queryClient.clear();
   };
-
+  //TODO: FIX THE CACHING SYSTEM
   const handleBack = () => {
     setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
+    queryClient.clear();
   };
 
   return (

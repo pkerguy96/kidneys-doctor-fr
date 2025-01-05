@@ -15,7 +15,7 @@ function Print(target: any, callback: Function) {
     $tempkate({
       size: {
         page: "A5",
-        head: "100px",
+        head: "80px",
         foot: "80px",
       },
       page: page.innerHTML,

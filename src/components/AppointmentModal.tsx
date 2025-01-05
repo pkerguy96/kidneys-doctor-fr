@@ -68,19 +68,27 @@ const AppointmentModal: React.FC<ModalComponentProps> = ({
           setNote("");
           onClose();
         },
-        onError: (error: AxiosError | Error) => {
-          const message =
-            error instanceof AxiosError
-              ? error.response?.data?.message || "Une erreur est survenue"
-              : error.message;
+        onError: (error) => {
+          let message = "Une erreur est survenue";
+
+          if (error instanceof AxiosError) {
+            message = error.response?.data?.message || message;
+          } else if (error instanceof Error) {
+            message = error.message;
+          }
+
           showSnackbar(message, "warning");
         },
       });
-    } catch (error) {
-      const message =
-        error instanceof AxiosError
-          ? error.response?.data?.message || "Une erreur est survenue"
-          : error.message;
+    } catch (error: unknown) {
+      let message = "Une erreur est survenue";
+
+      if (error instanceof AxiosError) {
+        message = error.response?.data?.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
       showSnackbar(message, "warning");
     }
   }, [

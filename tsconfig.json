@@ -11,10 +11,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": false, // Disable strict type-checking
-    "noUnusedLocals": false, // Allow unused local variables
-    "noUnusedParameters": false, // Allow unused parameters
-    "noFallthroughCasesInSwitch": false, // Disable switch case fallthrough checking
+    "strict": true, // Disable strict type-checking
+    "noUnusedLocals": true, // Allow unused local variables
+    "noUnusedParameters": true, // Allow unused parameters
+    "noFallthroughCasesInSwitch": true, // Disable switch case fallthrough checking
 
     "allowJs": true // Allow JavaScript files
   },

@@ -118,7 +118,9 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
   const patchOperation = (index, value, type) => {
     setOperations((old) =>
       old.map((op, idx) => {
-        if (idx === index) op[type] = value;
+        if (idx === index && op[type] !== value) {
+          return { ...op, [type]: value };
+        }
         return op;
       })
     );
@@ -127,7 +129,9 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
   const patchConsomable = (index, value, type) => {
     setConsomables((old) =>
       old.map((op, idx) => {
-        if (idx === index) op[type] = value;
+        if (idx === index && op[type] !== value) {
+          return { ...op, [type]: value };
+        }
         return op;
       })
     );
@@ -169,13 +173,12 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
           treatment_isdone: isdone ?? 1,
           consomables: consomables,
           rows: operations.map((e) => {
-            if (e.id)
-              if (String(e.id).startsWith("pref-")) {
-                delete e.id; // Remove the id property if it starts with "pref-"
-              } else {
-                e.id = String(e.id).replace(/^data-(\d+)$/, "$1"); // Keep only the number for "data-"
+            const { id, ...rest } = e;
+            if (id)
+              if (String(id).startsWith("data-")) {
+                rest.id = String(id).replace(/^data-(\d+)$/, "$1"); // Keep only the number for "data-"
               }
-            return e;
+            return rest;
           }),
         };
 
@@ -249,10 +252,11 @@ const VisiteValidation: React.FC<CliniquerensignementProps> = ({
   }, [extraData]);
 
   const xrayString = JSON.stringify(xrayRows);
+  const extraString = JSON.stringify(extraRows);
 
   useEffect(() => {
     setOperations([...xrayRows, ...extraRows]);
-  }, [extraRows, xrayString]);
+  }, [extraString, xrayString]);
 
   if (isLoading1 || isloading2 || isLoading3) return <LoadingSpinner />;
   return (

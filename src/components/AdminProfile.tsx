@@ -113,7 +113,7 @@ const AdminProfile = () => {
                     {...field}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       onChange(event.target.files?.[0]);
-
+                      //@ts-nocheck
                       setImageFile(event.target.files[0]);
                     }}
                     type="file"

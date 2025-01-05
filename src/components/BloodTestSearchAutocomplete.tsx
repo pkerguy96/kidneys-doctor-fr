@@ -59,12 +59,12 @@ const BloodTestSearchAutocomplete: React.FC<
     return localOptions.length === 0 ? empty : "";
   }, [isLoading, debouncedSearchQuery, localOptions]);
 
-  const handleInputChange = useCallback((_, newInputValue) => {
+  const handleInputChange = useCallback((_: any, newInputValue: any) => {
     setSearchQuery(newInputValue);
   }, []);
 
   const handleChange = useCallback(
-    (_, newValue) => {
+    (_: any, newValue: any) => {
       setBloodTest(newValue);
     },
     [setBloodTest]
